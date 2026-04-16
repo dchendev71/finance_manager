@@ -1,0 +1,6 @@
+- Auth
+- Dashboard
+- Real Estate
+- Stocks
+- Ticker
+- News
