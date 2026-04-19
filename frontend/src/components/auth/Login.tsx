@@ -1,5 +1,6 @@
+import { Link } from "react-router"
 import { useState } from "react"
-import "./auth_module.css"
+import authStyles from "./auth.module.css"
 
 // We need a username, a password
 function LoginForm() {
@@ -22,7 +23,7 @@ function LoginForm() {
     }
 
     return (
-        <div className="form-container">
+        <div className={authStyles.formContainer}>
             <form onSubmit={handleSubmit}>
                 <p>
                     <label htmlFor="username">Username: </label>

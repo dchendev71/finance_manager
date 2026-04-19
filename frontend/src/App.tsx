@@ -1,7 +1,11 @@
-import Auth from "./components/auth/Auth"
+import { Routes, Route } from "react-router-dom"
+
+import AuthRoutes from "./components/auth/authRoutes"
 
 export default function App() { 
     return (
-        <Auth/>
+        <Routes>
+            { AuthRoutes }
+        </Routes>
     )
 }
