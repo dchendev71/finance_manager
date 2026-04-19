@@ -34,6 +34,7 @@ form label {
 
 /* Text inputs */
 form input[type="text"],
+form input[type="email"],
 form input[type="password"] {
     padding: 0.6rem 0.8rem;
     border: 1px solid #444;

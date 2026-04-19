@@ -1,14 +1,13 @@
-import { Link } from "react-router"
+import { Link } from "react-router-dom"
 import { useState } from "react"
 import authStyles from "./auth.module.css"
 
-// We need a username, a password
 function LoginForm() {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
 
     // TODO: Change API URL
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault()
         const res = await fetch("http://localhost:4000/login", {
             method: "POST",
@@ -40,6 +39,8 @@ function LoginForm() {
                 <p>
                     <input type="submit" value="login"></input>
                 </p>
+
+                <Link to="/register">Sign up here</Link>
             </form>
         </div>
     )
