@@ -9,7 +9,7 @@ CREATE TABLE currency (
 
 -- Alter Users Table to add updated_at and is_active
 ALTER TABLE users 
-	ADD COLUMN updated_at TIMESTAMP NOT NULL() DEFAULT NOW(),
+	ADD COLUMN updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
 	ADD COLUMN is_active BOOLEAN NOT NULL DEFAULT TRUE;
 
 -- Add Foreign Key and constraint
