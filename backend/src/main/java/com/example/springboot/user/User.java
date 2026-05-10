@@ -1,5 +1,6 @@
 package com.example.springboot.user;
 
+import com.example.springboot.currency.Currency;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
