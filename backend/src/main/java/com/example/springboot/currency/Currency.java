@@ -1,4 +1,4 @@
-package com.example.springboot.entities;
+package com.example.springboot.currency;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

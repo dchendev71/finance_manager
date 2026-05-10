@@ -1,7 +1,5 @@
-package com.example.springboot.controllers;
+package com.example.springboot.user;
 
-import com.example.springboot.entities.User;
-import com.example.springboot.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

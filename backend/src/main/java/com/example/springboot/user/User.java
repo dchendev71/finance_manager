@@ -1,4 +1,4 @@
-package com.example.springboot.entities;
+package com.example.springboot.user;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
