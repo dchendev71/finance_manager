@@ -1,8 +1,9 @@
--- Create currency table
-CREATE TABLE currency (
+-- Create currencies table
+CREATE TABLE currencies (
 	id BIGSERIAL PRIMARY KEY,
 	code VARCHAR(3) NOT NULL UNIQUE, -- ISO4217
 	symbol VARCHAR(5) NOT NULL,
+	name VARCHAR NOT NULL,
 	created_at TIMESTAMP NOT NULL DEFAULT NOW(),
 	updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
@@ -17,7 +18,7 @@ ALTER TABLE users
 	ADD COLUMN currency_id BIGINT,
 	ADD CONSTRAINT fk_users_currency
 		FOREIGN KEY (currency_id)
-		REFERENCES currency (id)
+		REFERENCES currencies (id)
 		ON DELETE SET NULL
 		ON UPDATE CASCADE;
 
