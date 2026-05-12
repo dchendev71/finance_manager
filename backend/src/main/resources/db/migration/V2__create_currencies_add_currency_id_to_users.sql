@@ -15,7 +15,7 @@ ALTER TABLE users
 
 -- Add Foreign Key and constraint
 ALTER TABLE users
-	ADD COLUMN currency_id BIGINT,
+	ADD COLUMN currency_id BIGINT NOT NULL,
 	ADD CONSTRAINT fk_users_currency
 		FOREIGN KEY (currency_id)
 		REFERENCES currencies (id)
