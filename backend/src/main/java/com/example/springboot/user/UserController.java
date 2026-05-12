@@ -1,14 +1,16 @@
 package com.example.springboot.user;
 
+import com.example.springboot.user.dto.UserCreateRequest;
+import com.example.springboot.user.dto.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-@RequestMapping(path = "/users")
+@RestController
+@RequestMapping(path = "api/v1/users")
 public class UserController {
   private final UserService userService;
 
@@ -17,10 +19,9 @@ public class UserController {
     this.userService = userService;
   }
 
-  @PostMapping(path = "/register")
-  public ResponseEntity<User> addNewUser(
-      @RequestParam String email, @RequestParam String password) {
-    User user = userService.registerNewUser(email, password);
-    return ResponseEntity.ok(user);
+  @PostMapping(path = "/create")
+  public ResponseEntity<UserResponse> createNewUser(@RequestBody UserCreateRequest request) {
+    UserResponse response = userService.createNewUser(request);
+    return ResponseEntity.ok(response);
   }
 }
