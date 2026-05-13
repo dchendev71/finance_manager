@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "api/v1/users")
+@RequestMapping(path = "api/v1/auth")
 public class UserController {
   private final UserService userService;
 
@@ -19,7 +19,7 @@ public class UserController {
     this.userService = userService;
   }
 
-  @PostMapping(path = "/create")
+  @PostMapping(path = "/register")
   public ResponseEntity<UserResponse> createNewUser(@RequestBody UserCreateRequest request) {
     UserResponse response = userService.createNewUser(request);
     return ResponseEntity.ok(response);
