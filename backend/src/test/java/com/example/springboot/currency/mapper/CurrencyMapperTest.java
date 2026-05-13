@@ -4,32 +4,33 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.example.springboot.currency.Currency;
 import com.example.springboot.currency.dto.CurrencyDto;
-import org.junit.jupiter.api.BeforeEach;
+import com.example.springboot.helper.CurrencyTestFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+@ExtendWith(SpringExtension.class)
+@Import(CurrencyMapperImpl.class)
 class CurrencyMapperTest {
-  private CurrencyMapper currencyMapper;
 
-  @BeforeEach
-  void setUp() {
-    currencyMapper = Mappers.getMapper(CurrencyMapper.class);
-  }
+  @Autowired private CurrencyMapper currencyMapper;
 
   @Test
   @DisplayName("toDto: should map Currency to CurrencyDto")
   void toDto_shouldMapAllFields() {
     // Given
-    Currency currency = Currency.builder().id(1L).code("USD").name("US Dollar").symbol("$").build();
+    Currency currency = CurrencyTestFactory.createCurrency();
     // When
     CurrencyDto dto = currencyMapper.toDto(currency);
     // Then
     assertThat(dto).isNotNull();
-    assertThat(dto.id()).isEqualTo(1L);
-    assertThat(dto.code()).isEqualTo("USD");
-    assertThat(dto.name()).isEqualTo("US Dollar");
-    assertThat(dto.symbol()).isEqualTo("$");
+    assertThat(dto.id()).isEqualTo(CurrencyTestFactory.testId);
+    assertThat(dto.code()).isEqualTo(CurrencyTestFactory.testCode);
+    assertThat(dto.name()).isEqualTo(CurrencyTestFactory.testName);
+    assertThat(dto.symbol()).isEqualTo(CurrencyTestFactory.testSymbol);
   }
 
   @Test
@@ -42,24 +43,22 @@ class CurrencyMapperTest {
   @Test
   @DisplayName("toEntity: should map CurrencyDto to Currency")
   void toEntity_shouldMapAllFields() {
-    CurrencyDto dto =
-        CurrencyDto.builder().id(1L).code("USD").name("US Dollar").symbol("$").build();
+    CurrencyDto dto = CurrencyTestFactory.createCurrencyDto();
 
     Currency currency = currencyMapper.toEntity(dto);
 
     assertThat(currency).isNotNull();
-    assertThat(currency.getId()).isEqualTo(1L);
-    assertThat(currency.getCode()).isEqualTo("USD");
-    assertThat(currency.getName()).isEqualTo("US Dollar");
-    assertThat(currency.getSymbol()).isEqualTo("$");
+    // Id is not needed in the transformation
+    assertThat(currency.getId()).isEqualTo(null);
+    assertThat(currency.getCode()).isEqualTo(CurrencyTestFactory.testCode);
+    assertThat(currency.getName()).isEqualTo(CurrencyTestFactory.testName);
+    assertThat(currency.getSymbol()).isEqualTo(CurrencyTestFactory.testSymbol);
   }
 
   @Test
   @DisplayName("toEntity: should ignore audit fields")
   void toEntity_shouldIgnoreAuditFields() {
-
-    CurrencyDto dto =
-        CurrencyDto.builder().id(1L).code("USD").name("US Dollar").symbol("$").build();
+    CurrencyDto dto = CurrencyTestFactory.createCurrencyDto();
     Currency currency = currencyMapper.toEntity(dto);
 
     assertThat(currency).isNotNull();
