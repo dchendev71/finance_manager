@@ -2,6 +2,7 @@ package com.example.springboot.user;
 
 import com.example.springboot.user.dto.UserCreateRequest;
 import com.example.springboot.user.dto.UserResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +21,7 @@ public class UserController {
   }
 
   @PostMapping(path = "/register")
-  public ResponseEntity<UserResponse> createNewUser(@RequestBody UserCreateRequest request) {
+  public ResponseEntity<UserResponse> createNewUser(@Valid @RequestBody UserCreateRequest request) {
     UserResponse response = userService.createNewUser(request);
     return ResponseEntity.ok(response);
   }
