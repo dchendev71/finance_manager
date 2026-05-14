@@ -1,5 +1,6 @@
 package com.example.springboot.currency;
 
+import com.example.springboot.common.exception.CurrencyNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,6 @@ public class CurrencyService {
   public Currency findByCode(String code) {
     return currencyRepository
         .findByCode(code)
-        .orElseThrow(() -> new IllegalArgumentException("Currency not found " + code));
+        .orElseThrow(() -> new CurrencyNotFoundException(code));
   }
 }

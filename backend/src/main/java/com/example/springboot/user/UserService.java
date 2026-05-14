@@ -1,5 +1,6 @@
 package com.example.springboot.user;
 
+import com.example.springboot.common.exception.EmailAlreadyExistsException;
 import com.example.springboot.currency.Currency;
 import com.example.springboot.currency.CurrencyService;
 import com.example.springboot.user.dto.UserCreateRequest;
@@ -24,8 +25,11 @@ public class UserService {
   }
 
   @Transactional
-  public UserResponse createNewUser(UserCreateRequest request) {
+  public UserResponse registerNewUser(UserCreateRequest request) {
     Currency currency = currencyService.findByCode(request.currencyCode());
+    if (userRepository.findByEmail(request.email()).isPresent()) {
+      throw new EmailAlreadyExistsException(request.email());
+    }
     User user = userMapper.toEntity(request, currency);
 
     return userMapper.toResponse(userRepository.save(user));

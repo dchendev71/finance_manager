@@ -46,7 +46,7 @@ class UserServiceTest {
     when(userRepository.save(user)).thenReturn(user);
     when(userMapper.toResponse(user)).thenReturn(expectedResponse);
     // When
-    UserResponse response = userService.createNewUser(request);
+    UserResponse response = userService.registerNewUser(request);
     // Then
     assertThat(response).isNotNull();
     assertThat(response.email()).isEqualTo(UserTestFactory.testEmail);
@@ -66,15 +66,15 @@ class UserServiceTest {
         .thenThrow(new RuntimeException("Currency not found: XYZ"));
 
     // When / Then
-    assertThatThrownBy(() -> userService.createNewUser(request))
+    assertThatThrownBy(() -> userService.registerNewUser(request))
         .isInstanceOf(RuntimeException.class)
         .hasMessageContaining("XYZ");
     verify(userRepository, never()).save(any());
   }
 
   @Test
-  @DisplayName("createNewUser: should never expose password in response")
-  void createNewUser_shouldNeverExposePassword() {
+  @DisplayName("registerNewUser: should never expose password in response")
+  void registerNewUser_shouldNeverExposePassword() {
     // Given
     UserCreateRequest request = UserTestFactory.createUserRequest();
     Currency currency = CurrencyTestFactory.createCurrency();
@@ -87,7 +87,7 @@ class UserServiceTest {
     when(userMapper.toResponse(user)).thenReturn(expectedResponse);
 
     // When
-    UserResponse response = userService.createNewUser(request);
+    UserResponse response = userService.registerNewUser(request);
 
     // Then
     assertThat(response).hasNoNullFieldsOrPropertiesExcept("createdAt", "updatedAt");
