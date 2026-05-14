@@ -2,12 +2,12 @@ package com.example.springboot.user.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.example.springboot.auth.dto.UserCreateRequest;
 import com.example.springboot.currency.Currency;
 import com.example.springboot.currency.mapper.CurrencyMapperImpl;
 import com.example.springboot.helper.CurrencyTestFactory;
 import com.example.springboot.helper.UserTestFactory;
 import com.example.springboot.user.User;
-import com.example.springboot.user.dto.UserCreateRequest;
 import com.example.springboot.user.dto.UserResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

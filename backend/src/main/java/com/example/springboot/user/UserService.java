@@ -1,11 +1,9 @@
 package com.example.springboot.user;
 
+import com.example.springboot.auth.dto.UserCreateRequest;
 import com.example.springboot.common.exception.EmailAlreadyExistsException;
-import com.example.springboot.common.exception.InvalidCredentialsException;
 import com.example.springboot.currency.Currency;
 import com.example.springboot.currency.CurrencyService;
-import com.example.springboot.user.dto.LoginRequest;
-import com.example.springboot.user.dto.UserCreateRequest;
 import com.example.springboot.user.dto.UserResponse;
 import com.example.springboot.user.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,19 +42,5 @@ public class UserService {
     user.setPassword(encodedPwd);
 
     return userMapper.toResponse(userRepository.save(user));
-  }
-
-  public UserResponse login(LoginRequest request) {
-    User user =
-        userRepository
-            .findByEmail(request.email())
-            .orElseThrow(() -> new InvalidCredentialsException());
-
-    String encodedPwd = passwordEncoder.encode(request.password());
-    if (!encodedPwd.equals(user.getPassword())) {
-      throw new InvalidCredentialsException();
-    }
-    // TODO: return JWT token
-    return userMapper.toResponse(user);
   }
 }

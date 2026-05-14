@@ -1,19 +1,15 @@
 package com.example.springboot.user;
 
-import com.example.springboot.user.dto.LoginRequest;
-import com.example.springboot.user.dto.UserCreateRequest;
+import com.example.springboot.auth.dto.UserCreateRequest;
 import com.example.springboot.user.dto.UserResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "api/v1/auth")
 public class UserController {
   private final UserService userService;
 
@@ -22,16 +18,9 @@ public class UserController {
     this.userService = userService;
   }
 
-  @PostMapping(path = "/register")
   public ResponseEntity<UserResponse> registerNewUser(
       @Valid @RequestBody UserCreateRequest request) {
     UserResponse response = userService.registerNewUser(request);
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
-  }
-
-  @PostMapping(path = "/login")
-  public ResponseEntity<UserResponse> login(@Valid @RequestBody LoginRequest request) {
-    UserResponse response = userService.login(request);
-    return ResponseEntity.ok(response);
   }
 }

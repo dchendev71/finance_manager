@@ -7,11 +7,11 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.example.springboot.auth.dto.UserCreateRequest;
 import com.example.springboot.currency.Currency;
 import com.example.springboot.currency.CurrencyService;
 import com.example.springboot.helper.CurrencyTestFactory;
 import com.example.springboot.helper.UserTestFactory;
-import com.example.springboot.user.dto.UserCreateRequest;
 import com.example.springboot.user.dto.UserResponse;
 import com.example.springboot.user.mapper.UserMapper;
 import org.junit.jupiter.api.DisplayName;

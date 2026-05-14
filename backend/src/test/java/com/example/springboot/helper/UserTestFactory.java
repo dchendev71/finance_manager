@@ -1,8 +1,8 @@
 package com.example.springboot.helper;
 
+import com.example.springboot.auth.dto.UserCreateRequest;
 import com.example.springboot.currency.Currency;
 import com.example.springboot.user.User;
-import com.example.springboot.user.dto.UserCreateRequest;
 import com.example.springboot.user.dto.UserResponse;
 
 public class UserTestFactory {

@@ -1,9 +1,9 @@
 package com.example.springboot.user.mapper;
 
+import com.example.springboot.auth.dto.UserCreateRequest;
 import com.example.springboot.currency.Currency;
 import com.example.springboot.currency.mapper.CurrencyMapper;
 import com.example.springboot.user.User;
-import com.example.springboot.user.dto.UserCreateRequest;
 import com.example.springboot.user.dto.UserResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
