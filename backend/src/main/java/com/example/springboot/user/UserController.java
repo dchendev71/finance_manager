@@ -1,5 +1,6 @@
 package com.example.springboot.user;
 
+import com.example.springboot.user.dto.LoginRequest;
 import com.example.springboot.user.dto.UserCreateRequest;
 import com.example.springboot.user.dto.UserResponse;
 import jakarta.validation.Valid;
@@ -26,5 +27,11 @@ public class UserController {
       @Valid @RequestBody UserCreateRequest request) {
     UserResponse response = userService.registerNewUser(request);
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
+  }
+
+  @PostMapping(path = "/login")
+  public ResponseEntity<UserResponse> login(@Valid @RequestBody LoginRequest request) {
+    UserResponse response = userService.login(request);
+    return ResponseEntity.ok(response);
   }
 }

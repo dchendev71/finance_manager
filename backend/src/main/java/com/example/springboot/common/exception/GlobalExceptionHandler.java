@@ -37,4 +37,10 @@ public class GlobalExceptionHandler {
 
     return ErrorResponseEntityFactory.createResponseEntity(HttpStatus.BAD_REQUEST, message);
   }
+
+  // 401 - Invalid Credentials
+  @ExceptionHandler(InvalidCredentialsException.class)
+  public ResponseEntity<ErrorResponse> handleInvalidCredentials(InvalidCredentialsException e) {
+    return ErrorResponseEntityFactory.createResponseEntity(HttpStatus.UNAUTHORIZED, e);
+  }
 }
