@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.example.springboot.config.SecurityConfig;
 import com.example.springboot.helper.UserTestFactory;
 import com.example.springboot.user.dto.UserCreateRequest;
 import com.example.springboot.user.dto.UserResponse;
@@ -15,10 +16,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(UserController.class)
+@Import(SecurityConfig.class)
 class UserControllerTest {
 
   @Autowired private MockMvc mockMvc;
@@ -27,7 +30,9 @@ class UserControllerTest {
 
   @MockBean private UserService userService;
 
-  // ─── POST /api/v1/users/register ─────────────────────────────────────────
+  private String authRegisterRoute = "/api/v1/auth/register";
+
+  // ─── POST /api/v1/auth/register ─────────────────────────────────────────
 
   @Test
   @DisplayName("POST /register: should return 201 when valid request")
@@ -39,7 +44,7 @@ class UserControllerTest {
     // When / Then
     mockMvc
         .perform(
-            post("/api/v1/users/register")
+            post(authRegisterRoute)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isCreated())
@@ -57,7 +62,7 @@ class UserControllerTest {
     // When / Then
     mockMvc
         .perform(
-            post("/api/v1/users/register")
+            post(authRegisterRoute)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isBadRequest());
@@ -72,7 +77,7 @@ class UserControllerTest {
     // When / Then
     mockMvc
         .perform(
-            post("/api/v1/users/register")
+            post(authRegisterRoute)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isBadRequest());
@@ -86,7 +91,7 @@ class UserControllerTest {
         UserTestFactory.createUserRequest("john@example.com", "password123", "usd");
     mockMvc
         .perform(
-            post("/api/v1/users/register")
+            post(authRegisterRoute)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isBadRequest());
