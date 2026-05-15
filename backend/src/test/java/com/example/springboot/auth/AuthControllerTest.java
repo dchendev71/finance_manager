@@ -157,4 +157,10 @@ class AuthControllerTest {
         .andExpect(
             resp -> assertTrue(resp.getResolvedException() instanceof EmailAlreadyExistsException));
   }
+
+  // @Test
+  // @DisplayName("POST /login: should return 200 with a JwtToken")
+  // void login_shouldReturn200() throws Exception {
+  // 	AuthRequest request =
+  // }
 }
