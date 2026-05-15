@@ -43,4 +43,10 @@ public class UserService {
 
     return userMapper.toResponse(userRepository.save(user));
   }
+
+  public UserResponse getProfile(Long id) {
+    User user = userRepository.findById(id).get();
+    System.out.println("GetProfile");
+    return userMapper.toResponse(user);
+  }
 }
