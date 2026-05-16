@@ -1,0 +1,53 @@
+package com.example.springboot.portfolio.transactions;
+
+import com.example.springboot.portfolio.portfolio_asset.PortfolioAsset;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+
+@Entity
+@Table(name = "transactions")
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
+@EqualsAndHashCode(of = "id")
+public class Transactions {
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  @Column(name = "quantity", nullable = false)
+  private BigDecimal quantity;
+
+  @Column(name = "transaction_date", nullable = false, updatable = false)
+  @CreationTimestamp
+  private LocalDateTime transactionDate;
+
+  @Column(name = "unit_price", nullable = false)
+  private BigDecimal unitPrice;
+
+  @ManyToOne
+  @JoinColumn(
+      name = "portfolio_asset_id",
+      nullable = false,
+      foreignKey = @ForeignKey(name = "fk_transactions_portfolio_asset"))
+  private PortfolioAsset portfolioAsset;
+}

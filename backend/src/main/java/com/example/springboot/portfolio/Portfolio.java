@@ -1,6 +1,6 @@
-package com.example.springboot.user;
+package com.example.springboot.portfolio;
 
-import com.example.springboot.currency.Currency;
+import com.example.springboot.user.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -25,41 +25,34 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
-@Table(name = "users")
+@Table(name = "portfolio")
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
 @EqualsAndHashCode(of = "id")
-public class User {
+public class Portfolio {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(unique = true, nullable = false)
-  private String email;
-
   @Column(nullable = false)
-  private String password;
+  private String name;
 
-  @CreationTimestamp
   @Column(name = "created_at", updatable = false, nullable = false)
+  @CreationTimestamp
   private LocalDateTime createdAt;
 
   @UpdateTimestamp
   @Column(name = "updated_at", nullable = false)
   private LocalDateTime updatedAt;
 
-  @Builder.Default
-  @Column(nullable = false, name = "is_active")
-  private Boolean active = true; // Lombok generate isActive
-
   @ManyToOne(fetch = FetchType.LAZY)
+  @OnDelete(action = OnDeleteAction.CASCADE)
   @JoinColumn(
-      name = "currency_id",
+      name = "user_id",
       nullable = false,
-      foreignKey = @ForeignKey(name = "fk_users_currency"))
-  @OnDelete(action = OnDeleteAction.SET_NULL)
-  private Currency currency;
+      foreignKey = @ForeignKey(name = "fk_portfolio_users"))
+  private User user;
 }
