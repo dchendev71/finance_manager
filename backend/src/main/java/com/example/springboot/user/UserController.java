@@ -30,7 +30,6 @@ public class UserController {
 
   @GetMapping("/{id}")
   public ResponseEntity<UserResponse> getProfile(@PathVariable Long id) {
-    System.out.println("Hello");
     return ResponseEntity.ok(userService.getProfile(id));
   }
 }
