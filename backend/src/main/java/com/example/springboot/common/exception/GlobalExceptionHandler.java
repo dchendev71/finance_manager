@@ -2,6 +2,7 @@ package com.example.springboot.common.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -41,6 +42,17 @@ public class GlobalExceptionHandler {
   // 401 - Invalid Credentials
   @ExceptionHandler(InvalidCredentialsException.class)
   public ResponseEntity<ErrorResponse> handleInvalidCredentials(InvalidCredentialsException e) {
+    return ErrorResponseEntityFactory.createResponseEntity(HttpStatus.UNAUTHORIZED, e);
+  }
+
+  // 404 - User Not Found
+  @ExceptionHandler(UserNotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleUserNotFound(UsernameNotFoundException e) {
+    return ErrorResponseEntityFactory.createResponseEntity(HttpStatus.NOT_FOUND, e);
+  }
+
+  @ExceptionHandler(PasswordNotMatchException.class)
+  public ResponseEntity<ErrorResponse> handlePasswordNotMatch(PasswordNotMatchException e) {
     return ErrorResponseEntityFactory.createResponseEntity(HttpStatus.UNAUTHORIZED, e);
   }
 }

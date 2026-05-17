@@ -1,13 +1,18 @@
 package com.example.springboot.user;
 
 import com.example.springboot.auth.dto.UserCreateRequest;
+import com.example.springboot.security.CustomUserPrincipal;
+import com.example.springboot.user.dto.ChangeEmailRequest;
+import com.example.springboot.user.dto.ChangePasswordRequest;
 import com.example.springboot.user.dto.UserResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,8 +33,24 @@ public class UserController {
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
   }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<UserResponse> getProfile(@PathVariable Long id) {
-    return ResponseEntity.ok(userService.getProfile(id));
+  @PostMapping("/change-password")
+  public ResponseEntity<UserResponse> changePassword(
+      @AuthenticationPrincipal CustomUserPrincipal principal,
+      @Valid @RequestBody ChangePasswordRequest request) {
+    return ResponseEntity.ok(userService.changePassword(principal.getUsername(), request));
+  }
+
+  @PutMapping("/change-email")
+  public ResponseEntity<UserResponse> changeEmail(
+      @AuthenticationPrincipal CustomUserPrincipal principal,
+      @Valid @RequestBody ChangeEmailRequest changeEmailRequest) {
+
+    return ResponseEntity.ok(userService.changeEmail(principal.getUsername(), changeEmailRequest));
+  }
+
+  @GetMapping("/profile")
+  public ResponseEntity<UserResponse> getProfile(
+      @AuthenticationPrincipal CustomUserPrincipal principal) {
+    return ResponseEntity.ok(userService.getProfile(principal.getId()));
   }
 }

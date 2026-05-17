@@ -6,9 +6,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.example.springboot.auth.dto.AuthRequest;
+import com.example.springboot.auth.dto.AuthResponse;
 import com.example.springboot.auth.dto.UserCreateRequest;
 import com.example.springboot.common.exception.CurrencyNotFoundException;
 import com.example.springboot.common.exception.EmailAlreadyExistsException;
+import com.example.springboot.common.exception.InvalidCredentialsException;
+import com.example.springboot.helper.AuthTestFactory;
 import com.example.springboot.helper.UserTestFactory;
 import com.example.springboot.security.JwtService;
 import com.example.springboot.security.SecurityConfig;
@@ -40,6 +44,7 @@ class AuthControllerTest {
   @MockitoBean private UserDetailsService userDetailsService;
 
   private String authRegisterRoute = "/api/v1/auth/register";
+  private String authLoginRoute = "/api/v1/auth/login";
 
   // ─── POST /api/v1/auth/register ─────────────────────────────────────────
 
@@ -158,9 +163,39 @@ class AuthControllerTest {
             resp -> assertTrue(resp.getResolvedException() instanceof EmailAlreadyExistsException));
   }
 
-  // @Test
-  // @DisplayName("POST /login: should return 200 with a JwtToken")
-  // void login_shouldReturn200() throws Exception {
-  // 	AuthRequest request =
-  // }
+  // Login
+
+  @Test
+  @DisplayName("POST /login: should return 200 with a JwtToken")
+  void login_shouldReturn200() throws Exception {
+    AuthRequest request = AuthTestFactory.createAuthRequest();
+    AuthResponse response = AuthTestFactory.createAuthResponse();
+    when(authService.login(request)).thenReturn(response);
+
+    mockMvc
+        .perform(
+            post(authLoginRoute)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.jwtToken").value(AuthTestFactory.testJwt));
+  }
+
+  @Test
+  @DisplayName("POST /login: should return 401 InvalidCredentialsException")
+  void login_shouldReturn401() throws Exception {
+
+    AuthRequest request = AuthTestFactory.createAuthRequest();
+    when(authService.login(request)).thenThrow(new InvalidCredentialsException());
+
+    mockMvc
+        .perform(
+            post(authLoginRoute)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().is4xxClientError())
+        .andExpect(
+            response ->
+                assertTrue(response.getResolvedException() instanceof InvalidCredentialsException));
+  }
 }

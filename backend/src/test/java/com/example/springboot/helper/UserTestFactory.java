@@ -3,6 +3,7 @@ package com.example.springboot.helper;
 import com.example.springboot.auth.dto.UserCreateRequest;
 import com.example.springboot.currency.Currency;
 import com.example.springboot.user.User;
+import com.example.springboot.user.dto.ChangePasswordRequest;
 import com.example.springboot.user.dto.UserResponse;
 
 public class UserTestFactory {
@@ -55,6 +56,14 @@ public class UserTestFactory {
         .currency(CurrencyTestFactory.createCurrencyDto())
         .createdAt(null)
         .updatedAt(null)
+        .build();
+  }
+
+  public static ChangePasswordRequest createChangePasswordRequest(String newPassword) {
+    return ChangePasswordRequest.builder()
+        .currentPassword(testPassword)
+        .newPassword(newPassword)
+        .confirmPassword(newPassword)
         .build();
   }
 }
