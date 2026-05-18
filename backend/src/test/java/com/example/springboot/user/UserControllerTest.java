@@ -1,0 +1,65 @@
+package com.example.springboot.user;
+
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.example.springboot.helper.JwtMockHelper;
+import com.example.springboot.helper.RequestHandler;
+import com.example.springboot.helper.UserTestFactory;
+import com.example.springboot.security.CustomUserDetailsService;
+import com.example.springboot.security.JwtService;
+import com.example.springboot.security.SecurityConfig;
+import com.example.springboot.user.dto.ChangePasswordRequest;
+import com.example.springboot.user.dto.UserResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
+@WebMvcTest(UserController.class)
+@Import({RequestHandler.class, SecurityConfig.class})
+public class UserControllerTest {
+
+  @Autowired private MockMvc mockMvc;
+  @Autowired private ObjectMapper objectMapper;
+
+  // Security Filter Chain
+  @MockitoBean private JwtService jwtService;
+  @MockitoBean private CustomUserDetailsService customUserDetailsService;
+  @MockitoBean private UserService userService;
+
+  private RequestHandler requestHandler;
+  // Usual Test Request, Test User and Test response
+  private UserResponse userResponse;
+  private User user;
+
+  private String userChangePasswordRoute = "/api/v1/users/change-password";
+
+  @BeforeEach
+  void setUp() {
+    this.requestHandler = new RequestHandler(mockMvc, objectMapper);
+    this.userResponse = UserTestFactory.createUserResponse();
+    this.user = UserTestFactory.createUser();
+  }
+
+  // private String userChangeEmailRoute = "/api/v1/users/change-email";
+
+  @Test
+  @DisplayName("POST /change-password should return 200")
+  void changePassword_shouldReturn200() throws Exception {
+    ChangePasswordRequest request = UserTestFactory.createChangePasswordRequest("newPassword");
+
+    JwtMockHelper.mockAuthorization(user, jwtService, customUserDetailsService);
+
+    when(userService.changePassword(UserTestFactory.testEmail, request)).thenReturn(userResponse);
+
+    requestHandler
+        .performAuthorizedPost(userChangePasswordRoute, request)
+        .andExpect(status().isOk());
+  }
+}
