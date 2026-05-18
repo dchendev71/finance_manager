@@ -5,12 +5,14 @@ import com.example.springboot.currency.Currency;
 import com.example.springboot.currency.mapper.CurrencyMapper;
 import com.example.springboot.user.User;
 import com.example.springboot.user.dto.UserResponse;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(
     componentModel = "spring",
-    uses = {CurrencyMapper.class})
+    uses = {CurrencyMapper.class},
+    injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface UserMapper {
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "createdAt", ignore = true)

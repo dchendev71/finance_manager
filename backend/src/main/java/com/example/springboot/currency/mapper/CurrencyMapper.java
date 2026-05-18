@@ -8,6 +8,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface CurrencyMapper {
+
   CurrencyDto toDto(Currency currency);
 
   @Mapping(target = "createdAt", ignore = true)
