@@ -3,6 +3,7 @@ package com.example.springboot.helper;
 import com.example.springboot.auth.dto.UserCreateRequest;
 import com.example.springboot.currency.Currency;
 import com.example.springboot.user.User;
+import com.example.springboot.user.dto.ChangeEmailRequest;
 import com.example.springboot.user.dto.ChangePasswordRequest;
 import com.example.springboot.user.dto.UserResponse;
 
@@ -65,5 +66,9 @@ public class UserTestFactory {
         .newPassword(newPassword)
         .confirmPassword(newPassword)
         .build();
+  }
+
+  public static ChangeEmailRequest createChangeEmailRequest(String newEmail) {
+    return ChangeEmailRequest.builder().currentPassword(testPassword).newEmail(newEmail).build();
   }
 }
