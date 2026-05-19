@@ -154,18 +154,29 @@ class UserIntegrationTest {
     }
 
     @Test
-    @DisplayName("delete user should prevent login and return 4xx")
+    @DisplayName("delete user should not be able to call authorized route and return 4xx")
     void deleteUser_preventLogin() throws Exception {
       requestHandler.performAuthorizedRequest(
           ApiRoutes.Users.DELETE, null, HttpMethod.DELETE, jwtToken);
 
-      // Should not be able to change password
+      // Should not be able to call authorized route
       requestHandler
           .performAuthorizedRequest(
               ApiRoutes.Users.CHANGE_PASSWORD,
               UserTestFactory.createChangePasswordRequest("newPassword"),
               HttpMethod.POST,
               jwtToken)
+          .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @DisplayName("Deleted user should not be able to get back a jwt Token")
+    void deletedUser_shouldNotGetJwtToken() throws Exception {
+      requestHandler.performAuthorizedRequest(
+          ApiRoutes.Users.DELETE, null, HttpMethod.DELETE, jwtToken);
+
+      requestHandler
+          .performPost(ApiRoutes.Auth.LOGIN, AuthTestFactory.createAuthRequest())
           .andExpect(status().is4xxClientError());
     }
   }
