@@ -15,4 +15,9 @@ public interface ApiRoutes {
     String CHANGE_EMAIL = BASE + "/change-email";
     String DELETE = BASE + "/delete";
   }
+
+  interface Portfolio {
+    String BASE = VERSION + "/portfolio";
+    String CREATE_PORTFOLIO = BASE + "/create-portfolio";
+  }
 }
