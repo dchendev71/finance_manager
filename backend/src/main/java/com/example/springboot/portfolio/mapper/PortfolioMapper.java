@@ -16,9 +16,11 @@ public interface PortfolioMapper {
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "updatedAt", ignore = true)
-  @Mapping(target = "name", source = "portfolioName")
+  @Mapping(target = "name", source = "name")
   @Mapping(target = "user", source = "user")
-  Portfolio toEntity(User user, String portfolioName);
+  Portfolio toEntity(User user, String name);
 
+  @Mapping(target = "user", source = "portfolio.user")
+  @Mapping(target = "portfolioName", source = "portfolio.name")
   PortfolioResponse toResponse(Portfolio portfolio);
 }
