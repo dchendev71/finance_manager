@@ -12,6 +12,8 @@ import com.example.springboot.helper.JwtMockHelper;
 import com.example.springboot.helper.RequestHandler;
 import com.example.springboot.helper.UserTestFactory;
 import com.example.springboot.security.CustomUserDetailsService;
+import com.example.springboot.security.JwtAccessDeniedHandler;
+import com.example.springboot.security.JwtAuthenticationEntryPoint;
 import com.example.springboot.security.JwtService;
 import com.example.springboot.security.SecurityConfig;
 import com.example.springboot.user.dto.ChangeEmailRequest;
@@ -36,6 +38,8 @@ public class UserControllerTest {
   @Autowired private ObjectMapper objectMapper;
   // Security Filter Chain
   @MockitoBean private JwtService jwtService;
+  @MockitoBean private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+  @MockitoBean private JwtAccessDeniedHandler jwtAccessDeniedHandler;
   @MockitoBean private CustomUserDetailsService customUserDetailsService;
   @MockitoBean private UserService userService;
 

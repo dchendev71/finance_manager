@@ -1,10 +1,10 @@
 package com.example.springboot.security;
 
+import com.example.springboot.common.exception.AccountDeletedException;
 import com.example.springboot.user.User;
 import com.example.springboot.user.UserRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,7 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     if (!user.get().getActive()) {
-      throw new DisabledException("This account has been deleted");
+      throw new AccountDeletedException();
     }
     return new CustomUserPrincipal(user.get());
   }

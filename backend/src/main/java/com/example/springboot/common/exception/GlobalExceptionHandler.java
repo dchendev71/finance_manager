@@ -2,6 +2,8 @@ package com.example.springboot.common.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -53,6 +55,11 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(PasswordNotMatchException.class)
   public ResponseEntity<ErrorResponse> handlePasswordNotMatch(PasswordNotMatchException e) {
+    return ErrorResponseEntityFactory.createResponseEntity(HttpStatus.UNAUTHORIZED, e);
+  }
+
+  @ExceptionHandler({DisabledException.class, InternalAuthenticationServiceException.class})
+  public ResponseEntity<ErrorResponse> handleDisabledException(DisabledException e) {
     return ErrorResponseEntityFactory.createResponseEntity(HttpStatus.UNAUTHORIZED, e);
   }
 }

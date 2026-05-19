@@ -16,6 +16,8 @@ import com.example.springboot.helper.AuthTestFactory;
 import com.example.springboot.helper.RequestHandler;
 import com.example.springboot.helper.UserTestFactory;
 import com.example.springboot.security.CustomUserDetailsService;
+import com.example.springboot.security.JwtAccessDeniedHandler;
+import com.example.springboot.security.JwtAuthenticationEntryPoint;
 import com.example.springboot.security.JwtService;
 import com.example.springboot.security.SecurityConfig;
 import com.example.springboot.user.dto.UserResponse;
@@ -39,6 +41,8 @@ class AuthControllerTest {
 
   @MockitoBean private AuthService authService;
   @MockitoBean private JwtService jwtService;
+  @MockitoBean private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+  @MockitoBean private JwtAccessDeniedHandler jwtAccessDeniedHandler;
   @MockitoBean private CustomUserDetailsService customUserDetailsService;
 
   private RequestHandler requestHandler;

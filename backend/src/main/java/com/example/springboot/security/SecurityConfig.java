@@ -20,12 +20,19 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+  private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+  private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
   private final JwtAuthenticationFilter jwtAuthFilter;
   private final UserDetailsService userDetailsService;
 
   @Autowired
   public SecurityConfig(
-      JwtAuthenticationFilter jwtAuthFilter, UserDetailsService userDetailsService) {
+      JwtAccessDeniedHandler jwtAccessDeniedHandler,
+      JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
+      JwtAuthenticationFilter jwtAuthFilter,
+      UserDetailsService userDetailsService) {
+    this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
+    this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
     this.jwtAuthFilter = jwtAuthFilter;
     this.userDetailsService = userDetailsService;
   }
@@ -43,6 +50,10 @@ public class SecurityConfig {
                     .permitAll()
                     .anyRequest()
                     .authenticated())
+        .exceptionHandling(
+            ex ->
+                ex.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                    .accessDeniedHandler(jwtAccessDeniedHandler))
         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
