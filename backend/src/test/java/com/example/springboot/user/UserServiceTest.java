@@ -154,4 +154,27 @@ class UserServiceTest {
     // Assert the managed entity's state was actually updated
     assertThat(user.getEmail()).isEqualTo(newEmail);
   }
+
+  @Test
+  @DisplayName("deleteUser: should successfully soft-delete user by setting active to false")
+  void deleteUser_shouldSoftDeleteUser_whenUserExists() {
+    // Given
+    String email = UserTestFactory.testEmail;
+    User user = UserTestFactory.createUser();
+    user.setActive(true); // Ensure initial state is explicitly active
+
+    // Stubbing dependencies
+    when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+    when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+    // When
+    userService.deleteUser(email);
+
+    // Then
+    verify(userRepository).findByEmail(email);
+    verify(userRepository).save(user);
+
+    // Assert that the entity state was altered to false (Soft-Deletion verification)
+    assertThat(user.getActive()).isFalse();
+  }
 }

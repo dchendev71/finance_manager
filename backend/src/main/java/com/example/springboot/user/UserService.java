@@ -96,4 +96,14 @@ public class UserService {
     System.out.println("GetProfile");
     return userMapper.toResponse(user);
   }
+
+  @Transactional
+  public void deleteUser(String email) {
+    // Check if user still exists
+    User user =
+        userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
+    user.setActive(false);
+
+    userRepository.save(user);
+  }
 }
