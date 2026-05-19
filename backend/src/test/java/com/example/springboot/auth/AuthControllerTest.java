@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.example.springboot.auth.dto.AuthRequest;
 import com.example.springboot.auth.dto.AuthResponse;
 import com.example.springboot.auth.dto.UserCreateRequest;
+import com.example.springboot.common.config.ApiRoutes;
 import com.example.springboot.common.exception.CurrencyNotFoundException;
 import com.example.springboot.common.exception.EmailAlreadyExistsException;
 import com.example.springboot.common.exception.InvalidCredentialsException;
@@ -40,9 +41,6 @@ class AuthControllerTest {
   @MockitoBean private JwtService jwtService;
   @MockitoBean private CustomUserDetailsService customUserDetailsService;
 
-  private String authRegisterRoute = "/api/v1/auth/register";
-  private String authLoginRoute = "/api/v1/auth/login";
-
   private RequestHandler requestHandler;
   // Standard /register test variable
   private UserCreateRequest userCreateRequest;
@@ -69,7 +67,7 @@ class AuthControllerTest {
     when(authService.register(userCreateRequest)).thenReturn(userResponse);
 
     requestHandler
-        .performPost(authRegisterRoute, userCreateRequest)
+        .performPost(ApiRoutes.Auth.REGISTER, userCreateRequest)
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id").value(UserTestFactory.testId))
         .andExpect(jsonPath("$.email").value(UserTestFactory.testEmail))
@@ -83,7 +81,7 @@ class AuthControllerTest {
     UserCreateRequest request =
         UserTestFactory.createUserRequest("not-an-email", "password123", "USD");
     requestHandler
-        .performPost(authRegisterRoute, request)
+        .performPost(ApiRoutes.Auth.REGISTER, request)
         .andExpect(status().isBadRequest())
         .andExpect(
             response ->
@@ -99,7 +97,7 @@ class AuthControllerTest {
         UserTestFactory.createUserRequest("john@example.com", "short", "USD");
     // When / Then
     requestHandler
-        .performPost(authRegisterRoute, request)
+        .performPost(ApiRoutes.Auth.REGISTER, request)
         .andExpect(status().isBadRequest())
         .andExpect(
             response ->
@@ -114,7 +112,7 @@ class AuthControllerTest {
     UserCreateRequest request =
         UserTestFactory.createUserRequest("john@example.com", "password123", "usd");
     requestHandler
-        .performPost(authRegisterRoute, request)
+        .performPost(ApiRoutes.Auth.REGISTER, request)
         .andExpect(status().isBadRequest())
         .andExpect(
             response ->
@@ -131,7 +129,7 @@ class AuthControllerTest {
         .thenThrow(new CurrencyNotFoundException(request.currencyCode()));
 
     requestHandler
-        .performPost(authRegisterRoute, request)
+        .performPost(ApiRoutes.Auth.REGISTER, request)
         .andExpect(status().isBadRequest())
         .andExpect(
             response ->
@@ -144,7 +142,7 @@ class AuthControllerTest {
     when(authService.register(userCreateRequest))
         .thenThrow(new EmailAlreadyExistsException(userCreateRequest.email()));
     requestHandler
-        .performPost(authRegisterRoute, userCreateRequest)
+        .performPost(ApiRoutes.Auth.REGISTER, userCreateRequest)
         .andExpect(status().isConflict())
         .andExpect(
             resp -> assertTrue(resp.getResolvedException() instanceof EmailAlreadyExistsException));
@@ -157,7 +155,7 @@ class AuthControllerTest {
   void login_shouldReturn200() throws Exception {
     when(authService.login(authRequest)).thenReturn(authResponse);
     requestHandler
-        .performPost(authLoginRoute, authRequest)
+        .performPost(ApiRoutes.Auth.LOGIN, authRequest)
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.jwtToken").value(AuthTestFactory.testJwt));
   }
@@ -169,7 +167,7 @@ class AuthControllerTest {
     when(authService.login(authRequest)).thenThrow(new InvalidCredentialsException());
 
     requestHandler
-        .performPost(authLoginRoute, authRequest)
+        .performPost(ApiRoutes.Auth.LOGIN, authRequest)
         .andExpect(status().is4xxClientError())
         .andExpect(
             response ->

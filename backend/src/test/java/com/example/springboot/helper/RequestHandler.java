@@ -56,4 +56,15 @@ public class RequestHandler {
             .content(objectMapper.writeValueAsString(request))
             .header("Authorization", "Bearer " + JwtMockHelper.mockToken));
   }
+
+  public ResultActions performAuthorizedRequest(
+      String route, Object request, HttpMethod httpMethod, String jwtToken) throws Exception {
+    return mockMvc.perform(
+        buildRequest(httpMethod, route)
+            .with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request))
+            .accept(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + jwtToken));
+  }
 }

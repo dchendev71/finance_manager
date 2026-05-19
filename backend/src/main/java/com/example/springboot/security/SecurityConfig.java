@@ -1,5 +1,6 @@
 package com.example.springboot.security;
 
+import com.example.springboot.common.config.ApiRoutes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,7 +38,11 @@ public class SecurityConfig {
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(
             request ->
-                request.requestMatchers("/api/v1/auth/**").permitAll().anyRequest().authenticated())
+                request
+                    .requestMatchers(ApiRoutes.Auth.REGISTER, ApiRoutes.Auth.LOGIN)
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
     return http.build();

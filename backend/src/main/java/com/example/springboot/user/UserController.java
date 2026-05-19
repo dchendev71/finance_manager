@@ -1,6 +1,7 @@
 package com.example.springboot.user;
 
 import com.example.springboot.auth.dto.UserCreateRequest;
+import com.example.springboot.common.config.ApiRoutes;
 import com.example.springboot.security.CustomUserPrincipal;
 import com.example.springboot.user.dto.ChangeEmailRequest;
 import com.example.springboot.user.dto.ChangePasswordRequest;
@@ -15,11 +16,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/users")
 public class UserController {
   private final UserService userService;
 
@@ -34,14 +33,14 @@ public class UserController {
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
   }
 
-  @PostMapping("/change-password")
+  @PostMapping(ApiRoutes.Users.CHANGE_PASSWORD)
   public ResponseEntity<UserResponse> changePassword(
       @AuthenticationPrincipal CustomUserPrincipal principal,
       @Valid @RequestBody ChangePasswordRequest request) {
     return ResponseEntity.ok(userService.changePassword(principal.getUsername(), request));
   }
 
-  @PutMapping("/change-email")
+  @PutMapping(ApiRoutes.Users.CHANGE_EMAIL)
   public ResponseEntity<UserResponse> changeEmail(
       @AuthenticationPrincipal CustomUserPrincipal principal,
       @Valid @RequestBody ChangeEmailRequest changeEmailRequest) {
@@ -49,7 +48,7 @@ public class UserController {
     return ResponseEntity.ok(userService.changeEmail(principal.getUsername(), changeEmailRequest));
   }
 
-  @DeleteMapping("/delete")
+  @DeleteMapping(ApiRoutes.Users.DELETE)
   public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal CustomUserPrincipal principal) {
     userService.deleteUser(principal.getUsername());
     return ResponseEntity.noContent().build();

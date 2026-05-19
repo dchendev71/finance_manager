@@ -5,6 +5,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.example.springboot.common.config.ApiRoutes;
 import com.example.springboot.common.exception.EmailAlreadyExistsException;
 import com.example.springboot.common.exception.InvalidCredentialsException;
 import com.example.springboot.helper.JwtMockHelper;
@@ -43,9 +44,6 @@ public class UserControllerTest {
   private UserResponse userResponse;
   private User user;
 
-  private String userChangePasswordRoute = "/api/v1/users/change-password";
-  private String userChangeEmailRoute = "/api/v1/users/change-email";
-
   @BeforeEach
   void setUp() {
     this.requestHandler = new RequestHandler(mockMvc, objectMapper);
@@ -63,7 +61,7 @@ public class UserControllerTest {
     when(userService.changePassword(UserTestFactory.testEmail, request)).thenReturn(userResponse);
 
     requestHandler
-        .performAuthorizedRequest(userChangePasswordRoute, request, HttpMethod.POST)
+        .performAuthorizedRequest(ApiRoutes.Users.CHANGE_PASSWORD, request, HttpMethod.POST)
         .andExpect(status().isOk());
     verify(userService).changePassword(UserTestFactory.testEmail, request);
   }
@@ -79,7 +77,7 @@ public class UserControllerTest {
         .changePassword(UserTestFactory.testEmail, request);
 
     requestHandler
-        .performAuthorizedRequest(userChangePasswordRoute, request, HttpMethod.POST)
+        .performAuthorizedRequest(ApiRoutes.Users.CHANGE_PASSWORD, request, HttpMethod.POST)
         .andExpect(status().isUnauthorized());
   }
 
@@ -91,7 +89,7 @@ public class UserControllerTest {
     when(userService.changeEmail(UserTestFactory.testEmail, request)).thenReturn(userResponse);
 
     requestHandler
-        .performAuthorizedRequest(userChangeEmailRoute, request, HttpMethod.PUT)
+        .performAuthorizedRequest(ApiRoutes.Users.CHANGE_EMAIL, request, HttpMethod.PUT)
         .andExpect(status().isOk());
   }
 
@@ -104,7 +102,7 @@ public class UserControllerTest {
         .when(userService)
         .changeEmail(UserTestFactory.testEmail, request);
     requestHandler
-        .performAuthorizedRequest(userChangeEmailRoute, request, HttpMethod.PUT)
+        .performAuthorizedRequest(ApiRoutes.Users.CHANGE_EMAIL, request, HttpMethod.PUT)
         .andExpect(status().isConflict());
   }
 }
