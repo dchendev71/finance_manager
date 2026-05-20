@@ -18,6 +18,12 @@ public class GlobalExceptionHandler {
     return ErrorResponseEntityFactory.createResponseEntity(HttpStatus.CONFLICT, e);
   }
 
+  // 409 - Portfolio already exists
+  @ExceptionHandler(PortfolioExistsException.class)
+  public ResponseEntity<ErrorResponse> handlePortfolioExists(PortfolioExistsException e) {
+    return ErrorResponseEntityFactory.createResponseEntity(HttpStatus.CONFLICT, e);
+  }
+
   // 404 - Ressource Not Found
   @ExceptionHandler(RuntimeException.class)
   public ResponseEntity<ErrorResponse> handleNotFound(RuntimeException e) {
@@ -53,11 +59,13 @@ public class GlobalExceptionHandler {
     return ErrorResponseEntityFactory.createResponseEntity(HttpStatus.NOT_FOUND, e);
   }
 
+  // 401 - Unauthorized
   @ExceptionHandler(PasswordNotMatchException.class)
   public ResponseEntity<ErrorResponse> handlePasswordNotMatch(PasswordNotMatchException e) {
     return ErrorResponseEntityFactory.createResponseEntity(HttpStatus.UNAUTHORIZED, e);
   }
 
+  // 401 - Unauthorized
   @ExceptionHandler({DisabledException.class, InternalAuthenticationServiceException.class})
   public ResponseEntity<ErrorResponse> handleDisabledException(DisabledException e) {
     return ErrorResponseEntityFactory.createResponseEntity(HttpStatus.UNAUTHORIZED, e);

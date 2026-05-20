@@ -9,12 +9,12 @@ import com.example.springboot.common.config.ApiRoutes;
 import com.example.springboot.common.exception.EmailAlreadyExistsException;
 import com.example.springboot.common.exception.InvalidCredentialsException;
 import com.example.springboot.helper.AuthTestFactory;
+import com.example.springboot.helper.HelpSetup;
 import com.example.springboot.helper.RequestHandler;
 import com.example.springboot.helper.UserTestFactory;
 import com.example.springboot.user.dto.ChangeEmailRequest;
 import com.example.springboot.user.dto.ChangePasswordRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -24,7 +24,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -42,14 +41,8 @@ class UserIntegrationTest {
     userRepository.deleteAll();
     requestHandler = new RequestHandler(mockMvc, objectMapper);
 
-    requestHandler.performPost(ApiRoutes.Auth.REGISTER, UserTestFactory.createUserRequest());
-    MvcResult result =
-        requestHandler
-            .performPost(ApiRoutes.Auth.LOGIN, AuthTestFactory.createAuthRequest())
-            .andExpect(status().isOk())
-            .andReturn();
-    String response = result.getResponse().getContentAsString();
-    jwtToken = JsonPath.read(response, "$.jwtToken");
+    HelpSetup helper = new HelpSetup(mockMvc, objectMapper);
+    jwtToken = helper.registerUserAndLogin(UserTestFactory.testEmail);
   }
 
   @Nested

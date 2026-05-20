@@ -1,5 +1,7 @@
 package com.example.springboot.portfolio.dto;
 
-import com.example.springboot.user.User;
+import com.example.springboot.user.dto.UserResponse;
+import lombok.Builder;
 
-public record PortfolioResponse(String portfolioName, User user) {}
+@Builder
+public record PortfolioResponse(String portfolioName, UserResponse userResponse) {}

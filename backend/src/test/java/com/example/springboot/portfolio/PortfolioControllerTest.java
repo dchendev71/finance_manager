@@ -61,6 +61,6 @@ public class PortfolioControllerTest {
             ApiRoutes.Portfolio.CREATE_PORTFOLIO,
             PortfolioTestFactory.portfolioName,
             HttpMethod.POST)
-        .andExpect(status().isOk());
+        .andExpect(status().isCreated());
   }
 }

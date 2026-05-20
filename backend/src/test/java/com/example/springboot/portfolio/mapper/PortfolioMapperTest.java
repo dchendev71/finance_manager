@@ -40,6 +40,6 @@ class PortfolioMapperTest {
     PortfolioResponse response = portfolioMapper.toResponse(portfolio);
     assertThat(response).isNotNull();
     assertThat(response.portfolioName()).isEqualTo(PortfolioTestFactory.portfolioName);
-    assertThat(response.user().getEmail()).isEqualTo(UserTestFactory.testEmail);
+    assertThat(response.userResponse().email()).isEqualTo(UserTestFactory.testEmail);
   }
 }

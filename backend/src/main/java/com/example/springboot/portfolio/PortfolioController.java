@@ -4,6 +4,7 @@ import com.example.springboot.common.config.ApiRoutes;
 import com.example.springboot.portfolio.dto.PortfolioResponse;
 import com.example.springboot.security.CustomUserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +23,7 @@ public class PortfolioController {
   @PostMapping(path = ApiRoutes.Portfolio.CREATE_PORTFOLIO)
   public ResponseEntity<PortfolioResponse> createPortfolio(
       @AuthenticationPrincipal CustomUserPrincipal principal, @RequestBody String name) {
-    return ResponseEntity.ok(portfolioService.createPortfolio(principal.getUsername(), name));
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(portfolioService.createPortfolio(principal.getUsername(), name));
   }
 }
