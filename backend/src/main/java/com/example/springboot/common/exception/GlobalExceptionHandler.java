@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -12,28 +11,22 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-  // 409 - Email already exists
-  @ExceptionHandler(EmailAlreadyExistsException.class)
-  public ResponseEntity<ErrorResponse> handleEmailAlreadyExists(EmailAlreadyExistsException e) {
+  // 409
+  @ExceptionHandler(ExistsException.class)
+  public ResponseEntity<ErrorResponse> handleExistsException(ExistsException e) {
     return ErrorResponseEntityFactory.createResponseEntity(HttpStatus.CONFLICT, e);
   }
 
-  // 409 - Portfolio already exists
-  @ExceptionHandler(PortfolioExistsException.class)
-  public ResponseEntity<ErrorResponse> handlePortfolioExists(PortfolioExistsException e) {
-    return ErrorResponseEntityFactory.createResponseEntity(HttpStatus.CONFLICT, e);
+  // 400
+  @ExceptionHandler(NotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException e) {
+    return ErrorResponseEntityFactory.createResponseEntity(HttpStatus.BAD_REQUEST, e);
   }
 
   // 404 - Ressource Not Found
   @ExceptionHandler(RuntimeException.class)
   public ResponseEntity<ErrorResponse> handleNotFound(RuntimeException e) {
     return ErrorResponseEntityFactory.createResponseEntity(HttpStatus.NOT_FOUND, e);
-  }
-
-  // 400 - CurrencyNotFound
-  @ExceptionHandler(CurrencyNotFoundException.class)
-  public ResponseEntity<ErrorResponse> handleCurrencyNotFound(CurrencyNotFoundException e) {
-    return ErrorResponseEntityFactory.createResponseEntity(HttpStatus.BAD_REQUEST, e);
   }
 
   // 400 - Validation Failed
@@ -51,12 +44,6 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(InvalidCredentialsException.class)
   public ResponseEntity<ErrorResponse> handleInvalidCredentials(InvalidCredentialsException e) {
     return ErrorResponseEntityFactory.createResponseEntity(HttpStatus.UNAUTHORIZED, e);
-  }
-
-  // 404 - User Not Found
-  @ExceptionHandler(UserNotFoundException.class)
-  public ResponseEntity<ErrorResponse> handleUserNotFound(UsernameNotFoundException e) {
-    return ErrorResponseEntityFactory.createResponseEntity(HttpStatus.NOT_FOUND, e);
   }
 
   // 401 - Unauthorized

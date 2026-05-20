@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.example.springboot.common.config.ApiRoutes;
-import com.example.springboot.common.exception.PortfolioExistsException;
+import com.example.springboot.common.exception.ExistsException;
 import com.example.springboot.helper.HelpSetup;
 import com.example.springboot.helper.PortfolioTestFactory;
 import com.example.springboot.helper.RequestHandler;
@@ -68,8 +68,7 @@ class PortfolioIntegrationTest {
               HttpMethod.POST,
               jwtToken)
           .andExpect(status().is4xxClientError())
-          .andExpect(
-              resp -> assertTrue(resp.getResolvedException() instanceof PortfolioExistsException));
+          .andExpect(resp -> assertTrue(resp.getResolvedException() instanceof ExistsException));
     }
   }
 }

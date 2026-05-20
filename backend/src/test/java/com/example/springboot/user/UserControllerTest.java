@@ -6,7 +6,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.example.springboot.common.config.ApiRoutes;
-import com.example.springboot.common.exception.EmailAlreadyExistsException;
+import com.example.springboot.common.exception.ExistsException;
 import com.example.springboot.common.exception.InvalidCredentialsException;
 import com.example.springboot.helper.JwtMockHelper;
 import com.example.springboot.helper.RequestHandler;
@@ -102,7 +102,7 @@ public class UserControllerTest {
   void changeEmail_shouldReturn409() throws Exception {
     ChangeEmailRequest request = UserTestFactory.createChangeEmailRequest("newtest@gmail.com");
 
-    doThrow(new EmailAlreadyExistsException(request.newEmail()))
+    doThrow(new ExistsException(User.class, request.newEmail()))
         .when(userService)
         .changeEmail(UserTestFactory.testEmail, request);
     requestHandler

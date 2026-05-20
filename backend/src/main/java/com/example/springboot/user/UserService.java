@@ -1,9 +1,9 @@
 package com.example.springboot.user;
 
 import com.example.springboot.auth.dto.UserCreateRequest;
-import com.example.springboot.common.exception.EmailAlreadyExistsException;
+import com.example.springboot.common.exception.ExistsException;
 import com.example.springboot.common.exception.InvalidCredentialsException;
-import com.example.springboot.common.exception.UserNotFoundException;
+import com.example.springboot.common.exception.NotFoundException;
 import com.example.springboot.currency.Currency;
 import com.example.springboot.currency.CurrencyService;
 import com.example.springboot.user.dto.ChangeEmailRequest;
@@ -38,7 +38,7 @@ public class UserService {
   public UserResponse registerNewUser(UserCreateRequest request) {
     // Check if user already exists
     if (userRepository.findByEmail(request.email()).isPresent()) {
-      throw new EmailAlreadyExistsException(request.email());
+      throw new ExistsException(User.class, request.email());
     }
 
     Currency currency = currencyService.findByCode(request.currencyCode());
@@ -55,20 +55,20 @@ public class UserService {
   public UserResponse changeEmail(String currentEmail, ChangeEmailRequest changeEmailRequest) {
     // Check if email is the same
     if (currentEmail.equalsIgnoreCase(changeEmailRequest.newEmail())) {
-      throw new EmailAlreadyExistsException(currentEmail);
+      throw new ExistsException(User.class, currentEmail);
     }
     // Check if user still exists
     User user =
         userRepository
             .findByEmail(currentEmail)
-            .orElseThrow(() -> new UserNotFoundException(currentEmail));
+            .orElseThrow(() -> new NotFoundException(User.class, currentEmail));
     // Verify that the passwords matches
     if (!passwordEncoder.matches(changeEmailRequest.currentPassword(), user.getPassword())) {
       throw new InvalidCredentialsException();
     }
     // Check if email already taken
     if (userRepository.findByEmail(changeEmailRequest.newEmail()).isPresent()) {
-      throw new EmailAlreadyExistsException(changeEmailRequest.newEmail());
+      throw new ExistsException(User.class, changeEmailRequest.newEmail());
     }
     // Set the email
     user.setEmail(changeEmailRequest.newEmail());
@@ -80,7 +80,9 @@ public class UserService {
   public UserResponse changePassword(String email, ChangePasswordRequest request) {
     // Check if user still exists
     User user =
-        userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
+        userRepository
+            .findByEmail(email)
+            .orElseThrow(() -> new NotFoundException(User.class, email));
     // If current password doesn't match
     if (!passwordEncoder.matches(request.currentPassword(), user.getPassword())) {
       throw new InvalidCredentialsException();
@@ -101,7 +103,9 @@ public class UserService {
   public void deleteUser(String email) {
     // Check if user still exists
     User user =
-        userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
+        userRepository
+            .findByEmail(email)
+            .orElseThrow(() -> new NotFoundException(User.class, email));
     user.setActive(false);
 
     userRepository.save(user);

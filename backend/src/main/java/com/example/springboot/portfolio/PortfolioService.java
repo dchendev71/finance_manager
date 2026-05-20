@@ -1,7 +1,7 @@
 package com.example.springboot.portfolio;
 
-import com.example.springboot.common.exception.PortfolioExistsException;
-import com.example.springboot.common.exception.UserNotFoundException;
+import com.example.springboot.common.exception.ExistsException;
+import com.example.springboot.common.exception.NotFoundException;
 import com.example.springboot.portfolio.dto.PortfolioResponse;
 import com.example.springboot.portfolio.mapper.PortfolioMapper;
 import com.example.springboot.user.User;
@@ -29,9 +29,9 @@ public class PortfolioService {
     User user =
         userRepository
             .findByEmail(userEmail)
-            .orElseThrow(() -> new UserNotFoundException(userEmail));
+            .orElseThrow(() -> new NotFoundException(User.class, userEmail));
     if (portfolioRepository.findByUserIdAndName(user.getId(), portfolioName).isPresent()) {
-      throw new PortfolioExistsException(portfolioName);
+      throw new ExistsException(Portfolio.class, portfolioName);
     }
     return portfolioMapper.toResponse(
         portfolioRepository.save(portfolioMapper.toEntity(user, portfolioName)));

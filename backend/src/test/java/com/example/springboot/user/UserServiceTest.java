@@ -10,7 +10,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.example.springboot.auth.dto.UserCreateRequest;
-import com.example.springboot.common.exception.EmailAlreadyExistsException;
+import com.example.springboot.common.exception.ExistsException;
 import com.example.springboot.currency.Currency;
 import com.example.springboot.currency.CurrencyService;
 import com.example.springboot.currency.mapper.CurrencyMapper;
@@ -106,7 +106,7 @@ class UserServiceTest {
         .thenReturn(Optional.of(UserTestFactory.createUser()));
 
     assertThatThrownBy(() -> userService.registerNewUser(userCreateRequest))
-        .isInstanceOf(EmailAlreadyExistsException.class)
+        .isInstanceOf(ExistsException.class)
         .hasMessageContaining(UserTestFactory.testEmail);
 
     verify(userRepository, never()).save(any());

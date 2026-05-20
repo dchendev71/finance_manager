@@ -6,7 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.example.springboot.auth.dto.UserCreateRequest;
 import com.example.springboot.common.config.ApiRoutes;
-import com.example.springboot.common.exception.EmailAlreadyExistsException;
+import com.example.springboot.common.exception.ExistsException;
 import com.example.springboot.common.exception.InvalidCredentialsException;
 import com.example.springboot.helper.AuthTestFactory;
 import com.example.springboot.helper.HelpSetup;
@@ -130,9 +130,7 @@ class UserIntegrationTest {
       requestHandler
           .performAuthorizedRequest(ApiRoutes.Users.CHANGE_EMAIL, request, HttpMethod.PUT, jwtToken)
           .andExpect(status().is4xxClientError())
-          .andExpect(
-              resp ->
-                  assertTrue(resp.getResolvedException() instanceof EmailAlreadyExistsException));
+          .andExpect(resp -> assertTrue(resp.getResolvedException() instanceof ExistsException));
     }
   }
 

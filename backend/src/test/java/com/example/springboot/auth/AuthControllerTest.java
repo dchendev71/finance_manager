@@ -9,9 +9,10 @@ import com.example.springboot.auth.dto.AuthRequest;
 import com.example.springboot.auth.dto.AuthResponse;
 import com.example.springboot.auth.dto.UserCreateRequest;
 import com.example.springboot.common.config.ApiRoutes;
-import com.example.springboot.common.exception.CurrencyNotFoundException;
-import com.example.springboot.common.exception.EmailAlreadyExistsException;
+import com.example.springboot.common.exception.ExistsException;
 import com.example.springboot.common.exception.InvalidCredentialsException;
+import com.example.springboot.common.exception.NotFoundException;
+import com.example.springboot.currency.Currency;
 import com.example.springboot.helper.AuthTestFactory;
 import com.example.springboot.helper.RequestHandler;
 import com.example.springboot.helper.UserTestFactory;
@@ -20,6 +21,7 @@ import com.example.springboot.security.JwtAccessDeniedHandler;
 import com.example.springboot.security.JwtAuthenticationEntryPoint;
 import com.example.springboot.security.JwtService;
 import com.example.springboot.security.SecurityConfig;
+import com.example.springboot.user.User;
 import com.example.springboot.user.dto.UserResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -130,26 +132,24 @@ class AuthControllerTest {
     UserCreateRequest request =
         UserTestFactory.createUserRequest("john@example.com", "password123", "XYZ");
     when(authService.register(request))
-        .thenThrow(new CurrencyNotFoundException(request.currencyCode()));
+        .thenThrow(new NotFoundException(Currency.class, request.currencyCode()));
 
     requestHandler
         .performPost(ApiRoutes.Auth.REGISTER, request)
         .andExpect(status().isBadRequest())
         .andExpect(
-            response ->
-                assertTrue(response.getResolvedException() instanceof CurrencyNotFoundException));
+            response -> assertTrue(response.getResolvedException() instanceof NotFoundException));
   }
 
   @Test
   @DisplayName("POST /register: should return 409 when email already used")
   void register_shouldReturn409_whenEmailAlreadyExists() throws Exception {
     when(authService.register(userCreateRequest))
-        .thenThrow(new EmailAlreadyExistsException(userCreateRequest.email()));
+        .thenThrow(new ExistsException(User.class, userCreateRequest.email()));
     requestHandler
         .performPost(ApiRoutes.Auth.REGISTER, userCreateRequest)
         .andExpect(status().isConflict())
-        .andExpect(
-            resp -> assertTrue(resp.getResolvedException() instanceof EmailAlreadyExistsException));
+        .andExpect(resp -> assertTrue(resp.getResolvedException() instanceof ExistsException));
   }
 
   // Login

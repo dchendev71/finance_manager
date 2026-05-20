@@ -4,5 +4,5 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PortfolioAssetRepository extends JpaRepository<PortfolioAsset, Long> {
-  Optional<PortfolioAsset> findByAssetIdAndPortfolioId(Long assetId, Long portfolioId);
+  Optional<PortfolioAsset> findByAssetNameAndPortfolioId(String assetName, Long portfolioId);
 }
