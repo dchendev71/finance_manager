@@ -5,6 +5,7 @@ import com.example.springboot.portfolio.asset.Asset;
 import com.example.springboot.portfolio.asset.mapper.AssetMapper;
 import com.example.springboot.portfolio.mapper.PortfolioMapper;
 import com.example.springboot.portfolio.portfolio_asset.PortfolioAsset;
+import com.example.springboot.portfolio.portfolio_asset.dto.PortfolioAssetResponse;
 import java.math.BigDecimal;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -17,4 +18,8 @@ import org.mapstruct.Mapping;
 public interface PortfolioAssetMapper {
   @Mapping(target = "id", ignore = true)
   PortfolioAsset toEntity(Portfolio portfolio, Asset asset, BigDecimal quantity);
+
+  @Mapping(target = "portfolioResponse", source = "portfolioAsset.portfolio")
+  @Mapping(target = "assetResponse", source = "portfolioAsset.asset")
+  PortfolioAssetResponse toResponse(PortfolioAsset portfolioAsset);
 }
