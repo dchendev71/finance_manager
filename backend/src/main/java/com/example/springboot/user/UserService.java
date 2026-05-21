@@ -9,29 +9,18 @@ import com.example.springboot.user.dto.ChangeEmailRequest;
 import com.example.springboot.user.dto.ChangePasswordRequest;
 import com.example.springboot.user.dto.UserResponse;
 import com.example.springboot.user.mapper.UserMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
   private final PasswordEncoder passwordEncoder;
   private final UserRepository userRepository;
   private final UserMapper userMapper;
   private final CurrencyService currencyService;
-
-  @Autowired
-  public UserService(
-      UserRepository userRepository,
-      UserMapper userMapper,
-      CurrencyService currencyService,
-      PasswordEncoder passwordEncoder) {
-    this.userRepository = userRepository;
-    this.userMapper = userMapper;
-    this.currencyService = currencyService;
-    this.passwordEncoder = passwordEncoder;
-  }
 
   @Transactional
   public UserResponse registerNewUser(UserCreateRequest request) {

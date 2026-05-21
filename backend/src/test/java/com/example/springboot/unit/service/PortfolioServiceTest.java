@@ -29,7 +29,7 @@ public class PortfolioServiceTest {
 
   @BeforeEach
   void setUp() {
-    portfolioService = new PortfolioService(portfolioRepository, portfolioMapper, userRepository);
+    portfolioService = new PortfolioService(userRepository, portfolioRepository, portfolioMapper);
   }
 
   @Test

@@ -51,7 +51,8 @@ class UserServiceTest {
     UserMapperImpl userMapperImpl = new UserMapperImpl(currencyMapper);
 
     this.userService =
-        new UserService(userRepository, userMapperImpl, currencyService, passwordEncoder);
+        new UserService(passwordEncoder, userRepository, userMapperImpl, currencyService);
+
     this.userCreateRequest = RequestTestFactory.User.register();
     this.currency = EntityTestFactory.CurrencyFactory.create();
   }

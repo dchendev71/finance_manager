@@ -7,24 +7,15 @@ import com.example.springboot.portfolio.dto.PortfolioResponse;
 import com.example.springboot.portfolio.mapper.PortfolioMapper;
 import com.example.springboot.user.User;
 import com.example.springboot.user.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class PortfolioService {
   private final UserRepository userRepository;
   private final PortfolioRepository portfolioRepository;
   private final PortfolioMapper portfolioMapper;
-
-  @Autowired
-  public PortfolioService(
-      PortfolioRepository portfolioRepository,
-      PortfolioMapper portfolioMapper,
-      UserRepository userRepository) {
-    this.portfolioRepository = portfolioRepository;
-    this.portfolioMapper = portfolioMapper;
-    this.userRepository = userRepository;
-  }
 
   public PortfolioResponse createPortfolio(String userEmail, PortfolioCreateRequest request) {
     // Check if users still exists
