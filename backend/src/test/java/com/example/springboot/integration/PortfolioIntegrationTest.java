@@ -1,14 +1,15 @@
-package com.example.springboot.portfolio;
+package com.example.springboot.integration;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.example.springboot.common.config.ApiRoutes;
 import com.example.springboot.common.exception.ExistsException;
+import com.example.springboot.config.TestConfig;
 import com.example.springboot.helper.HelpSetup;
-import com.example.springboot.helper.PortfolioTestFactory;
 import com.example.springboot.helper.RequestHandler;
-import com.example.springboot.helper.UserTestFactory;
+import com.example.springboot.helper.RequestTestFactory;
+import com.example.springboot.portfolio.PortfolioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,8 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+@ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
 class PortfolioIntegrationTest {
@@ -34,7 +37,7 @@ class PortfolioIntegrationTest {
   void setUp() throws Exception {
     portfolioRepository.deleteAll();
     requestHandler = new RequestHandler(mockMvc, objectMapper);
-    jwtToken = new HelpSetup(mockMvc, objectMapper).registerUserAndLogin(UserTestFactory.testEmail);
+    jwtToken = new HelpSetup(mockMvc, objectMapper).registerUserAndLogin(TestConfig.User.email);
   }
 
   @Nested
@@ -45,7 +48,7 @@ class PortfolioIntegrationTest {
       requestHandler
           .performAuthorizedRequest(
               ApiRoutes.Portfolio.CREATE_PORTFOLIO,
-              PortfolioTestFactory.portfolioName,
+              RequestTestFactory.Portfolio.create(),
               HttpMethod.POST,
               jwtToken)
           .andExpect(status().isCreated());
@@ -57,14 +60,14 @@ class PortfolioIntegrationTest {
 
       requestHandler.performAuthorizedRequest(
           ApiRoutes.Portfolio.CREATE_PORTFOLIO,
-          PortfolioTestFactory.portfolioName,
+          RequestTestFactory.Portfolio.create(),
           HttpMethod.POST,
           jwtToken);
 
       requestHandler
           .performAuthorizedRequest(
               ApiRoutes.Portfolio.CREATE_PORTFOLIO,
-              PortfolioTestFactory.portfolioName,
+              RequestTestFactory.Portfolio.create(),
               HttpMethod.POST,
               jwtToken)
           .andExpect(status().is4xxClientError())

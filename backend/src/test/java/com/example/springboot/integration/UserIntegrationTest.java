@@ -1,4 +1,4 @@
-package com.example.springboot.user;
+package com.example.springboot.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -8,10 +8,12 @@ import com.example.springboot.auth.dto.UserCreateRequest;
 import com.example.springboot.common.config.ApiRoutes;
 import com.example.springboot.common.exception.ExistsException;
 import com.example.springboot.common.exception.InvalidCredentialsException;
-import com.example.springboot.helper.AuthTestFactory;
+import com.example.springboot.config.TestConfig;
 import com.example.springboot.helper.HelpSetup;
 import com.example.springboot.helper.RequestHandler;
-import com.example.springboot.helper.UserTestFactory;
+import com.example.springboot.helper.RequestTestFactory;
+import com.example.springboot.user.User;
+import com.example.springboot.user.UserRepository;
 import com.example.springboot.user.dto.ChangeEmailRequest;
 import com.example.springboot.user.dto.ChangePasswordRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,9 +25,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @AutoConfigureMockMvc
 class UserIntegrationTest {
 
@@ -42,7 +46,7 @@ class UserIntegrationTest {
     requestHandler = new RequestHandler(mockMvc, objectMapper);
 
     HelpSetup helper = new HelpSetup(mockMvc, objectMapper);
-    jwtToken = helper.registerUserAndLogin(UserTestFactory.testEmail);
+    jwtToken = helper.registerUserAndLogin(TestConfig.User.email);
   }
 
   @Nested
@@ -51,12 +55,12 @@ class UserIntegrationTest {
     @Test
     @DisplayName("change password should return 200")
     void changePassword_shouldReturn200() throws Exception {
-      User user = userRepository.findByEmail(UserTestFactory.testEmail).orElseThrow();
+      User user = userRepository.findByEmail(TestConfig.User.email).orElseThrow();
       String prevPassword = user.getPassword();
       requestHandler
           .performAuthorizedRequest(
               ApiRoutes.Users.CHANGE_PASSWORD,
-              UserTestFactory.createChangePasswordRequest("newPassword"),
+              RequestTestFactory.User.changePassword("newPassword"),
               HttpMethod.POST,
               jwtToken)
           .andExpect(status().isOk());
@@ -88,13 +92,13 @@ class UserIntegrationTest {
     @Test
     @DisplayName("change email should return 200")
     void changeEmail_shouldReturn200() throws Exception {
-      User user = userRepository.findByEmail(UserTestFactory.testEmail).orElseThrow();
+      User user = userRepository.findByEmail(TestConfig.User.email).orElseThrow();
       String prevEmail = user.getEmail();
 
       requestHandler
           .performAuthorizedRequest(
               ApiRoutes.Users.CHANGE_EMAIL,
-              UserTestFactory.createChangeEmailRequest("newEmail@gmail.com"),
+              RequestTestFactory.User.changeEmail("newEmail@gmail.com"),
               HttpMethod.PUT,
               jwtToken)
           .andExpect(status().isOk());
@@ -121,11 +125,13 @@ class UserIntegrationTest {
     @Test
     @DisplayName("change email should return 4xx when email already exists")
     void changeEmail_shouldReturn4xx_whenEmailExist() throws Exception {
-      UserCreateRequest newUser = new UserCreateRequest("newEmail@gmail.com", "password", "USD");
+      UserCreateRequest newUser =
+          RequestTestFactory.User.register("newEmail@gmail.com", "password", "USD");
       requestHandler.performPost(ApiRoutes.Auth.REGISTER, newUser);
 
+      // Note: The password is the password from the user created in the SetUp()
       ChangeEmailRequest request =
-          new ChangeEmailRequest(UserTestFactory.testPassword, "newEmail@gmail.com");
+          RequestTestFactory.User.changeEmail(TestConfig.User.password, "newEmail@gmail.com");
 
       requestHandler
           .performAuthorizedRequest(ApiRoutes.Users.CHANGE_EMAIL, request, HttpMethod.PUT, jwtToken)
@@ -154,7 +160,7 @@ class UserIntegrationTest {
       requestHandler
           .performAuthorizedRequest(
               ApiRoutes.Users.CHANGE_PASSWORD,
-              UserTestFactory.createChangePasswordRequest("newPassword"),
+              RequestTestFactory.User.changePassword("newPassword"),
               HttpMethod.POST,
               jwtToken)
           .andExpect(status().is4xxClientError());
@@ -167,7 +173,7 @@ class UserIntegrationTest {
           ApiRoutes.Users.DELETE, null, HttpMethod.DELETE, jwtToken);
 
       requestHandler
-          .performPost(ApiRoutes.Auth.LOGIN, AuthTestFactory.createAuthRequest())
+          .performPost(ApiRoutes.Auth.LOGIN, RequestTestFactory.Auth.login())
           .andExpect(status().is4xxClientError());
     }
   }

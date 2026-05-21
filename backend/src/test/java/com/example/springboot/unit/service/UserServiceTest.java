@@ -1,4 +1,4 @@
-package com.example.springboot.user;
+package com.example.springboot.unit.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -11,12 +11,16 @@ import static org.mockito.Mockito.when;
 
 import com.example.springboot.auth.dto.UserCreateRequest;
 import com.example.springboot.common.exception.ExistsException;
+import com.example.springboot.config.TestConfig;
 import com.example.springboot.currency.Currency;
 import com.example.springboot.currency.CurrencyService;
 import com.example.springboot.currency.mapper.CurrencyMapper;
 import com.example.springboot.currency.mapper.CurrencyMapperImpl;
-import com.example.springboot.helper.CurrencyTestFactory;
-import com.example.springboot.helper.UserTestFactory;
+import com.example.springboot.helper.EntityTestFactory;
+import com.example.springboot.helper.RequestTestFactory;
+import com.example.springboot.user.User;
+import com.example.springboot.user.UserRepository;
+import com.example.springboot.user.UserService;
 import com.example.springboot.user.dto.ChangeEmailRequest;
 import com.example.springboot.user.dto.ChangePasswordRequest;
 import com.example.springboot.user.dto.UserResponse;
@@ -48,15 +52,15 @@ class UserServiceTest {
 
     this.userService =
         new UserService(userRepository, userMapperImpl, currencyService, passwordEncoder);
-    this.userCreateRequest = UserTestFactory.createUserRequest();
-    this.currency = CurrencyTestFactory.createCurrency();
+    this.userCreateRequest = RequestTestFactory.User.register();
+    this.currency = EntityTestFactory.CurrencyFactory.create();
   }
 
   @Test
   @DisplayName("register: should create user successfully")
   void register_shouldCreateUser_whenValidRequest() {
     // Given
-    when(currencyService.findByCode(CurrencyTestFactory.testCode)).thenReturn(currency);
+    when(currencyService.findByCode(TestConfig.Currency.code)).thenReturn(currency);
     // This is used because we use a real Mappers which will instantiate a real User, being
     // different
     // from the test, so we get back the instantiated User
@@ -65,7 +69,7 @@ class UserServiceTest {
     UserResponse response = userService.registerNewUser(userCreateRequest);
     // Then
     assertThat(response).isNotNull();
-    assertThat(response.email()).isEqualTo(UserTestFactory.testEmail);
+    assertThat(response.email()).isEqualTo(TestConfig.User.email);
   }
 
   @Test
@@ -73,8 +77,7 @@ class UserServiceTest {
   void register_shouldThrow_whenCurrencyNotFound() {
     // Given
     UserCreateRequest request =
-        UserTestFactory.createUserRequest(
-            UserTestFactory.testEmail, UserTestFactory.testPassword, "XYZ");
+        RequestTestFactory.User.register(TestConfig.User.email, TestConfig.User.password, "XYZ");
     when(currencyService.findByCode("XYZ"))
         .thenThrow(new RuntimeException("Currency not found: XYZ"));
 
@@ -90,7 +93,7 @@ class UserServiceTest {
   @DisplayName("registerNewUser: should never expose password in response")
   void registerNewUser_shouldNeverExposePassword() {
     // Given
-    when(currencyService.findByCode(CurrencyTestFactory.testCode)).thenReturn(currency);
+    when(currencyService.findByCode(TestConfig.Currency.code)).thenReturn(currency);
     when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
     // When
     UserResponse response = userService.registerNewUser(userCreateRequest);
@@ -102,12 +105,12 @@ class UserServiceTest {
   @Test
   @DisplayName("registerNewUser: should not register same email")
   void registerNewUser_shouldNotRegisterSameEmail() {
-    when(userRepository.findByEmail(UserTestFactory.testEmail))
-        .thenReturn(Optional.of(UserTestFactory.createUser()));
+    when(userRepository.findByEmail(TestConfig.User.email))
+        .thenReturn(Optional.of(EntityTestFactory.UserFactory.create()));
 
     assertThatThrownBy(() -> userService.registerNewUser(userCreateRequest))
         .isInstanceOf(ExistsException.class)
-        .hasMessageContaining(UserTestFactory.testEmail);
+        .hasMessageContaining(TestConfig.User.email);
 
     verify(userRepository, never()).save(any());
   }
@@ -117,17 +120,16 @@ class UserServiceTest {
   @DisplayName("changePassword: should change password")
   void changePassword_shouldChangePassword() {
     // Given
-    User user = UserTestFactory.createUser();
-    ChangePasswordRequest cpRequest =
-        new ChangePasswordRequest(UserTestFactory.testPassword, "newPassword", "newPassword");
+    User user = EntityTestFactory.UserFactory.create();
+    ChangePasswordRequest cpRequest = RequestTestFactory.User.changePassword("newPassword");
 
-    when(userRepository.findByEmail(UserTestFactory.testEmail)).thenReturn(Optional.of(user));
+    when(userRepository.findByEmail(TestConfig.User.email)).thenReturn(Optional.of(user));
     when(passwordEncoder.matches(cpRequest.currentPassword(), user.getPassword())).thenReturn(true);
     when(passwordEncoder.encode(cpRequest.newPassword())).thenReturn("encryptedNewPassword");
     // When
-    userService.changePassword(UserTestFactory.testEmail, cpRequest);
+    userService.changePassword(TestConfig.User.email, cpRequest);
     // Then
-    verify(userRepository).findByEmail(UserTestFactory.testEmail);
+    verify(userRepository).findByEmail(TestConfig.User.email);
     // Note we can't use user.getPassword() because it is not encoded
     verify(passwordEncoder).matches(eq(cpRequest.currentPassword()), anyString());
     verify(passwordEncoder).encode(eq(cpRequest.newPassword()));
@@ -141,15 +143,15 @@ class UserServiceTest {
   void changeEmail_shouldChangeEmail_whenValidRequest() {
     // Given
     String newEmail = "new@example.com";
-    User user = UserTestFactory.createUser();
-    ChangeEmailRequest ceRequest = new ChangeEmailRequest(UserTestFactory.testPassword, newEmail);
+    User user = EntityTestFactory.UserFactory.create();
+    ChangeEmailRequest ceRequest = RequestTestFactory.User.changeEmail(newEmail);
     // Stubbing dependencies
-    when(userRepository.findByEmail(UserTestFactory.testEmail)).thenReturn(Optional.of(user));
+    when(userRepository.findByEmail(TestConfig.User.email)).thenReturn(Optional.of(user));
     when(passwordEncoder.matches(ceRequest.currentPassword(), user.getPassword())).thenReturn(true);
     // When
-    userService.changeEmail(UserTestFactory.testEmail, ceRequest);
+    userService.changeEmail(TestConfig.User.email, ceRequest);
     // Then
-    verify(userRepository).findByEmail(UserTestFactory.testEmail);
+    verify(userRepository).findByEmail(TestConfig.User.email);
     verify(passwordEncoder).matches(eq(ceRequest.currentPassword()), anyString());
     // Assert the managed entity's state was actually updated
     assertThat(user.getEmail()).isEqualTo(newEmail);
@@ -159,8 +161,8 @@ class UserServiceTest {
   @DisplayName("deleteUser: should successfully soft-delete user by setting active to false")
   void deleteUser_shouldSoftDeleteUser_whenUserExists() {
     // Given
-    String email = UserTestFactory.testEmail;
-    User user = UserTestFactory.createUser();
+    String email = TestConfig.User.email;
+    User user = EntityTestFactory.UserFactory.create();
     user.setActive(true); // Ensure initial state is explicitly active
 
     // Stubbing dependencies

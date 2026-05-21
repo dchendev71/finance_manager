@@ -3,6 +3,7 @@ package com.example.springboot.helper;
 import com.example.springboot.auth.dto.AuthRequest;
 import com.example.springboot.auth.dto.UserCreateRequest;
 import com.example.springboot.common.config.ApiRoutes;
+import com.example.springboot.config.TestConfig;
 import com.example.springboot.user.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
@@ -17,10 +18,9 @@ public class HelpSetup {
   }
 
   public User registerUser(String email) throws Exception {
-    User user = UserTestFactory.createUser(email, CurrencyTestFactory.createCurrency());
+    User user = EntityTestFactory.UserFactory.create(email);
     UserCreateRequest request =
-        UserTestFactory.createUserRequest(
-            email, UserTestFactory.testPassword, UserTestFactory.testCurrencyCode);
+        RequestTestFactory.User.register(email, TestConfig.User.password, TestConfig.Currency.code);
     requestHandler.performPost(ApiRoutes.Auth.REGISTER, request);
 
     return user;
@@ -29,7 +29,7 @@ public class HelpSetup {
   public String registerUserAndLogin(String email) throws Exception {
     registerUser(email);
 
-    AuthRequest request = new AuthRequest(email, UserTestFactory.testPassword);
+    AuthRequest request = new AuthRequest(email, TestConfig.User.password);
     String response =
         requestHandler
             .performPost(ApiRoutes.Auth.LOGIN, request)

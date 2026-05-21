@@ -1,10 +1,12 @@
-package com.example.springboot.auth;
+package com.example.springboot.unit.controller;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.example.springboot.auth.AuthController;
+import com.example.springboot.auth.AuthService;
 import com.example.springboot.auth.dto.AuthRequest;
 import com.example.springboot.auth.dto.AuthResponse;
 import com.example.springboot.auth.dto.UserCreateRequest;
@@ -12,10 +14,11 @@ import com.example.springboot.common.config.ApiRoutes;
 import com.example.springboot.common.exception.ExistsException;
 import com.example.springboot.common.exception.InvalidCredentialsException;
 import com.example.springboot.common.exception.NotFoundException;
+import com.example.springboot.config.TestConfig;
 import com.example.springboot.currency.Currency;
-import com.example.springboot.helper.AuthTestFactory;
 import com.example.springboot.helper.RequestHandler;
-import com.example.springboot.helper.UserTestFactory;
+import com.example.springboot.helper.RequestTestFactory;
+import com.example.springboot.helper.ResponseTestFactory;
 import com.example.springboot.security.CustomUserDetailsService;
 import com.example.springboot.security.JwtAccessDeniedHandler;
 import com.example.springboot.security.JwtAuthenticationEntryPoint;
@@ -59,11 +62,11 @@ class AuthControllerTest {
   @BeforeEach
   void setUp() {
     this.requestHandler = new RequestHandler(mockMvc, objectMapper);
-    this.userCreateRequest = UserTestFactory.createUserRequest();
-    this.userResponse = UserTestFactory.createUserResponse();
+    this.userCreateRequest = RequestTestFactory.User.register();
+    this.userResponse = ResponseTestFactory.User.create();
 
-    this.authRequest = AuthTestFactory.createAuthRequest();
-    this.authResponse = AuthTestFactory.createAuthResponse();
+    this.authRequest = RequestTestFactory.Auth.login();
+    this.authResponse = ResponseTestFactory.Auth.create();
   }
 
   @Test
@@ -75,9 +78,8 @@ class AuthControllerTest {
     requestHandler
         .performPost(ApiRoutes.Auth.REGISTER, userCreateRequest)
         .andExpect(status().isCreated())
-        .andExpect(jsonPath("$.id").value(UserTestFactory.testId))
-        .andExpect(jsonPath("$.email").value(UserTestFactory.testEmail))
-        .andExpect(jsonPath("$.currency.code").value(UserTestFactory.testCurrencyCode));
+        .andExpect(jsonPath("$.email").value(TestConfig.User.email))
+        .andExpect(jsonPath("$.currency.code").value(TestConfig.Currency.code));
   }
 
   @Test
@@ -85,7 +87,7 @@ class AuthControllerTest {
   void register_shouldReturn400_whenEmailInvalid() throws Exception {
     // Given
     UserCreateRequest request =
-        UserTestFactory.createUserRequest("not-an-email", "password123", "USD");
+        RequestTestFactory.User.register("not-an-email", "password123", "USD");
     requestHandler
         .performPost(ApiRoutes.Auth.REGISTER, request)
         .andExpect(status().isBadRequest())
@@ -100,7 +102,7 @@ class AuthControllerTest {
   void register_shouldReturn400_whenPasswordTooShort() throws Exception {
     // Given
     UserCreateRequest request =
-        UserTestFactory.createUserRequest("john@example.com", "short", "USD");
+        RequestTestFactory.User.register("john@example.com", "short", "USD");
     // When / Then
     requestHandler
         .performPost(ApiRoutes.Auth.REGISTER, request)
@@ -116,7 +118,7 @@ class AuthControllerTest {
   void register_shouldReturn400_whenCurrencyCodeInvalid() throws Exception {
     // Given — lowercase currency code
     UserCreateRequest request =
-        UserTestFactory.createUserRequest("john@example.com", "password123", "usd");
+        RequestTestFactory.User.register("john@example.com", "password123", "usd");
     requestHandler
         .performPost(ApiRoutes.Auth.REGISTER, request)
         .andExpect(status().isBadRequest())
@@ -130,7 +132,7 @@ class AuthControllerTest {
   @DisplayName("POST /register: should return 400 when currency code doesn't exist")
   void register_shouldReturn400_whenCurrencyNotFound() throws Exception {
     UserCreateRequest request =
-        UserTestFactory.createUserRequest("john@example.com", "password123", "XYZ");
+        RequestTestFactory.User.register("john@example.com", "password123", "XYZ");
     when(authService.register(request))
         .thenThrow(new NotFoundException(Currency.class, request.currencyCode()));
 
@@ -161,7 +163,7 @@ class AuthControllerTest {
     requestHandler
         .performPost(ApiRoutes.Auth.LOGIN, authRequest)
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.jwtToken").value(AuthTestFactory.testJwt));
+        .andExpect(jsonPath("$.jwtToken").value(TestConfig.Auth.jwt));
   }
 
   @Test

@@ -1,4 +1,4 @@
-package com.example.springboot.user;
+package com.example.springboot.unit.controller;
 
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
@@ -8,14 +8,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.example.springboot.common.config.ApiRoutes;
 import com.example.springboot.common.exception.ExistsException;
 import com.example.springboot.common.exception.InvalidCredentialsException;
+import com.example.springboot.config.TestConfig;
+import com.example.springboot.helper.EntityTestFactory;
 import com.example.springboot.helper.JwtMockHelper;
 import com.example.springboot.helper.RequestHandler;
-import com.example.springboot.helper.UserTestFactory;
+import com.example.springboot.helper.RequestTestFactory;
+import com.example.springboot.helper.ResponseTestFactory;
 import com.example.springboot.security.CustomUserDetailsService;
 import com.example.springboot.security.JwtAccessDeniedHandler;
 import com.example.springboot.security.JwtAuthenticationEntryPoint;
 import com.example.springboot.security.JwtService;
 import com.example.springboot.security.SecurityConfig;
+import com.example.springboot.user.User;
+import com.example.springboot.user.UserController;
+import com.example.springboot.user.UserService;
 import com.example.springboot.user.dto.ChangeEmailRequest;
 import com.example.springboot.user.dto.ChangePasswordRequest;
 import com.example.springboot.user.dto.UserResponse;
@@ -51,23 +57,22 @@ public class UserControllerTest {
   @BeforeEach
   void setUp() {
     this.requestHandler = new RequestHandler(mockMvc, objectMapper);
-    this.userResponse = UserTestFactory.createUserResponse();
-    this.user = UserTestFactory.createUser();
-
+    this.userResponse = ResponseTestFactory.User.create();
+    this.user = EntityTestFactory.UserFactory.create();
     JwtMockHelper.mockAuthorization(user, jwtService, customUserDetailsService);
   }
 
   @Test
   @DisplayName("POST /change-password should return 200")
   void changePassword_shouldReturn200() throws Exception {
-    ChangePasswordRequest request = UserTestFactory.createChangePasswordRequest("newPassword");
+    ChangePasswordRequest request = RequestTestFactory.User.changePassword("newPassword");
 
-    when(userService.changePassword(UserTestFactory.testEmail, request)).thenReturn(userResponse);
+    when(userService.changePassword(TestConfig.User.email, request)).thenReturn(userResponse);
 
     requestHandler
         .performAuthorizedRequest(ApiRoutes.Users.CHANGE_PASSWORD, request, HttpMethod.POST)
         .andExpect(status().isOk());
-    verify(userService).changePassword(UserTestFactory.testEmail, request);
+    verify(userService).changePassword(TestConfig.User.email, request);
   }
 
   @Test
@@ -78,7 +83,7 @@ public class UserControllerTest {
 
     doThrow(new InvalidCredentialsException())
         .when(userService)
-        .changePassword(UserTestFactory.testEmail, request);
+        .changePassword(TestConfig.User.email, request);
 
     requestHandler
         .performAuthorizedRequest(ApiRoutes.Users.CHANGE_PASSWORD, request, HttpMethod.POST)
@@ -88,9 +93,9 @@ public class UserControllerTest {
   @Test
   @DisplayName("PUT /change-email should return 200")
   void changeEmail_shouldReturn200() throws Exception {
-    ChangeEmailRequest request = UserTestFactory.createChangeEmailRequest("newtest@gmail.com");
+    ChangeEmailRequest request = RequestTestFactory.User.changeEmail("newtest@gmail.com");
 
-    when(userService.changeEmail(UserTestFactory.testEmail, request)).thenReturn(userResponse);
+    when(userService.changeEmail(TestConfig.User.email, request)).thenReturn(userResponse);
 
     requestHandler
         .performAuthorizedRequest(ApiRoutes.Users.CHANGE_EMAIL, request, HttpMethod.PUT)
@@ -100,11 +105,11 @@ public class UserControllerTest {
   @Test
   @DisplayName("PUT /change-email should return 409 email already exists")
   void changeEmail_shouldReturn409() throws Exception {
-    ChangeEmailRequest request = UserTestFactory.createChangeEmailRequest("newtest@gmail.com");
+    ChangeEmailRequest request = RequestTestFactory.User.changeEmail("newtest@gmail.com");
 
     doThrow(new ExistsException(User.class, request.newEmail()))
         .when(userService)
-        .changeEmail(UserTestFactory.testEmail, request);
+        .changeEmail(TestConfig.User.email, request);
     requestHandler
         .performAuthorizedRequest(ApiRoutes.Users.CHANGE_EMAIL, request, HttpMethod.PUT)
         .andExpect(status().isConflict());

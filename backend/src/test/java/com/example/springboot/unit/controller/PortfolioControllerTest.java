@@ -1,11 +1,16 @@
-package com.example.springboot.portfolio;
+package com.example.springboot.unit.controller;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.example.springboot.common.config.ApiRoutes;
-import com.example.springboot.helper.*;
+import com.example.springboot.helper.EntityTestFactory;
+import com.example.springboot.helper.JwtMockHelper;
 import com.example.springboot.helper.RequestHandler;
+import com.example.springboot.helper.RequestTestFactory;
+import com.example.springboot.helper.ResponseTestFactory;
+import com.example.springboot.portfolio.PortfolioController;
+import com.example.springboot.portfolio.PortfolioService;
 import com.example.springboot.security.CustomUserDetailsService;
 import com.example.springboot.security.JwtAccessDeniedHandler;
 import com.example.springboot.security.JwtAuthenticationEntryPoint;
@@ -44,7 +49,8 @@ public class PortfolioControllerTest {
   @BeforeEach
   void setUp() {
     this.requestHandler = new RequestHandler(mockMvc, objectMapper);
-    user = PortfolioTestFactory.user;
+    this.user = EntityTestFactory.UserFactory.create();
+
     // Enable mock Jwt
     JwtMockHelper.mockAuthorization(user, jwtService, customUserDetailsService);
   }
@@ -53,13 +59,13 @@ public class PortfolioControllerTest {
   @DisplayName("POST /create-portfolio should return 200")
   void createPortfolio_shouldReturn200() throws Exception {
 
-    when(portfolioService.createPortfolio(user.getEmail(), PortfolioTestFactory.portfolioName))
-        .thenReturn(PortfolioTestFactory.createPortfolioResponse());
+    when(portfolioService.createPortfolio(user.getEmail(), RequestTestFactory.Portfolio.create()))
+        .thenReturn(ResponseTestFactory.Portfolio.create());
 
     requestHandler
         .performAuthorizedRequest(
             ApiRoutes.Portfolio.CREATE_PORTFOLIO,
-            PortfolioTestFactory.portfolioName,
+            RequestTestFactory.Portfolio.create(),
             HttpMethod.POST)
         .andExpect(status().isCreated());
   }

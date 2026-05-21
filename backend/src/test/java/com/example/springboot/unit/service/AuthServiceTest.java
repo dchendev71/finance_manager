@@ -1,4 +1,4 @@
-package com.example.springboot.auth;
+package com.example.springboot.unit.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -8,12 +8,14 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.example.springboot.auth.AuthService;
 import com.example.springboot.auth.dto.AuthRequest;
 import com.example.springboot.auth.dto.AuthResponse;
 import com.example.springboot.auth.dto.UserCreateRequest;
 import com.example.springboot.common.exception.InvalidCredentialsException;
-import com.example.springboot.helper.AuthTestFactory;
-import com.example.springboot.helper.UserTestFactory;
+import com.example.springboot.config.TestConfig;
+import com.example.springboot.helper.RequestTestFactory;
+import com.example.springboot.helper.ResponseTestFactory;
 import com.example.springboot.security.JwtService;
 import com.example.springboot.user.UserService;
 import com.example.springboot.user.dto.UserResponse;
@@ -44,8 +46,8 @@ class AuthServiceTest {
     @DisplayName("should delegate registration cleanly to UserService")
     void register_shouldCallUserServiceAndReturnResponse() {
       // Given
-      UserCreateRequest request = UserTestFactory.createUserRequest();
-      UserResponse expectedResponse = UserTestFactory.createUserResponse();
+      UserCreateRequest request = RequestTestFactory.User.register();
+      UserResponse expectedResponse = ResponseTestFactory.User.create();
 
       when(userService.registerNewUser(request)).thenReturn(expectedResponse);
 
@@ -66,7 +68,7 @@ class AuthServiceTest {
     @DisplayName("should return AuthResponse when credentials are correct")
     void login_shouldReturnToken_whenCredentialsAreValid() {
       // Given
-      AuthRequest request = AuthTestFactory.createAuthRequest();
+      AuthRequest request = RequestTestFactory.Auth.login();
       String mockJwt = "mocked-jwt-token-string";
 
       // We stub jwtService because we need its output payload for the response assertion
@@ -88,7 +90,7 @@ class AuthServiceTest {
     @DisplayName("should bubble up exception and skip token generation when authentication fails")
     void login_shouldThrowException_whenCredentialsAreInvalid() {
       // Given
-      AuthRequest request = new AuthRequest(UserTestFactory.testEmail, "wrong-password");
+      AuthRequest request = new AuthRequest(TestConfig.User.email, "wrong-password");
 
       // Force the authentication manager to fail out
       when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))

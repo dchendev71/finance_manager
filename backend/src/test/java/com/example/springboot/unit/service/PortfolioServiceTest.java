@@ -1,10 +1,14 @@
-package com.example.springboot.portfolio;
+package com.example.springboot.unit.service;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.example.springboot.config.TestConfig;
 import com.example.springboot.helper.*;
+import com.example.springboot.helper.EntityTestFactory;
+import com.example.springboot.portfolio.PortfolioRepository;
+import com.example.springboot.portfolio.PortfolioService;
 import com.example.springboot.portfolio.mapper.*;
 import com.example.springboot.user.UserRepository;
 import java.util.Optional;
@@ -31,12 +35,13 @@ public class PortfolioServiceTest {
   @Test
   @DisplayName("Should create a portfolio")
   void createPortfolio_should_succed() {
-    when(userRepository.findByEmail(UserTestFactory.testEmail))
-        .thenReturn(Optional.of(UserTestFactory.createUser()));
-    when(portfolioMapper.toEntity(UserTestFactory.createUser(), PortfolioTestFactory.portfolioName))
-        .thenReturn(PortfolioTestFactory.createPortfolio());
+    when(userRepository.findByEmail(TestConfig.User.email))
+        .thenReturn(Optional.of(EntityTestFactory.UserFactory.create()));
+    when(portfolioMapper.toEntity(
+            EntityTestFactory.UserFactory.create(), TestConfig.Portfolio.name))
+        .thenReturn(EntityTestFactory.PortfolioFactory.create());
 
-    portfolioService.createPortfolio(UserTestFactory.testEmail, PortfolioTestFactory.portfolioName);
+    portfolioService.createPortfolio(TestConfig.User.email, RequestTestFactory.Portfolio.create());
 
     verify(portfolioRepository).save(any());
   }

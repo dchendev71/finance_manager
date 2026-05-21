@@ -1,4 +1,4 @@
-package com.example.springboot.auth;
+package com.example.springboot.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -6,9 +6,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.example.springboot.auth.dto.AuthRequest;
 import com.example.springboot.auth.dto.UserCreateRequest;
 import com.example.springboot.common.config.ApiRoutes;
-import com.example.springboot.helper.AuthTestFactory;
+import com.example.springboot.config.TestConfig;
 import com.example.springboot.helper.RequestHandler;
-import com.example.springboot.helper.UserTestFactory;
+import com.example.springboot.helper.RequestTestFactory;
 import com.example.springboot.user.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
@@ -19,9 +19,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+@ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
 class AuthIntegrationTest {
@@ -44,7 +46,7 @@ class AuthIntegrationTest {
     @DisplayName("An user should be able to register")
     void register_shouldReturn201() throws Exception {
       requestHandler
-          .performPost(ApiRoutes.Auth.REGISTER, UserTestFactory.createUserRequest())
+          .performPost(ApiRoutes.Auth.REGISTER, RequestTestFactory.User.register())
           .andExpect(status().isCreated());
     }
 
@@ -72,7 +74,7 @@ class AuthIntegrationTest {
     @BeforeEach
     void setUp() throws Exception {
       // Register test user
-      requestHandler.performPost(ApiRoutes.Auth.REGISTER, UserTestFactory.createUserRequest());
+      requestHandler.performPost(ApiRoutes.Auth.REGISTER, RequestTestFactory.User.register());
     }
 
     @Test
@@ -80,7 +82,7 @@ class AuthIntegrationTest {
     void login_shouldReturn200() throws Exception {
       MvcResult result =
           requestHandler
-              .performPost(ApiRoutes.Auth.LOGIN, AuthTestFactory.createAuthRequest())
+              .performPost(ApiRoutes.Auth.LOGIN, RequestTestFactory.Auth.login())
               .andExpect(status().isOk())
               .andReturn();
       String response = result.getResponse().getContentAsString();
@@ -94,7 +96,7 @@ class AuthIntegrationTest {
     @Test
     @DisplayName("login should return 404, invalid crendentials")
     void login_shouldReturn404() throws Exception {
-      AuthRequest request = new AuthRequest(AuthTestFactory.testEmail, "wrongPassword");
+      AuthRequest request = RequestTestFactory.Auth.login(TestConfig.User.email, "wrongPassword");
       requestHandler
           .performPost(ApiRoutes.Auth.LOGIN, request)
           .andExpect(status().is4xxClientError());
