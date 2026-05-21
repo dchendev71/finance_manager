@@ -1,42 +1,43 @@
 package com.example.springboot.portfolio.portfolio_asset;
 
+import com.example.springboot.common.exception.ExistsException;
+import com.example.springboot.portfolio.Portfolio;
 import com.example.springboot.portfolio.PortfolioRepository;
+import com.example.springboot.portfolio.asset.Asset;
+import com.example.springboot.portfolio.asset.AssetRepository;
 import com.example.springboot.portfolio.portfolio_asset.dto.CreatePortfolioAssetRequest;
+import com.example.springboot.portfolio.portfolio_asset.mapper.PortfolioAssetMapper;
+import com.example.springboot.user.User;
 import com.example.springboot.user.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class PortfolioAssetService {
   private final PortfolioAssetRepository portfolioAssetRepository;
   private final UserRepository userRepository;
   private final PortfolioRepository portfolioRepository;
-
-  @Autowired
-  public PortfolioAssetService(
-      PortfolioAssetRepository portfolioAssetRepository,
-      UserRepository userRepository,
-      PortfolioRepository portfolioRepository) {
-    this.portfolioAssetRepository = portfolioAssetRepository;
-    this.userRepository = userRepository;
-    this.portfolioRepository = portfolioRepository;
-  }
+  private final AssetRepository assetRepository;
+  private final PortfolioAssetMapper portfolioAssetMapper;
 
   public void createPortfolioAsset(String email, CreatePortfolioAssetRequest request) {
     // Check if user still exists
-    // User user =
-    //     userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
-    //
-    // // Check if portfolio associated with the user exist
-    // Portfolio portfolio =
-    //     portfolioRepository
-    //         .findByUserIdAndName(user.getId(), request.portfolioName())
-    //         .orElseThrow(() -> new PortfolioNotFoundException(request.portfolioName()));
-    //
-    // // Check if portfolioAsset already exists - ie if we want to add quantity then use ADD
-    // // endpoint
-    // if (portfolioAssetRepository
-    //     .findByAssetNameAndPortfolioId(request.assetName(), portfolio.getId())
-    //     .isPresent()) {}
+    User user = userRepository.getByEmailOrThrow(email);
+    // Check if portfolio associated with the user exist
+    Portfolio portfolio =
+        portfolioRepository.getByUserIdAndNameOrThrow(user.getId(), request.portfolioName());
+    // Check if Asset exists
+    Asset asset = assetRepository.getByNameOrThrow(request.assetName());
+    // Check if portfolioAsset already exists - ie if we want to add quantity then use ADD
+    // endpoint
+    if (portfolioAssetRepository
+        .findByAssetNameAndPortfolioId(request.assetName(), portfolio.getId())
+        .isPresent()) {
+      throw new ExistsException(PortfolioAsset.class, request.assetName());
+    }
+
+    portfolioAssetRepository.save(
+        portfolioAssetMapper.toEntity(portfolio, asset, request.quantity()));
   }
 }
