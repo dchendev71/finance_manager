@@ -123,13 +123,13 @@ class UserServiceTest {
     User user = EntityTestFactory.UserFactory.create();
     ChangePasswordRequest cpRequest = RequestTestFactory.User.changePassword("newPassword");
 
-    when(userRepository.findByEmail(TestConfig.User.email)).thenReturn(Optional.of(user));
+    when(userRepository.getByEmailOrThrow(TestConfig.User.email)).thenReturn(user);
     when(passwordEncoder.matches(cpRequest.currentPassword(), user.getPassword())).thenReturn(true);
     when(passwordEncoder.encode(cpRequest.newPassword())).thenReturn("encryptedNewPassword");
     // When
     userService.changePassword(TestConfig.User.email, cpRequest);
     // Then
-    verify(userRepository).findByEmail(TestConfig.User.email);
+    verify(userRepository).getByEmailOrThrow(TestConfig.User.email);
     // Note we can't use user.getPassword() because it is not encoded
     verify(passwordEncoder).matches(eq(cpRequest.currentPassword()), anyString());
     verify(passwordEncoder).encode(eq(cpRequest.newPassword()));
@@ -146,12 +146,12 @@ class UserServiceTest {
     User user = EntityTestFactory.UserFactory.create();
     ChangeEmailRequest ceRequest = RequestTestFactory.User.changeEmail(newEmail);
     // Stubbing dependencies
-    when(userRepository.findByEmail(TestConfig.User.email)).thenReturn(Optional.of(user));
+    when(userRepository.getByEmailOrThrow(TestConfig.User.email)).thenReturn(user);
     when(passwordEncoder.matches(ceRequest.currentPassword(), user.getPassword())).thenReturn(true);
     // When
     userService.changeEmail(TestConfig.User.email, ceRequest);
     // Then
-    verify(userRepository).findByEmail(TestConfig.User.email);
+    verify(userRepository).getByEmailOrThrow(TestConfig.User.email);
     verify(passwordEncoder).matches(eq(ceRequest.currentPassword()), anyString());
     // Assert the managed entity's state was actually updated
     assertThat(user.getEmail()).isEqualTo(newEmail);
@@ -166,14 +166,14 @@ class UserServiceTest {
     user.setActive(true); // Ensure initial state is explicitly active
 
     // Stubbing dependencies
-    when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+    when(userRepository.getByEmailOrThrow(TestConfig.User.email)).thenReturn(user);
     when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
     // When
     userService.deleteUser(email);
 
     // Then
-    verify(userRepository).findByEmail(email);
+    verify(userRepository).getByEmailOrThrow(email);
     verify(userRepository).save(user);
 
     // Assert that the entity state was altered to false (Soft-Deletion verification)

@@ -3,7 +3,6 @@ package com.example.springboot.user;
 import com.example.springboot.auth.dto.UserCreateRequest;
 import com.example.springboot.common.exception.ExistsException;
 import com.example.springboot.common.exception.InvalidCredentialsException;
-import com.example.springboot.common.exception.NotFoundException;
 import com.example.springboot.currency.Currency;
 import com.example.springboot.currency.CurrencyService;
 import com.example.springboot.user.dto.ChangeEmailRequest;
@@ -58,10 +57,7 @@ public class UserService {
       throw new ExistsException(User.class, currentEmail);
     }
     // Check if user still exists
-    User user =
-        userRepository
-            .findByEmail(currentEmail)
-            .orElseThrow(() -> new NotFoundException(User.class, currentEmail));
+    User user = userRepository.getByEmailOrThrow(currentEmail);
     // Verify that the passwords matches
     if (!passwordEncoder.matches(changeEmailRequest.currentPassword(), user.getPassword())) {
       throw new InvalidCredentialsException();
@@ -79,10 +75,7 @@ public class UserService {
   @Transactional
   public UserResponse changePassword(String email, ChangePasswordRequest request) {
     // Check if user still exists
-    User user =
-        userRepository
-            .findByEmail(email)
-            .orElseThrow(() -> new NotFoundException(User.class, email));
+    User user = userRepository.getByEmailOrThrow(email);
     // If current password doesn't match
     if (!passwordEncoder.matches(request.currentPassword(), user.getPassword())) {
       throw new InvalidCredentialsException();
@@ -102,10 +95,7 @@ public class UserService {
   @Transactional
   public void deleteUser(String email) {
     // Check if user still exists
-    User user =
-        userRepository
-            .findByEmail(email)
-            .orElseThrow(() -> new NotFoundException(User.class, email));
+    User user = userRepository.getByEmailOrThrow(email);
     user.setActive(false);
 
     userRepository.save(user);

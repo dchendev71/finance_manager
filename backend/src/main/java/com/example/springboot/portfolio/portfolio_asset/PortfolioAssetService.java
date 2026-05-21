@@ -22,21 +22,21 @@ public class PortfolioAssetService {
     this.portfolioRepository = portfolioRepository;
   }
 
-  public void createPortfolioAsset(String email, CreatePortfolioAssetRequest request) {}
-  // Check if user still exists
-  //   User user =
-  //       userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
-  //
-  //   // Check if portfolio associated with the user exist
-  //   Portfolio portfolio =
-  //       portfolioRepository
-  //           .findByUserIdAndName(user.getId(), request.portfolioName())
-  //           .orElseThrow(() -> new PortfolioNotFoundException(request.portfolioName()));
-  //
-  //   // Check if portfolioAsset already exists - ie if we want to add quantity then use ADD
-  // endpoint
-  //   if (portfolioAssetRepository
-  //       .findByAssetNameAndPortfolioId(request.assetName(), portfolio.getId())
-  //       .isPresent()) {}
-  // }
+  public void createPortfolioAsset(String email, CreatePortfolioAssetRequest request) {
+    // Check if user still exists
+    // User user =
+    //     userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
+    //
+    // // Check if portfolio associated with the user exist
+    // Portfolio portfolio =
+    //     portfolioRepository
+    //         .findByUserIdAndName(user.getId(), request.portfolioName())
+    //         .orElseThrow(() -> new PortfolioNotFoundException(request.portfolioName()));
+    //
+    // // Check if portfolioAsset already exists - ie if we want to add quantity then use ADD
+    // // endpoint
+    // if (portfolioAssetRepository
+    //     .findByAssetNameAndPortfolioId(request.assetName(), portfolio.getId())
+    //     .isPresent()) {}
+  }
 }
