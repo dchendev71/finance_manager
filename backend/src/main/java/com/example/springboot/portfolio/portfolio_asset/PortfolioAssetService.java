@@ -6,6 +6,7 @@ import com.example.springboot.portfolio.PortfolioRepository;
 import com.example.springboot.portfolio.asset.Asset;
 import com.example.springboot.portfolio.asset.AssetRepository;
 import com.example.springboot.portfolio.portfolio_asset.dto.CreatePortfolioAssetRequest;
+import com.example.springboot.portfolio.portfolio_asset.dto.PortfolioAssetResponse;
 import com.example.springboot.portfolio.portfolio_asset.mapper.PortfolioAssetMapper;
 import com.example.springboot.user.User;
 import com.example.springboot.user.UserRepository;
@@ -21,7 +22,8 @@ public class PortfolioAssetService {
   private final AssetRepository assetRepository;
   private final PortfolioAssetMapper portfolioAssetMapper;
 
-  public void createPortfolioAsset(String email, CreatePortfolioAssetRequest request) {
+  public PortfolioAssetResponse createPortfolioAsset(
+      String email, CreatePortfolioAssetRequest request) {
     // Check if user still exists
     User user = userRepository.getByEmailOrThrow(email);
     // Check if portfolio associated with the user exist
@@ -37,7 +39,10 @@ public class PortfolioAssetService {
       throw new ExistsException(PortfolioAsset.class, request.assetName());
     }
 
-    portfolioAssetRepository.save(
-        portfolioAssetMapper.toEntity(portfolio, asset, request.quantity()));
+    PortfolioAsset portfolioAsset =
+        portfolioAssetRepository.save(
+            portfolioAssetMapper.toEntity(portfolio, asset, request.quantity()));
+
+    return portfolioAssetMapper.toResponse(portfolioAsset);
   }
 }
