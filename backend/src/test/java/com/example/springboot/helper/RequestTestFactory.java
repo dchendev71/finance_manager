@@ -4,8 +4,10 @@ import com.example.springboot.auth.dto.AuthRequest;
 import com.example.springboot.auth.dto.UserCreateRequest;
 import com.example.springboot.config.TestConfig;
 import com.example.springboot.portfolio.dto.PortfolioCreateRequest;
+import com.example.springboot.portfolio.portfolio_asset.dto.CreatePortfolioAssetRequest;
 import com.example.springboot.user.dto.ChangeEmailRequest;
 import com.example.springboot.user.dto.ChangePasswordRequest;
+import java.math.BigDecimal;
 
 public class RequestTestFactory {
   public static class User {
@@ -80,6 +82,18 @@ public class RequestTestFactory {
 
     public static PortfolioCreateRequest create(String portfolioName) {
       return PortfolioCreateRequest.builder().portfolioName(portfolioName).build();
+    }
+  }
+
+  public static class PortfolioAsset {
+    public static CreatePortfolioAssetRequest create() {
+      return new CreatePortfolioAssetRequest(
+          TestConfig.Portfolio.name, TestConfig.Asset.name, TestConfig.PortfolioAsset.quantity);
+    }
+
+    public static CreatePortfolioAssetRequest create(BigDecimal quantity) {
+      return new CreatePortfolioAssetRequest(
+          TestConfig.Portfolio.name, TestConfig.Asset.name, quantity);
     }
   }
 }
