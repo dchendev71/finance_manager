@@ -1,5 +1,7 @@
 package com.example.springboot.config;
 
+import java.math.BigDecimal;
+
 // This file describes every test constant that will be used
 
 public interface TestConfig {
@@ -22,5 +24,18 @@ public interface TestConfig {
 
   interface Portfolio {
     String name = "testPortfolio";
+  }
+
+  interface Asset {
+    String name = "NVIDIA";
+    String tickerSymbol = "NVDA";
+  }
+
+  interface AssetType {
+    String type = "stock";
+  }
+
+  interface PortfolioAsset {
+    BigDecimal quantity = new BigDecimal(10.5);
   }
 }

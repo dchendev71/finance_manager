@@ -4,6 +4,9 @@ import com.example.springboot.config.TestConfig;
 import com.example.springboot.currency.Currency;
 import com.example.springboot.currency.dto.CurrencyDto;
 import com.example.springboot.portfolio.Portfolio;
+import com.example.springboot.portfolio.asset.Asset;
+import com.example.springboot.portfolio.asset_type.AssetType;
+import com.example.springboot.portfolio.portfolio_asset.PortfolioAsset;
 import com.example.springboot.user.User;
 
 public class EntityTestFactory {
@@ -49,6 +52,32 @@ public class EntityTestFactory {
       return Portfolio.builder()
           .name(TestConfig.Portfolio.name)
           .user(EntityTestFactory.UserFactory.create())
+          .build();
+    }
+  }
+
+  public static class AssetTypeFactory {
+    public static AssetType create() {
+      return AssetType.builder().type(TestConfig.AssetType.type).build();
+    }
+  }
+
+  public static class AssetFactory {
+    public static Asset create() {
+      return Asset.builder()
+          .name(TestConfig.Asset.name)
+          .tickerSymbol(TestConfig.Asset.tickerSymbol)
+          .assetType(EntityTestFactory.AssetTypeFactory.create())
+          .build();
+    }
+  }
+
+  public static class PortfolioAssetFactory {
+    public static PortfolioAsset create() {
+      return PortfolioAsset.builder()
+          .portfolio(EntityTestFactory.PortfolioFactory.create())
+          .asset(EntityTestFactory.AssetFactory.create())
+          .quantity(TestConfig.PortfolioAsset.quantity)
           .build();
     }
   }

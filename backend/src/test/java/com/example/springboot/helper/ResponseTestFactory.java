@@ -2,7 +2,10 @@ package com.example.springboot.helper;
 
 import com.example.springboot.auth.dto.AuthResponse;
 import com.example.springboot.config.TestConfig;
+import com.example.springboot.portfolio.asset.dto.AssetResponse;
+import com.example.springboot.portfolio.asset_type.dto.AssetTypeResponse;
 import com.example.springboot.portfolio.dto.PortfolioResponse;
+import com.example.springboot.portfolio.portfolio_asset.dto.PortfolioAssetResponse;
 import com.example.springboot.user.dto.UserResponse;
 
 public class ResponseTestFactory {
@@ -27,6 +30,30 @@ public class ResponseTestFactory {
           .portfolioName(TestConfig.Portfolio.name)
           .userResponse(ResponseTestFactory.User.create())
           .build();
+    }
+  }
+
+  public static class AssetType {
+    public static AssetTypeResponse create() {
+      return new AssetTypeResponse(TestConfig.AssetType.type);
+    }
+  }
+
+  public static class Asset {
+    public static AssetResponse create() {
+      return new AssetResponse(
+          TestConfig.Asset.name,
+          TestConfig.Asset.tickerSymbol,
+          ResponseTestFactory.AssetType.create());
+    }
+  }
+
+  public static class PortfolioAsset {
+    public static PortfolioAssetResponse create() {
+      return new PortfolioAssetResponse(
+          ResponseTestFactory.Portfolio.create(),
+          ResponseTestFactory.Asset.create(),
+          TestConfig.PortfolioAsset.quantity);
     }
   }
 }
