@@ -51,6 +51,18 @@ CREATE TABLE portfolio_asset (
 
 	quantity NUMERIC(18, 8) NOT NULL
 );
+CREATE TABLE portfolio_asset_mean_price (
+	id BIGSERIAL PRIMARY KEY,
+
+	portfolio_asset_id BIGINT NOT NULL,
+
+	CONSTRAINT fk_portfolio_asset_mean_price_portfolio_asset
+		FOREIGN KEY(portfolio_asset_id)
+		REFERENCES portfolio_asset (id)
+		ON DELETE CASCADE,
+
+	mean_price NUMERIC(18, 8) NOT NULL
+);
 
 CREATE TABLE transactions (
 	id BIGSERIAL PRIMARY KEY,
