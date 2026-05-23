@@ -86,6 +86,12 @@ public class RequestTestFactory {
   }
 
   public static class PortfolioAsset {
+
+    public static CreatePortfolioAssetRequest create(
+        String portfolioName, String assetName, BigDecimal quantity) {
+      return new CreatePortfolioAssetRequest(portfolioName, assetName, quantity);
+    }
+
     public static CreatePortfolioAssetRequest create() {
       return new CreatePortfolioAssetRequest(
           TestConfig.Portfolio.name, TestConfig.Asset.name, TestConfig.PortfolioAsset.quantity);

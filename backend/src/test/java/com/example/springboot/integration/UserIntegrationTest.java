@@ -9,9 +9,9 @@ import com.example.springboot.common.config.ApiRoutes;
 import com.example.springboot.common.exception.ExistsException;
 import com.example.springboot.common.exception.InvalidCredentialsException;
 import com.example.springboot.config.TestConfig;
-import com.example.springboot.helper.HelpSetup;
 import com.example.springboot.helper.RequestHandler;
 import com.example.springboot.helper.RequestTestFactory;
+import com.example.springboot.helper.TestSetup;
 import com.example.springboot.user.User;
 import com.example.springboot.user.UserRepository;
 import com.example.springboot.user.dto.ChangeEmailRequest;
@@ -38,15 +38,15 @@ class UserIntegrationTest {
   @Autowired private UserRepository userRepository;
 
   private RequestHandler requestHandler;
-  private String jwtToken;
+  private TestSetup testSetup;
 
   @BeforeEach
   void setUp() throws Exception {
     userRepository.deleteAll();
     requestHandler = new RequestHandler(mockMvc, objectMapper);
+    testSetup = new TestSetup(mockMvc, objectMapper);
 
-    HelpSetup helper = new HelpSetup(mockMvc, objectMapper);
-    jwtToken = helper.registerUserAndLogin(TestConfig.User.email);
+    testSetup.registerUserAndLogin(TestConfig.User.email);
   }
 
   @Nested
@@ -62,7 +62,7 @@ class UserIntegrationTest {
               ApiRoutes.Users.CHANGE_PASSWORD,
               RequestTestFactory.User.changePassword("newPassword"),
               HttpMethod.POST,
-              jwtToken)
+              testSetup.testSetupDetails.getJwtToken())
           .andExpect(status().isOk());
 
       // Check that the password did change
@@ -78,7 +78,10 @@ class UserIntegrationTest {
           new ChangePasswordRequest("wrongCurrentPassword", "newPassword", "newPassword");
       requestHandler
           .performAuthorizedRequest(
-              ApiRoutes.Users.CHANGE_PASSWORD, request, HttpMethod.POST, jwtToken)
+              ApiRoutes.Users.CHANGE_PASSWORD,
+              request,
+              HttpMethod.POST,
+              testSetup.testSetupDetails.getJwtToken())
           .andExpect(status().is4xxClientError())
           .andExpect(
               resp ->
@@ -100,7 +103,7 @@ class UserIntegrationTest {
               ApiRoutes.Users.CHANGE_EMAIL,
               RequestTestFactory.User.changeEmail("newEmail@gmail.com"),
               HttpMethod.PUT,
-              jwtToken)
+              testSetup.testSetupDetails.getJwtToken())
           .andExpect(status().isOk());
       String newEmail = user.getEmail();
       assertThat(!prevEmail.equals(newEmail));
@@ -115,7 +118,11 @@ class UserIntegrationTest {
           new ChangeEmailRequest("wrongCurrentPassword", "newEmail@gmail.com");
 
       requestHandler
-          .performAuthorizedRequest(ApiRoutes.Users.CHANGE_EMAIL, request, HttpMethod.PUT, jwtToken)
+          .performAuthorizedRequest(
+              ApiRoutes.Users.CHANGE_EMAIL,
+              request,
+              HttpMethod.PUT,
+              testSetup.testSetupDetails.getJwtToken())
           .andExpect(status().is4xxClientError())
           .andExpect(
               resp ->
@@ -134,7 +141,11 @@ class UserIntegrationTest {
           RequestTestFactory.User.changeEmail(TestConfig.User.password, "newEmail@gmail.com");
 
       requestHandler
-          .performAuthorizedRequest(ApiRoutes.Users.CHANGE_EMAIL, request, HttpMethod.PUT, jwtToken)
+          .performAuthorizedRequest(
+              ApiRoutes.Users.CHANGE_EMAIL,
+              request,
+              HttpMethod.PUT,
+              testSetup.testSetupDetails.getJwtToken())
           .andExpect(status().is4xxClientError())
           .andExpect(resp -> assertTrue(resp.getResolvedException() instanceof ExistsException));
     }
@@ -146,7 +157,11 @@ class UserIntegrationTest {
     @DisplayName("delete user should return 2xx")
     void deleteUser() throws Exception {
       requestHandler
-          .performAuthorizedRequest(ApiRoutes.Users.DELETE, null, HttpMethod.DELETE, jwtToken)
+          .performAuthorizedRequest(
+              ApiRoutes.Users.DELETE,
+              null,
+              HttpMethod.DELETE,
+              testSetup.testSetupDetails.getJwtToken())
           .andExpect(status().isNoContent());
     }
 
@@ -154,7 +169,10 @@ class UserIntegrationTest {
     @DisplayName("delete user should not be able to call authorized route and return 4xx")
     void deleteUser_preventLogin() throws Exception {
       requestHandler.performAuthorizedRequest(
-          ApiRoutes.Users.DELETE, null, HttpMethod.DELETE, jwtToken);
+          ApiRoutes.Users.DELETE,
+          null,
+          HttpMethod.DELETE,
+          testSetup.testSetupDetails.getJwtToken());
 
       // Should not be able to call authorized route
       requestHandler
@@ -162,7 +180,7 @@ class UserIntegrationTest {
               ApiRoutes.Users.CHANGE_PASSWORD,
               RequestTestFactory.User.changePassword("newPassword"),
               HttpMethod.POST,
-              jwtToken)
+              testSetup.testSetupDetails.getJwtToken())
           .andExpect(status().is4xxClientError());
     }
 
@@ -170,7 +188,10 @@ class UserIntegrationTest {
     @DisplayName("Deleted user should not be able to get back a jwt Token")
     void deletedUser_shouldNotGetJwtToken() throws Exception {
       requestHandler.performAuthorizedRequest(
-          ApiRoutes.Users.DELETE, null, HttpMethod.DELETE, jwtToken);
+          ApiRoutes.Users.DELETE,
+          null,
+          HttpMethod.DELETE,
+          testSetup.testSetupDetails.getJwtToken());
 
       requestHandler
           .performPost(ApiRoutes.Auth.LOGIN, RequestTestFactory.Auth.login())

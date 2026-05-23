@@ -6,9 +6,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.example.springboot.common.config.ApiRoutes;
 import com.example.springboot.common.exception.ExistsException;
 import com.example.springboot.config.TestConfig;
-import com.example.springboot.helper.HelpSetup;
 import com.example.springboot.helper.RequestHandler;
 import com.example.springboot.helper.RequestTestFactory;
+import com.example.springboot.helper.TestSetup;
 import com.example.springboot.portfolio.PortfolioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,13 +31,14 @@ class PortfolioIntegrationTest {
   @Autowired private PortfolioRepository portfolioRepository;
 
   private RequestHandler requestHandler;
-  private String jwtToken;
+  private TestSetup testSetup;
 
   @BeforeEach
   void setUp() throws Exception {
     portfolioRepository.deleteAll();
     requestHandler = new RequestHandler(mockMvc, objectMapper);
-    jwtToken = new HelpSetup(mockMvc, objectMapper).registerUserAndLogin(TestConfig.User.email);
+    testSetup = new TestSetup(mockMvc, objectMapper);
+    testSetup.registerUserAndLogin(TestConfig.User.email);
   }
 
   @Nested
@@ -50,7 +51,7 @@ class PortfolioIntegrationTest {
               ApiRoutes.Portfolio.CREATE_PORTFOLIO,
               RequestTestFactory.Portfolio.create(),
               HttpMethod.POST,
-              jwtToken)
+              testSetup.testSetupDetails.getJwtToken())
           .andExpect(status().isCreated());
     }
 
@@ -62,14 +63,14 @@ class PortfolioIntegrationTest {
           ApiRoutes.Portfolio.CREATE_PORTFOLIO,
           RequestTestFactory.Portfolio.create(),
           HttpMethod.POST,
-          jwtToken);
+          testSetup.testSetupDetails.getJwtToken());
 
       requestHandler
           .performAuthorizedRequest(
               ApiRoutes.Portfolio.CREATE_PORTFOLIO,
               RequestTestFactory.Portfolio.create(),
               HttpMethod.POST,
-              jwtToken)
+              testSetup.testSetupDetails.getJwtToken())
           .andExpect(status().is4xxClientError())
           .andExpect(resp -> assertTrue(resp.getResolvedException() instanceof ExistsException));
     }

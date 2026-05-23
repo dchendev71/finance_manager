@@ -8,6 +8,7 @@ import com.example.springboot.portfolio.asset.Asset;
 import com.example.springboot.portfolio.asset_type.AssetType;
 import com.example.springboot.portfolio.portfolio_asset.PortfolioAsset;
 import com.example.springboot.user.User;
+import java.math.BigDecimal;
 
 public class EntityTestFactory {
   public static class CurrencyFactory {
@@ -54,6 +55,13 @@ public class EntityTestFactory {
           .user(EntityTestFactory.UserFactory.create())
           .build();
     }
+
+    public static Portfolio create(String portfolioName) {
+      return Portfolio.builder()
+          .name(portfolioName)
+          .user(EntityTestFactory.UserFactory.create())
+          .build();
+    }
   }
 
   public static class AssetTypeFactory {
@@ -70,6 +78,14 @@ public class EntityTestFactory {
           .assetType(EntityTestFactory.AssetTypeFactory.create())
           .build();
     }
+
+    public static Asset create(String name, String tickerSymbol) {
+      return Asset.builder()
+          .name(name)
+          .tickerSymbol(tickerSymbol)
+          .assetType(EntityTestFactory.AssetTypeFactory.create())
+          .build();
+    }
   }
 
   public static class PortfolioAssetFactory {
@@ -77,6 +93,14 @@ public class EntityTestFactory {
       return PortfolioAsset.builder()
           .portfolio(EntityTestFactory.PortfolioFactory.create())
           .asset(EntityTestFactory.AssetFactory.create())
+          .quantity(TestConfig.PortfolioAsset.quantity)
+          .build();
+    }
+
+    public static PortfolioAsset create(Portfolio portfolio, Asset asset, BigDecimal quantity) {
+      return PortfolioAsset.builder()
+          .portfolio(portfolio)
+          .asset(asset)
           .quantity(TestConfig.PortfolioAsset.quantity)
           .build();
     }
