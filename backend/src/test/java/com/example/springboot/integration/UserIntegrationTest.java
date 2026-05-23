@@ -102,7 +102,7 @@ class UserIntegrationTest {
           .performAuthorizedRequest(
               ApiRoutes.Users.CHANGE_EMAIL,
               RequestTestFactory.User.changeEmail("newEmail@gmail.com"),
-              HttpMethod.PUT,
+              HttpMethod.PATCH,
               testSetup.testSetupDetails.getJwtToken())
           .andExpect(status().isOk());
       String newEmail = user.getEmail();
@@ -121,7 +121,7 @@ class UserIntegrationTest {
           .performAuthorizedRequest(
               ApiRoutes.Users.CHANGE_EMAIL,
               request,
-              HttpMethod.PUT,
+              HttpMethod.PATCH,
               testSetup.testSetupDetails.getJwtToken())
           .andExpect(status().is4xxClientError())
           .andExpect(
@@ -144,7 +144,7 @@ class UserIntegrationTest {
           .performAuthorizedRequest(
               ApiRoutes.Users.CHANGE_EMAIL,
               request,
-              HttpMethod.PUT,
+              HttpMethod.PATCH,
               testSetup.testSetupDetails.getJwtToken())
           .andExpect(status().is4xxClientError())
           .andExpect(resp -> assertTrue(resp.getResolvedException() instanceof ExistsException));

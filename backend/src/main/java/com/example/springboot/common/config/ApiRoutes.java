@@ -24,6 +24,7 @@ public interface ApiRoutes {
     interface PortfolioAsset {
       String BASE = Portfolio.BASE + "/portfolio-asset";
       String CREATE_PORTFOLIO_ASSET = BASE + "/create";
+      String UPDATE = BASE + "/update";
     }
   }
 }

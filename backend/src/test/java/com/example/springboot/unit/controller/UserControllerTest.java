@@ -91,19 +91,19 @@ public class UserControllerTest {
   }
 
   @Test
-  @DisplayName("PUT /change-email should return 200")
+  @DisplayName("PATCH /change-email should return 200")
   void changeEmail_shouldReturn200() throws Exception {
     ChangeEmailRequest request = RequestTestFactory.User.changeEmail("newtest@gmail.com");
 
     when(userService.changeEmail(TestConfig.User.email, request)).thenReturn(userResponse);
 
     requestHandler
-        .performAuthorizedRequest(ApiRoutes.Users.CHANGE_EMAIL, request, HttpMethod.PUT)
+        .performAuthorizedRequest(ApiRoutes.Users.CHANGE_EMAIL, request, HttpMethod.PATCH)
         .andExpect(status().isOk());
   }
 
   @Test
-  @DisplayName("PUT /change-email should return 409 email already exists")
+  @DisplayName("PATCH /change-email should return 409 email already exists")
   void changeEmail_shouldReturn409() throws Exception {
     ChangeEmailRequest request = RequestTestFactory.User.changeEmail("newtest@gmail.com");
 
@@ -111,7 +111,7 @@ public class UserControllerTest {
         .when(userService)
         .changeEmail(TestConfig.User.email, request);
     requestHandler
-        .performAuthorizedRequest(ApiRoutes.Users.CHANGE_EMAIL, request, HttpMethod.PUT)
+        .performAuthorizedRequest(ApiRoutes.Users.CHANGE_EMAIL, request, HttpMethod.PATCH)
         .andExpect(status().isConflict());
   }
 }
