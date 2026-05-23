@@ -18,6 +18,7 @@ import com.example.springboot.portfolio.PortfolioRepository;
 import com.example.springboot.portfolio.asset.Asset;
 import com.example.springboot.portfolio.asset.AssetRepository;
 import com.example.springboot.portfolio.portfolio_asset.PortfolioAsset;
+import com.example.springboot.portfolio.portfolio_asset.PortfolioAssetMeanPriceService;
 import com.example.springboot.portfolio.portfolio_asset.PortfolioAssetRepository;
 import com.example.springboot.portfolio.portfolio_asset.PortfolioAssetService;
 import com.example.springboot.portfolio.portfolio_asset.dto.PortfolioAssetRequest;
@@ -43,6 +44,7 @@ class PortfolioAssetServiceTest {
   @Mock private AssetRepository assetRepository;
   @Mock private PortfolioAssetRepository portfolioAssetRepository;
   @Mock private PortfolioAssetMapper portfolioAssetMapper;
+  @Mock private PortfolioAssetMeanPriceService portfolioAssetMeanPriceService;
 
   private User user;
   private Portfolio portfolio;

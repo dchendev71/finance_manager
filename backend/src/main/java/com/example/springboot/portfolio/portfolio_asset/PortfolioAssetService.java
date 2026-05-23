@@ -1,7 +1,6 @@
 package com.example.springboot.portfolio.portfolio_asset;
 
 import com.example.springboot.common.exception.ExistsException;
-import com.example.springboot.common.exception.NotFoundException;
 import com.example.springboot.portfolio.Portfolio;
 import com.example.springboot.portfolio.PortfolioRepository;
 import com.example.springboot.portfolio.asset.Asset;
@@ -19,10 +18,14 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class PortfolioAssetService {
+  private final PortfolioAssetMeanPriceService portfolioAssetMeanPriceService;
+  // Repository for service use
   private final PortfolioAssetRepository portfolioAssetRepository;
   private final UserRepository userRepository;
   private final PortfolioRepository portfolioRepository;
   private final AssetRepository assetRepository;
+
+  // Mapper
   private final PortfolioAssetMapper portfolioAssetMapper;
 
   private Portfolio checkUserAndPortfolioExists(String email, String portfolioName) {
@@ -53,6 +56,9 @@ public class PortfolioAssetService {
         portfolioAssetRepository.save(
             portfolioAssetMapper.toEntity(portfolio, asset, request.quantity()));
 
+    // Mean price tracker
+    portfolioAssetMeanPriceService.createMeanPrice(portfolioAsset, request.price());
+    // Record Transaction
     return portfolioAssetMapper.toResponse(portfolioAsset);
   }
 
@@ -63,13 +69,13 @@ public class PortfolioAssetService {
     Asset asset = checkAssetExists(request.assetName());
 
     PortfolioAsset portfolioAsset =
-        portfolioAssetRepository
-            .findByAssetNameAndPortfolioId(asset.getName(), portfolio.getId())
-            .orElseThrow(
-                () ->
-                    new NotFoundException(
-                        PortfolioAsset.class, portfolio.getName() + ":" + asset.getName()));
+        portfolioAssetRepository.getByPortfolioAndAsset(portfolio, asset);
 
+    // We update the mean price as if quantity is < 0, is does nothing
+    portfolioAssetMeanPriceService.updateMeanPrice(
+        portfolioAsset, request.quantity(), request.price());
+
+    // We update the PortfolioAsset
     BigDecimal newQuantity = portfolioAsset.getQuantity().add(request.quantity());
     if (newQuantity.compareTo(BigDecimal.ZERO) >= 0) {
       portfolioAsset.setQuantity(newQuantity);
