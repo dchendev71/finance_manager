@@ -7,4 +7,4 @@ public record PortfolioAssetRequest(
     @NotBlank(message = "Portfolio name must specify the target portfolio") String portfolioName,
     @NotBlank(message = "Asset name can't be empty") String assetName,
     BigDecimal quantity,
-    BigDecimal price) {}
+    BigDecimal unitPrice) {}

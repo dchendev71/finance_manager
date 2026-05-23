@@ -1,6 +1,7 @@
 package com.example.springboot.portfolio.transactions;
 
-import com.example.springboot.portfolio.portfolio_asset.PortfolioAsset;
+import com.example.springboot.portfolio.asset.Asset;
+import com.example.springboot.user.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
@@ -46,8 +47,15 @@ public class Transactions {
 
   @ManyToOne
   @JoinColumn(
-      name = "portfolio_asset_id",
+      name = "user_id",
       nullable = false,
-      foreignKey = @ForeignKey(name = "fk_transactions_portfolio_asset"))
-  private PortfolioAsset portfolioAsset;
+      foreignKey = @ForeignKey(name = "fk_transactions_user"))
+  private User user;
+
+  @ManyToOne
+  @JoinColumn(
+      name = "asset_id",
+      nullable = false,
+      foreignKey = @ForeignKey(name = "fk_transactions_asset"))
+  private Asset asset;
 }

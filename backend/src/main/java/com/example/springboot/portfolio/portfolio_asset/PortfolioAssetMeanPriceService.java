@@ -1,7 +1,7 @@
 package com.example.springboot.portfolio.portfolio_asset;
 
-import com.example.springboot.common.exception.NotFoundException;
 import java.math.BigDecimal;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class PortfolioAssetMeanPriceService {
   private final PortfolioAssetMeanPriceRepository portfolioAssetMeanPriceRepository;
 
-  public void createMeanPrice(PortfolioAsset portfolioAsset, BigDecimal price) {
+  private void createMeanPrice(PortfolioAsset portfolioAsset, BigDecimal price) {
     PortfolioAssetMeanPrice meanPrice =
         PortfolioAssetMeanPrice.builder().meanPrice(price).portfolioAsset(portfolioAsset).build();
     portfolioAssetMeanPriceRepository.save(meanPrice);
@@ -18,28 +18,32 @@ public class PortfolioAssetMeanPriceService {
 
   // Note: When selling, the mean price acquired of an asset is the same
   public void updateMeanPrice(
-      PortfolioAsset portfolioAsset, BigDecimal quantity, BigDecimal price) {
+      PortfolioAsset portfolioAsset, BigDecimal quantity, BigDecimal unitPrice) {
     if (quantity.compareTo(BigDecimal.ZERO) < 0) {
       return;
     }
     // Get our current mean price
-    PortfolioAssetMeanPrice meanPrice =
-        portfolioAssetMeanPriceRepository
-            .findByPortfolioAssetId(portfolioAsset.getId())
-            .orElseThrow(() -> new NotFoundException(PortfolioAsset.class, "portfolioAsset row"));
+    Optional<PortfolioAssetMeanPrice> meanPrice =
+        portfolioAssetMeanPriceRepository.findByPortfolioAssetId(portfolioAsset.getId());
+    // If no mean price, first mean price, create it
+    if (meanPrice.isEmpty()) {
+      createMeanPrice(portfolioAsset, unitPrice);
+      return;
+    }
 
     BigDecimal totalPrice =
         meanPrice
+            .get()
             .getMeanPrice()
             .multiply(portfolioAsset.getQuantity())
-            .add(price.multiply(quantity));
+            .add(unitPrice.multiply(quantity));
 
     BigDecimal totalQty = portfolioAsset.getQuantity().add(quantity);
 
     BigDecimal newMeanPrice = totalPrice.divide(totalQty);
 
-    meanPrice.setMeanPrice(newMeanPrice);
+    meanPrice.get().setMeanPrice(newMeanPrice);
 
-    portfolioAssetMeanPriceRepository.save(meanPrice);
+    portfolioAssetMeanPriceRepository.save(meanPrice.get());
   }
 }

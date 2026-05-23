@@ -69,9 +69,17 @@ CREATE TABLE transactions (
 	quantity NUMERIC(18, 8), -- + is purchase, - is sell
 	transaction_date TIMESTAMP NOT NULL DEFAULT NOW(),
 	unit_price NUMERIC(18, 8),
-	portfolio_asset_id BIGINT,
 
-	CONSTRAINT fk_transactions_portfolio_asset
-		FOREIGN KEY (portfolio_asset_id)
-		REFERENCES portfolio_asset (id)
+	user_id BIGINT NOT NULL,
+	asset_id BIGINT NOT NULL,
+
+	CONSTRAINT fk_transactions_user
+		FOREIGN KEY (user_id)
+		REFERENCES users (id)
+		ON DELETE CASCADE,
+
+	CONSTRAINT fk_transactions_asset 
+		FOREIGN KEY (asset_id)
+		REFERENCES asset (id)
+		ON DELETE CASCADE
 );
