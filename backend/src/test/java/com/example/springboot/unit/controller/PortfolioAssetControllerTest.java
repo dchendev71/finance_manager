@@ -14,7 +14,7 @@ import com.example.springboot.helper.ResponseTestFactory;
 import com.example.springboot.portfolio.Portfolio;
 import com.example.springboot.portfolio.portfolio_asset.PortfolioAssetController;
 import com.example.springboot.portfolio.portfolio_asset.PortfolioAssetService;
-import com.example.springboot.portfolio.portfolio_asset.dto.CreatePortfolioAssetRequest;
+import com.example.springboot.portfolio.portfolio_asset.dto.PortfolioAssetRequest;
 import com.example.springboot.security.CustomUserDetailsService;
 import com.example.springboot.security.JwtAccessDeniedHandler;
 import com.example.springboot.security.JwtAuthenticationEntryPoint;
@@ -60,7 +60,7 @@ public class PortfolioAssetControllerTest {
   @Test
   @DisplayName("POST /portfolio-asset/create should return 200")
   void create_shouldReturn200() throws Exception {
-    CreatePortfolioAssetRequest request = RequestTestFactory.PortfolioAsset.create();
+    PortfolioAssetRequest request = RequestTestFactory.PortfolioAsset.create();
     when(portfolioAssetService.createPortfolioAsset(user.getEmail(), request))
         .thenReturn(ResponseTestFactory.PortfolioAsset.create());
     requestHandler
@@ -72,7 +72,7 @@ public class PortfolioAssetControllerTest {
   @Test
   @DisplayName("POST /portfolio-asset/create should return 4xx")
   void create_shouldReturn4xx() throws Exception {
-    CreatePortfolioAssetRequest request = RequestTestFactory.PortfolioAsset.create();
+    PortfolioAssetRequest request = RequestTestFactory.PortfolioAsset.create();
     when(portfolioAssetService.createPortfolioAsset(user.getEmail(), request))
         .thenThrow(new NotFoundException(Portfolio.class, TestConfig.Portfolio.name));
     requestHandler

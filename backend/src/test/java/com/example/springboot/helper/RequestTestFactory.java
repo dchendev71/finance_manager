@@ -4,7 +4,7 @@ import com.example.springboot.auth.dto.AuthRequest;
 import com.example.springboot.auth.dto.UserCreateRequest;
 import com.example.springboot.config.TestConfig;
 import com.example.springboot.portfolio.dto.PortfolioCreateRequest;
-import com.example.springboot.portfolio.portfolio_asset.dto.CreatePortfolioAssetRequest;
+import com.example.springboot.portfolio.portfolio_asset.dto.PortfolioAssetRequest;
 import com.example.springboot.user.dto.ChangeEmailRequest;
 import com.example.springboot.user.dto.ChangePasswordRequest;
 import java.math.BigDecimal;
@@ -87,19 +87,18 @@ public class RequestTestFactory {
 
   public static class PortfolioAsset {
 
-    public static CreatePortfolioAssetRequest create(
+    public static PortfolioAssetRequest create(
         String portfolioName, String assetName, BigDecimal quantity) {
-      return new CreatePortfolioAssetRequest(portfolioName, assetName, quantity);
+      return new PortfolioAssetRequest(portfolioName, assetName, quantity);
     }
 
-    public static CreatePortfolioAssetRequest create() {
-      return new CreatePortfolioAssetRequest(
+    public static PortfolioAssetRequest create() {
+      return new PortfolioAssetRequest(
           TestConfig.Portfolio.name, TestConfig.Asset.name, TestConfig.PortfolioAsset.quantity);
     }
 
-    public static CreatePortfolioAssetRequest create(BigDecimal quantity) {
-      return new CreatePortfolioAssetRequest(
-          TestConfig.Portfolio.name, TestConfig.Asset.name, quantity);
+    public static PortfolioAssetRequest create(BigDecimal quantity) {
+      return new PortfolioAssetRequest(TestConfig.Portfolio.name, TestConfig.Asset.name, quantity);
     }
   }
 }

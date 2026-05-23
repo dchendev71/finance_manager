@@ -20,7 +20,7 @@ import com.example.springboot.portfolio.asset.AssetRepository;
 import com.example.springboot.portfolio.portfolio_asset.PortfolioAsset;
 import com.example.springboot.portfolio.portfolio_asset.PortfolioAssetRepository;
 import com.example.springboot.portfolio.portfolio_asset.PortfolioAssetService;
-import com.example.springboot.portfolio.portfolio_asset.dto.CreatePortfolioAssetRequest;
+import com.example.springboot.portfolio.portfolio_asset.dto.PortfolioAssetRequest;
 import com.example.springboot.portfolio.portfolio_asset.dto.PortfolioAssetResponse;
 import com.example.springboot.portfolio.portfolio_asset.mapper.PortfolioAssetMapper;
 import com.example.springboot.user.User;
@@ -60,7 +60,7 @@ class PortfolioAssetServiceTest {
   @Test
   @DisplayName("An user should be able to create a portfolio asset")
   public void createPortfolioAsset_shouldCreate() {
-    CreatePortfolioAssetRequest request = RequestTestFactory.PortfolioAsset.create();
+    PortfolioAssetRequest request = RequestTestFactory.PortfolioAsset.create();
 
     PortfolioAsset portfolioAsset = EntityTestFactory.PortfolioAssetFactory.create();
     when(userRepository.getByEmailOrThrow(user.getEmail())).thenReturn(user);
@@ -90,8 +90,7 @@ class PortfolioAssetServiceTest {
       "An user should not be able to create the same portfolio asset even with different quantity")
   public void createPortfolioAsset_duplicate() {
 
-    CreatePortfolioAssetRequest request =
-        RequestTestFactory.PortfolioAsset.create(new BigDecimal(999));
+    PortfolioAssetRequest request = RequestTestFactory.PortfolioAsset.create(new BigDecimal(999));
 
     PortfolioAsset portfolioAsset = EntityTestFactory.PortfolioAssetFactory.create();
     when(userRepository.getByEmailOrThrow(user.getEmail())).thenReturn(user);

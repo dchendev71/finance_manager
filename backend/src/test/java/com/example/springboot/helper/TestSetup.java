@@ -9,7 +9,7 @@ import com.example.springboot.portfolio.asset.Asset;
 import com.example.springboot.portfolio.asset.AssetRepository;
 import com.example.springboot.portfolio.dto.PortfolioCreateRequest;
 import com.example.springboot.portfolio.portfolio_asset.PortfolioAsset;
-import com.example.springboot.portfolio.portfolio_asset.dto.CreatePortfolioAssetRequest;
+import com.example.springboot.portfolio.portfolio_asset.dto.PortfolioAssetRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import java.math.BigDecimal;
@@ -67,7 +67,7 @@ public class TestSetup {
   public ResultActions createPortfolioAsset(
       Portfolio portfolio, String assetName, BigDecimal quantity, String jwtToken)
       throws Exception {
-    CreatePortfolioAssetRequest request =
+    PortfolioAssetRequest request =
         RequestTestFactory.PortfolioAsset.create(portfolio.getName(), assetName, quantity);
 
     ResultActions resultActions =

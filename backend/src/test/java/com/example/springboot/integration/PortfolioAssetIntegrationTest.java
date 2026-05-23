@@ -9,7 +9,7 @@ import com.example.springboot.helper.RequestTestFactory;
 import com.example.springboot.helper.TestSetup;
 import com.example.springboot.portfolio.asset.AssetRepository;
 import com.example.springboot.portfolio.portfolio_asset.PortfolioAssetRepository;
-import com.example.springboot.portfolio.portfolio_asset.dto.CreatePortfolioAssetRequest;
+import com.example.springboot.portfolio.portfolio_asset.dto.PortfolioAssetRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,7 +47,7 @@ class PortfolioAssetIntegrationTest {
   @Test
   @DisplayName("Should create a portfolioAsset happy ending")
   void create_shouldReturn200() throws Exception {
-    CreatePortfolioAssetRequest request = RequestTestFactory.PortfolioAsset.create();
+    PortfolioAssetRequest request = RequestTestFactory.PortfolioAsset.create();
     requestHandler
         .performAuthorizedRequest(
             ApiRoutes.Portfolio.PortfolioAsset.CREATE_PORTFOLIO_ASSET,
