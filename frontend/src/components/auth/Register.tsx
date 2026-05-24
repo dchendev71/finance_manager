@@ -1,54 +1,80 @@
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import authStyles from "./auth.module.css"
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import authStyles from "./auth.module.css";
 
 function RegisterForm() {
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-    const handleSubmit = async (e: React.SyntheticEvent) => {
-        e.preventDefault()
+  async function handleAction(formData) {
+    setError("");
+    setLoading(true);
 
-        // TODO: Change API URL
-        const res = await fetch("https://localhost:4000", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                email: email,
-                password: password
-            })
-        })
+    try {
+      const res = await fetch("http://localhost:8080/api/v1/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.get("email"),
+          password: formData.get("password"),
+          currencyCode: "EUR",
+          // currencyCode: formData.get("currencyCode"),
+        }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        setError(errorData.message || "Registration failed");
+        return;
+      }
+      // redirect to login
+      navigate("/login");
+    } catch (err) {
+      setError("Network error — please try again");
+    } finally {
+      setLoading(false);
     }
+  }
 
-    return (
-        <div className={authStyles.formContainer}>
-            <form onSubmit={handleSubmit}>
-                <p>
-                    <label htmlFor="email">Email: </label>
-                    <input type="email" id="email" name="email" value={email}
-                        onChange={(e) => setEmail(e.target.value)}>
-                    </input>
-                </p>
-                <p>
-                    <label htmlFor="password">Password: </label>
-                    <input type="password" id="password" name="password" value={password}
-                        onChange={(e) => setPassword(e.target.value)}>
-                    </input>
-                </p>
-                <p>
-                    <input type="submit" value="Sign up"></input>
-                </p>
-
-                <Link to="/Login">Already an account?</Link>
-            </form>
-        </div>
-    )
+  return (
+    <div className={authStyles.formContainer}>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      <form action={handleAction()}>
+        <p>
+          <label htmlFor="email">Email: </label>
+          <input type="email" id="email" name="email" required />
+        </p>
+        <p>
+          <label htmlFor="password">Password: </label>
+          <input type="password" id="password" name="password" required />
+        </p>
+        <p>
+          <label htmlFor="currencyCode">Currency: </label>
+          <select id="currencyCode" name="currencyCode" required>
+            <option value="">Select currency</option>
+            <option value="USD">USD - US Dollar</option>
+            <option value="EUR">EUR - Euro</option>
+            <option value="GBP">GBP - British Pound</option>
+            <option value="CAD">CAD - Canadian Dollar</option>
+            <option value="AUD">AUD - Australian Dollar</option>
+          </select>
+        </p>
+        <p>
+          <input
+            type="submit"
+            value={loading ? "Signing up..." : "Sign up"}
+            disabled={loading}
+          />
+        </p>
+        <Link to="/login">Already have an account?</Link>
+      </form>
+    </div>
+  );
 }
 
 export default function Register() {
-    return (
-        <RegisterForm />
-    )
+  return <RegisterForm />;
 }

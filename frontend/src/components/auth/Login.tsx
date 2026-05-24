@@ -1,53 +1,41 @@
-import { Link } from "react-router-dom"
-import { useState } from "react"
-import authStyles from "./auth.module.css"
+import { Link } from "react-router-dom";
+import authStyles from "./auth.module.css";
 
 function LoginForm() {
-    const [username, setUsername] = useState("")
-    const [password, setPassword] = useState("")
+  // TODO: Change API URL
+  async function handleAction(formData) {
+    const res = await fetch("http://localhost:8080/api/v1/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: formData.get("email"),
+        password: formData.get("password"),
+      }),
+    });
+  }
 
-    // TODO: Change API URL
-    const handleSubmit = async (e: React.SyntheticEvent) => {
-        e.preventDefault()
-        const res = await fetch("http://localhost:4000/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                username: username,
-                password: password
-            })
-        })
-    }
-
-    return (
-        <div className={authStyles.formContainer}>
-            <form onSubmit={handleSubmit}>
-                <p>
-                    <label htmlFor="username">Username: </label>
-                    <input type="text" id="username" name="username" value={username}
-                        onChange={(e) => setUsername(e.target.value)}>
-                    </input>
-                </p>
-                <p>
-                    <label htmlFor="password">Password: </label>
-                    <input type="password" id="password" name="password" value={password}
-                        onChange={(e) => setPassword(e.target.value)}>
-                    </input>
-                </p>
-                <p>
-                    <input type="submit" value="login"></input>
-                </p>
-
-                <Link to="/register">Sign up here</Link>
-            </form>
-        </div>
-    )
+  return (
+    <div className={authStyles.formContainer}>
+      <form action={handleAction}>
+        <p>
+          <label htmlFor="email">Email: </label>
+          <input type="text" id="email" name="email" required />
+        </p>
+        <p>
+          <label htmlFor="password">Password: </label>
+          <input type="password" id="password" name="password" required />
+        </p>
+        <p>
+          <input type="submit" value="login"></input>
+        </p>
+        <Link to="/register">Sign up here</Link>
+      </form>
+    </div>
+  );
 }
 
 export default function Login() {
-    return (
-        <LoginForm />
-    )
+  return <LoginForm />;
 }
