@@ -1,39 +1,38 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import authStyles from "./auth.module.css";
+import { useAuth } from "./AuthContext";
 
 function RegisterForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const { request } = useAuth();
+  const navigate = useNavigate();
 
-  async function handleAction(formData) {
+  async function handleAction(formData: FormData): Promise<void> {
     setError("");
     setLoading(true);
-    const navigate = useNavigate();
+
+    const email = formData.get("email") as string | null;
+    const password = formData.get("password") as string | null;
+    const currencyCode = formData.get("currencyCode") as string | "EUR";
 
     try {
-      const res = await fetch("http://localhost:8080/api/v1/auth/register", {
+      await request("/auth/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({
-          email: formData.get("email"),
-          password: formData.get("password"),
-          currencyCode: "EUR",
-          // currencyCode: formData.get("currencyCode"),
+          email: email,
+          password: password,
+          currencyCode: currencyCode,
         }),
       });
 
-      if (!res.ok) {
-        const errorData = await res.json();
-        setError(errorData.message || "Registration failed");
-        return;
-      }
+      // If we reach this step, login is succesful
+      // TODO: Maybe create a pop up Registration Succesful?
       // redirect to login
       navigate("/login");
-    } catch (err) {
-      setError("Network error — please try again");
+    } catch (err: any) {
+      setError(err.message || "Network error — please try again");
     } finally {
       setLoading(false);
     }
@@ -42,7 +41,7 @@ function RegisterForm() {
   return (
     <div className={authStyles.formContainer}>
       {error && <p style={{ color: "red" }}>{error}</p>}
-      <form action={handleAction()}>
+      <form action={handleAction}>
         <p>
           <label htmlFor="email">Email: </label>
           <input type="email" id="email" name="email" required />
@@ -54,12 +53,11 @@ function RegisterForm() {
         <p>
           <label htmlFor="currencyCode">Currency: </label>
           <select id="currencyCode" name="currencyCode" required>
-            <option value="">Select currency</option>
-            <option value="USD">USD - US Dollar</option>
-            <option value="EUR">EUR - Euro</option>
-            <option value="GBP">GBP - British Pound</option>
-            <option value="CAD">CAD - Canadian Dollar</option>
-            <option value="AUD">AUD - Australian Dollar</option>
+            <option value="EUR">EUR</option>
+            <option value="USD">USD</option>
+            <option value="GBP">GBP</option>
+            <option value="CAD">CAD</option>
+            <option value="AUD">AUD</option>
           </select>
         </p>
         <p>

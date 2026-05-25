@@ -4,7 +4,7 @@ import { useAuth } from "./AuthContext";
 
 function LoginForm() {
   const { login, request } = useAuth();
-  async function handleAction(formData: FormData) {
+  async function handleAction(formData: FormData): Promise<void> {
     try {
       const email = formData.get("email") as String | null;
       const password = formData.get("password") as String | null;
