@@ -5,11 +5,11 @@ import authStyles from "./auth.module.css";
 function RegisterForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   async function handleAction(formData) {
     setError("");
     setLoading(true);
+    const navigate = useNavigate();
 
     try {
       const res = await fetch("http://localhost:8080/api/v1/auth/register", {

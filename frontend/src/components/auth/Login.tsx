@@ -1,19 +1,31 @@
 import { Link } from "react-router-dom";
 import authStyles from "./auth.module.css";
+import { useAuth } from "./AuthContext";
 
 function LoginForm() {
-  // TODO: Change API URL
-  async function handleAction(formData) {
-    const res = await fetch("http://localhost:8080/api/v1/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: formData.get("email"),
-        password: formData.get("password"),
-      }),
-    });
+  const { login, request } = useAuth();
+  async function handleAction(formData: FormData) {
+    try {
+      const email = formData.get("email") as String | null;
+      const password = formData.get("password") as String | null;
+      if (!email || !password) {
+        throw new Error("Email and password are required fields.");
+      }
+      const res = await request("/auth/login", {
+        method: "POST",
+        body: JSON.stringify({
+          email: formData.get("email"),
+          password: formData.get("password"),
+        }),
+      });
+
+      if (res != null) {
+        login(res.jwtToken);
+        // TODO: redirect to another page
+      }
+    } catch (e) {
+      // TODO: Do something smart
+    }
   }
 
   return (
