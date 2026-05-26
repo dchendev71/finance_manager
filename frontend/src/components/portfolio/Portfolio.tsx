@@ -1,43 +1,36 @@
-import { useAuth } from "@/components/auth/AuthContext";
+import { useState } from "react";
+import AssetRowForm from "./asset_row/AssetRowForm";
 
-interface AssetRowRequest {
+export interface PortfolioProps {
   portfolioName: string;
-  assetName: string;
-  quantity: number;
-  unitPrice: number;
 }
 
-export default function Portfolio(props) {
-  const { request } = useAuth();
-  const portfolioName: string = props.portfolioName;
+export default function Portfolio({ portfolioName }: PortfolioProps) {
+  const [showForm, setShowForm] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const [assetRowList, setAssetRowList] = useState([]);
 
-  async function createAssetRow(formData: FormData): Promise<void> {
-    const apiPayload: AssetRowRequest = {
-      portfolioName: portfolioName,
-      assetName: formData.get("assetName") as string,
-      quantity: formData.get("quantity") as number,
-      unitPrice: formData.get("unitPrice") as number,
-    };
-    await request("/portfolio/portfolio-asset/create", {
-      method: "POST",
-      body: JSON.stringify(apiPayload),
-    });
+  async function handleClick() {
+    setShowForm((prev) => !prev);
   }
-  // Create a form that allow one to create an asset row
+
   return (
-    <form action={createAssetRow}>
-      <p>
-        <label htmlFor="assetName">Asset Name: </label>
-        <input type="text" id="assetName" name="assetName" required />
-      </p>
-      <p>
-        <label htmlFor="quantity">quantity: </label>
-        <input type="number" id="quantity" name="quantity" required />
-      </p>
-      <p>
-        <label htmlFor="unitPrice">unitPrice: </label>
-        <input type="number" id="unitPrice" name="unitPrice" required />
-      </p>
-    </form>
+    <>
+      {showForm ? (
+        <AssetRowForm
+          portfolioName={portfolioName}
+          updateError={(err: string) => setError(err)}
+          deactivateForm={() => setShowForm(false)}
+          updateAssetRowList={(assetRow: any) =>
+            setAssetRowList((prev) => [...prev, assetRow])
+          }
+        />
+      ) : (
+        <>
+          <h1>{portfolioName}</h1>
+          <button onClick={handleClick}>Add asset</button>
+        </>
+      )}
+    </>
   );
 }
