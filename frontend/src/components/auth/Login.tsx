@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
 import authStyles from "./auth.module.css";
 import { useAuth } from "./AuthContext";
+import { useNavigate } from "react-router-dom";
 
 function LoginForm() {
   const { login, request } = useAuth();
+  const navigate = useNavigate();
+
   async function handleAction(formData: FormData): Promise<void> {
     try {
       const email = formData.get("email") as String | null;
@@ -21,6 +24,7 @@ function LoginForm() {
 
       if (res != null) {
         login(res.jwtToken);
+        navigate("/home");
         // TODO: redirect to another page
       }
     } catch (e) {

@@ -19,6 +19,7 @@ public interface ApiRoutes {
   interface Portfolio {
     String BASE = VERSION + "/portfolio";
     String CREATE_PORTFOLIO = BASE + "/create";
+    String LIST_PORTFOLIOS = BASE + "/list";
 
     // PortfolioAsset row
     interface PortfolioAsset {
