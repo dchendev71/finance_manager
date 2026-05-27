@@ -57,7 +57,7 @@ public class TestSetup {
     PortfolioCreateRequest request = RequestTestFactory.Portfolio.create(portfolioName);
     ResultActions resultAction =
         requestHandler.performAuthorizedRequest(
-            ApiRoutes.Portfolio.CREATE_PORTFOLIO, request, HttpMethod.POST, jwtToken);
+            ApiRoutes.Portfolio.CREATE, request, HttpMethod.POST, jwtToken);
     Portfolio portfolio = EntityTestFactory.PortfolioFactory.create(portfolioName);
     this.testSetupDetails.setPortfolio(portfolio);
 
@@ -72,10 +72,7 @@ public class TestSetup {
 
     ResultActions resultActions =
         requestHandler.performAuthorizedRequest(
-            ApiRoutes.Portfolio.PortfolioAsset.CREATE_PORTFOLIO_ASSET,
-            request,
-            HttpMethod.POST,
-            jwtToken);
+            ApiRoutes.Portfolio.PortfolioAsset.CREATE, request, HttpMethod.POST, jwtToken);
 
     Asset asset = assetRepository.getByNameOrThrow(assetName);
 

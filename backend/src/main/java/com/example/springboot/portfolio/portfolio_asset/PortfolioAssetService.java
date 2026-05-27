@@ -13,6 +13,7 @@ import com.example.springboot.portfolio.transactions.TransactionsService;
 import com.example.springboot.user.User;
 import com.example.springboot.user.UserRepository;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -58,6 +59,17 @@ public class PortfolioAssetService {
       return portfolioAsset.getQuantity();
     }
     return quantity;
+  }
+
+  // TODO: Write test
+  public List<PortfolioAssetResponse> getPortfolioAssets(String email, String portfolioName) {
+    User user = userRepository.getByEmailOrThrow(email);
+    Portfolio portfolio =
+        portfolioRepository.getByUserIdAndNameOrThrow(user.getId(), portfolioName);
+
+    return portfolioAssetRepository.findAllByPortfolioId(portfolio.getId()).stream()
+        .map(portfolioAssetMapper::toResponse)
+        .toList();
   }
 
   public PortfolioAssetResponse createPortfolioAsset(String email, PortfolioAssetRequest request) {
@@ -110,5 +122,19 @@ public class PortfolioAssetService {
     updateRecords(dataHolder, accurateRequestQty, request.unitPrice());
     return Optional.of(
         portfolioAssetMapper.toResponse(portfolioAssetRepository.save(portfolioAsset)));
+  }
+
+  public void deletePortfolioAsset(String email, String portfolioName, String assetName) {
+    // Create a fake request to use utility function
+    DataHolder dataHolder =
+        createDataHolder(
+            email,
+            new PortfolioAssetRequest(portfolioName, assetName, BigDecimal.ZERO, BigDecimal.ZERO));
+
+    if (dataHolder.portfolioAsset().isEmpty()) {
+      return;
+    }
+
+    portfolioAssetRepository.delete(dataHolder.portfolioAsset().get());
   }
 }

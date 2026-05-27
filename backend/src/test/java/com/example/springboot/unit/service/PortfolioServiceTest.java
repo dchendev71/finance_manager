@@ -11,7 +11,6 @@ import com.example.springboot.portfolio.PortfolioRepository;
 import com.example.springboot.portfolio.PortfolioService;
 import com.example.springboot.portfolio.mapper.*;
 import com.example.springboot.user.UserRepository;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,8 +34,8 @@ public class PortfolioServiceTest {
   @Test
   @DisplayName("Should create a portfolio")
   void createPortfolio_should_succed() {
-    when(userRepository.findByEmail(TestConfig.User.email))
-        .thenReturn(Optional.of(EntityTestFactory.UserFactory.create()));
+    when(userRepository.getByEmailOrThrow(TestConfig.User.email))
+        .thenReturn(EntityTestFactory.UserFactory.create());
     when(portfolioMapper.toEntity(
             EntityTestFactory.UserFactory.create(), TestConfig.Portfolio.name))
         .thenReturn(EntityTestFactory.PortfolioFactory.create());

@@ -50,7 +50,7 @@ class PortfolioAssetIntegrationTest {
     PortfolioAssetRequest request = RequestTestFactory.PortfolioAsset.create();
     requestHandler
         .performAuthorizedRequest(
-            ApiRoutes.Portfolio.PortfolioAsset.CREATE_PORTFOLIO_ASSET,
+            ApiRoutes.Portfolio.PortfolioAsset.CREATE,
             request,
             HttpMethod.POST,
             testSetup.testSetupDetails.getJwtToken())

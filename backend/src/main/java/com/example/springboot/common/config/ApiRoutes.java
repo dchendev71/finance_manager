@@ -18,14 +18,17 @@ public interface ApiRoutes {
 
   interface Portfolio {
     String BASE = VERSION + "/portfolio";
-    String CREATE_PORTFOLIO = BASE + "/create";
-    String LIST_PORTFOLIOS = BASE + "/list";
+    String CREATE = BASE + "/create";
+    String LIST = BASE + "/list";
+    String DELETE = BASE + "/delete";
 
     // PortfolioAsset row
     interface PortfolioAsset {
       String BASE = Portfolio.BASE + "/portfolio-asset";
-      String CREATE_PORTFOLIO_ASSET = BASE + "/create";
+      String LIST = BASE + "/list/{portfolioName}";
+      String CREATE = BASE + "/create";
       String UPDATE = BASE + "/update";
+      String DELETE = BASE + "/delete";
     }
   }
 }

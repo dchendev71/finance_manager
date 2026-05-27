@@ -64,9 +64,7 @@ public class PortfolioControllerTest {
 
     requestHandler
         .performAuthorizedRequest(
-            ApiRoutes.Portfolio.CREATE_PORTFOLIO,
-            RequestTestFactory.Portfolio.create(),
-            HttpMethod.POST)
+            ApiRoutes.Portfolio.CREATE, RequestTestFactory.Portfolio.create(), HttpMethod.POST)
         .andExpect(status().isCreated());
   }
 }
