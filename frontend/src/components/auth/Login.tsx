@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import authStyles from "./auth.module.css";
 import { useAuth } from "./AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -33,21 +32,31 @@ function LoginForm() {
   }
 
   return (
-    <div className={authStyles.formContainer}>
-      <form action={handleAction}>
-        <p>
-          <label htmlFor="email">Email: </label>
-          <input type="text" id="email" name="email" required />
-        </p>
-        <p>
-          <label htmlFor="password">Password: </label>
-          <input type="password" id="password" name="password" required />
-        </p>
-        <p>
-          <input type="submit" value="login"></input>
-        </p>
-        <Link to="/register">Sign up here</Link>
-      </form>
+    <div className="centered-page-container">
+      <div className="form-container">
+        <form className="elegant-form" action={handleAction}>
+          <div className="form-group">
+            <label htmlFor="email">Email: </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="your_email@gmail.com"
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Password: </label>
+            <input type="password" id="password" name="password" required />
+          </div>
+          <div className="form-group">
+            <button type="submit" className="btn-primary">
+              Login
+            </button>
+          </div>
+          <Link to="/register">Sign up here</Link>
+        </form>
+      </div>
     </div>
   );
 }

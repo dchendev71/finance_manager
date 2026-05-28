@@ -51,13 +51,22 @@ export default function Portfolio({ portfolioName }: PortfolioProps) {
         />
       ) : (
         <>
-          <h1>{portfolioName}</h1>
-          {assetRowList.length > 0 &&
-            assetRowList.map((assetRow: any) => (
-              <AssetRow key={assetRow.name} assetName={assetRow.name} />
-            ))}
+          <h2 className="title-secondary">{portfolioName}</h2>
 
-          <button onClick={handleClick}>Add asset</button>
+          <div className="card-level-2">
+            {assetRowList.length > 0 && (
+              <ul className="list-level-3">
+                {assetRowList.map((assetRow: any) => (
+                  <AssetRow key={assetRow.name} assetName={assetRow.name} />
+                ))}
+              </ul>
+            )}
+            <div className="button-group-left">
+              <button className="btn-primary" onClick={handleClick}>
+                Add asset
+              </button>
+            </div>
+          </div>
         </>
       )}
     </>

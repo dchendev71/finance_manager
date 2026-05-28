@@ -36,28 +36,40 @@ export default function PortfolioDashboard() {
 
   return (
     <>
-      <h1>Your Portfolios</h1>
-      {portfolioList.length === 0 ? (
-        <p>You don't have any portfolios! Create one below!</p>
-      ) : (
-        <ul>
-          {portfolioList.map((portfolio: any) => (
-            <Portfolio
-              key={portfolio.portfolioName}
-              portfolioName={portfolio.portfolioName}
-            />
-          ))}
-        </ul>
-      )}
-      <form action={handleCreatePortfolio}>
-        <p>
-          <label htmlFor="portfolioName">Portfolio's Name</label>
-          <input type="text" id="portfolioName" name="portfolioName" required />
-        </p>
-        <p>
-          <input type="submit" value="Create portfolio"></input>
-        </p>
-      </form>
+      <main className="dashboard-container">
+        <header className="main-header">
+          <h1 className="title-primary">Portfolio Dashboard</h1>
+        </header>
+
+        {portfolioList.length && (
+          <section className="list-level-1">
+            <article className="card-level-1">
+              {portfolioList.map((portfolio: any) => (
+                <Portfolio
+                  key={portfolio.portfolioName}
+                  portfolioName={portfolio.portfolioName}
+                />
+              ))}
+            </article>
+          </section>
+        )}
+        <div className="form-container">
+          <form className="elegant-form" action={handleCreatePortfolio}>
+            <div className="form-group">
+              <label htmlFor="portfolioName">Portfolio's Name</label>
+              <input
+                type="text"
+                id="portfolioName"
+                name="portfolioName"
+                required
+              />
+            </div>
+            <button type="submit" className="btn-primary">
+              Create Portfolio
+            </button>
+          </form>
+        </div>
+      </main>
     </>
   );
 }

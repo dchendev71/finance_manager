@@ -43,27 +43,27 @@ export default function AssetRowForm({
   }
   return (
     <>
-      <form action={handleForm}>
-        <p>
-          <label htmlFor="assetName">Asset Name: </label>
-          <input type="text" id="assetName" name="assetName" required />
-        </p>
+      <div className="form-container">
+        <form className="elegant-form" action={handleForm}>
+          <div className="form-group">
+            <label htmlFor="assetName">Asset Name: </label>
+            <input type="text" id="assetName" name="assetName" required />
+          </div>
 
-        <p>
-          <label htmlFor="quantity">Quantity: </label>
-          <input type="number" id="quantity" name="quantity" required />
-        </p>
+          <div className="form-group">
+            <label htmlFor="quantity">Quantity: </label>
+            <input type="number" id="quantity" name="quantity" required />
+          </div>
 
-        <p>
-          <label htmlFor="unitPrice">Unit Price: </label>
-          <input type="number" id="unitPrice" name="unitPrice" required />
-        </p>
-
-        <p>
-          <input type="submit" value="Create new asset" />
-        </p>
-      </form>
-
+          <div className="form-group">
+            <label htmlFor="unitPrice">Unit Price: </label>
+            <input type="number" id="unitPrice" name="unitPrice" required />
+          </div>
+          <button type="submit" className="btn-primary">
+            Create new asset
+          </button>
+        </form>
+      </div>
       <button onClick={() => deactivateForm()}>Cancel</button>
     </>
   );

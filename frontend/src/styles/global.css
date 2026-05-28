@@ -1,0 +1,273 @@
+/* ==========================================================================
+   1. Design Tokens & Global Setup
+   ========================================================================== */
+:root {
+  --bg-main: #0f172a; /* Sophisticated deep slate */
+  --bg-card-1: #1e293b; /* Level 1 base card background */
+  --bg-card-2: #334155; /* Level 2 nested card background */
+  --bg-input: #1e293b; /* Form input background */
+
+  --text-main: #f8fafc; /* Clean off-white for high readability */
+  --text-muted: #94a3b8; /* Elegant low-contrast gray for headers/labels */
+  --text-accent: #38bdf8; /* Soft electrical sky blue for highlights */
+
+  --btn-primary: #38bdf8; /* Accent blue button */
+  --btn-primary-hover: #0ea5e9;
+
+  --border-color: #475569;
+  --radius-lg: 12px;
+  --radius-md: 8px;
+  --transition: all 0.25s ease-in-out;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* A dedicated layout container to center any form or element on the page */
+.centered-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Take up the full screen height */
+  width: 100vw; /* Take up the full screen width */
+  padding: 1.5rem; /* Keeps padding on mobile viewports */
+  box-sizing: border-box;
+}
+
+/* Constrain the direct child inside the container so it doesn't stretch */
+.centered-page-container > * {
+  width: 100%;
+  max-width: 400px; /* 🟢 The magic constraint line */
+}
+
+/* ==========================================================================
+   2. Layout Container & Headings
+   ========================================================================== */
+.dashboard-container {
+  max-width: 800px;
+  margin: 4rem auto;
+  padding: 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+/* Soft, unaggressive headers */
+.title-primary {
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+}
+
+.title-secondary {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0 0 1rem 0;
+}
+
+.title-tertiary {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-accent);
+  margin: 0 0 0.75rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ==========================================================================
+   3. The Drilled-Down Visual Hierarchy Hierarchy
+   ========================================================================== */
+
+/* Level 1 Card: Big, spacious housing block */
+.card-level-1 {
+  background-color: var(--bg-card-1);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+/* Level 2 Wrapper & Individual Card Layout */
+.list-level-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  margin-left: 1rem; /* Shift right to show subordination */
+  border-left: 2px solid #475569; /* Elegant tracking vertical alignment line */
+  padding-left: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.card-level-2 {
+  background-color: var(--bg-card-2);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+/* Level 3: Clean elements list layout */
+.list-level-3 {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.element-item {
+  font-size: 0.95rem;
+  color: #e2e8f0;
+  background-color: rgba(15, 23, 42, 0.25);
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+}
+
+/* Simple Bullet-Dot indicator decoration */
+.element-item::before {
+  content: "•";
+  color: var(--text-accent);
+  font-weight: bold;
+  display: inline-block;
+  width: 1em;
+  margin-left: 0.25rem;
+}
+
+/* ==========================================================================
+   4. Buttons & Interactive Elements
+   ========================================================================== */
+.action-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+button {
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  border-radius: var(--radius-md);
+}
+
+/* Main primary block submit button */
+.btn-primary {
+  background-color: var(--btn-primary);
+  color: #0f172a;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  width: 100%;
+}
+
+.btn-primary:hover {
+  background-color: var(--btn-primary-hover);
+  transform: translateY(-1px);
+}
+
+/* Sub-action outline toggle text buttons */
+.btn-secondary {
+  background-color: transparent;
+  color: var(--text-accent);
+  border: 1px dashed var(--text-accent);
+  padding: 0.5rem 1rem;
+}
+
+.btn-secondary:hover {
+  background-color: rgba(56, 189, 248, 0.1);
+}
+
+/* ==========================================================================
+   5. Elegant Forms System
+   ========================================================================== */
+.form-container {
+  background-color: var(--bg-card-1);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+}
+
+.elegant-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.elegant-form label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.elegant-form input[type="text"],
+.elegant-form input[type="email"],
+.elegant-form input[type="password"],
+.elegant-form input[type="number"],
+.elegant-form select {
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-main);
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  outline: none;
+  transition: var(--transition);
+
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+  padding-right: 2.5rem; /* Make room so text doesn't overlap the arrow */
+  cursor: pointer;
+}
+
+.elegant-form input[type="text"]:focus,
+.elegant-form input[type="email"]:focus,
+.elegant-form input[type="password"]:focus,
+.elegant-form input[type="number"]:focus,
+.elegant-form select:focus {
+  border-color: var(--text-accent);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+}
+
+.elegant-form select option {
+  background-color: var(--bg-card-1); /* Matches your dark card theme */
+  color: var(--text-main);
+  padding: 0.75rem;
+}
+
+.button-group-left {
+  display: flex;
+  justify-content: flex-start; /* Aligns to the left */
+  margin-top: 1rem; /* Gives breathing room below the list */
+}
+
+/* Target the specific primary button inside this left group to scale it down */
+.button-group-left .btn-primary {
+  width: auto; /* 🟢 Stops it from spanning 100% width */
+  padding: 0.4rem 1rem; /* 🟢 Makes it smaller (shorter height & narrower) */
+  font-size: 0.85rem; /* 🟢 Slightly smaller typography */
+}

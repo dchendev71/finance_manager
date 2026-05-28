@@ -2,5 +2,5 @@ interface AssetRowProps {
   assetName: string;
 }
 export default function AssetRow({ assetName }: AssetRowProps) {
-  return <h1>Hello from {assetName}!</h1>;
+  return <li className="element-item">Hello from {assetName}!</li>;
 }
