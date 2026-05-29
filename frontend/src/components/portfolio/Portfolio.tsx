@@ -46,7 +46,7 @@ export default function Portfolio({ portfolioName }: PortfolioProps) {
           updateError={(err: string) => setError(err)}
           deactivateForm={() => setShowForm(false)}
           updateAssetRowList={(assetRow: any) =>
-            setAssetRowList((prev) => [...prev, assetRow])
+            setAssetRowList((prev) => [...prev, assetRow.assetResponse])
           }
         />
       ) : (

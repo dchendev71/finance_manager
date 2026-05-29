@@ -36,6 +36,7 @@ export default function AssetRowForm({
       });
       // If we reach this scope everything is good
       updateAssetRowList(response);
+      deactivateForm();
     } catch (e: any) {
       updateError(e.message);
       return;

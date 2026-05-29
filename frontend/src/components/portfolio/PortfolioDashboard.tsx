@@ -41,7 +41,7 @@ export default function PortfolioDashboard() {
           <h1 className="title-primary">Portfolio Dashboard</h1>
         </header>
 
-        {portfolioList.length && (
+        {portfolioList.length > 0 && (
           <section className="list-level-1">
             <article className="card-level-1">
               {portfolioList.map((portfolio: any) => (
