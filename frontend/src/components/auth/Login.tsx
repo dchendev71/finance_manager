@@ -33,29 +33,37 @@ function LoginForm() {
 
   return (
     <div className="centered-page-container">
-      <div className="form-container">
-        <form className="elegant-form" action={handleAction}>
-          <div className="form-group">
-            <label htmlFor="email">Email: </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="your_email@gmail.com"
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">Password: </label>
-            <input type="password" id="password" name="password" required />
-          </div>
-          <div className="form-group">
-            <button type="submit" className="btn-primary">
-              Login
-            </button>
-          </div>
-          <Link to="/register">Sign up here</Link>
-        </form>
+      <div className="auth-stack-wrapper">
+        <h1
+          className="title-primary auth-tile-center"
+          style={{ position: "relative", left: "10px" }}
+        >
+          Login
+        </h1>
+        <div className="form-container">
+          <form className="elegant-form" action={handleAction}>
+            <div className="form-group">
+              <label htmlFor="email">Email: </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="your_email@gmail.com"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="password">Password: </label>
+              <input type="password" id="password" name="password" required />
+            </div>
+            <div className="form-group">
+              <button type="submit" className="btn-primary">
+                Login
+              </button>
+            </div>
+            <Link to="/register">Sign up here</Link>
+          </form>
+        </div>
       </div>
     </div>
   );
