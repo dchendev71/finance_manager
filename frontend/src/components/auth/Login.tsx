@@ -2,8 +2,12 @@ import { Link } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 import { useNavigate } from "react-router-dom";
 import InputField from "@/components/ui/InputField";
+import FormErrorBanner from "@/components/ui/FormErrorBanner";
+import { useState } from "react";
 
 function LoginForm() {
+  const [error, setError] = useState<string | null>(null);
+
   const { login, request } = useAuth();
   const navigate = useNavigate();
 
@@ -12,7 +16,8 @@ function LoginForm() {
       const email = formData.get("email") as String | null;
       const password = formData.get("password") as String | null;
       if (!email || !password) {
-        throw new Error("Email and password are required fields.");
+        setError("Email and password are required fields.");
+        return;
       }
       const res = await request("/auth/login", {
         method: "POST",
@@ -25,10 +30,9 @@ function LoginForm() {
       if (res != null) {
         login(res.jwtToken);
         navigate("/home");
-        // TODO: redirect to another page
       }
-    } catch (e) {
-      // TODO: Do something smart
+    } catch (e: any) {
+      setError(e.message || "Network error — please try again");
     }
   }
 
@@ -39,6 +43,7 @@ function LoginForm() {
           <header className="text-center mb-8 sm:mb-6">
             <h1 className="font-bold">Login</h1>
           </header>
+          <FormErrorBanner message={error} />
           <form className="flex flex-col gap-5 sm:gap-4" action={handleAction}>
             <InputField id="email" type="email" label="Email: " />
             <InputField id="password" type="password" label="Password: " />

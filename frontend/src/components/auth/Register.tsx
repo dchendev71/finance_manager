@@ -2,16 +2,15 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 import InputField from "../ui/InputField";
+import FormErrorBanner from "@/components/ui/FormErrorBanner";
 
 function RegisterForm() {
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { request } = useAuth();
   const navigate = useNavigate();
 
   async function handleAction(formData: FormData): Promise<void> {
-    setError("");
-    setLoading(true);
+    setError(null);
 
     const email = formData.get("email") as string | null;
     const password = formData.get("password") as string | null;
@@ -33,8 +32,6 @@ function RegisterForm() {
       navigate("/login");
     } catch (err: any) {
       setError(err.message || "Network error — please try again");
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -45,6 +42,8 @@ function RegisterForm() {
           <header className="text-center mb-8 sm:mb-6">
             <h1 className="font-bold">Register</h1>
           </header>
+
+          <FormErrorBanner message={error} />
           <form className="flex flex-col gap-5 sm:gap-4" action={handleAction}>
             <InputField id="email" type="email" label="Email: " />
             <InputField id="password" type="password" label="Password: " />
@@ -72,9 +71,9 @@ function RegisterForm() {
                     aria-hidden="true"
                   >
                     <path
-                      fill-rule="evenodd"
+                      fillRule="evenodd"
                       d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                      clip-rule="evenodd"
+                      clipRule="evenodd"
                     />
                   </svg>
                 </div>
