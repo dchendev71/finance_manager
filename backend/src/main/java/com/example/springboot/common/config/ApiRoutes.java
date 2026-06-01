@@ -16,19 +16,25 @@ public interface ApiRoutes {
     String DELETE = BASE + "/delete";
   }
 
-  interface Portfolio {
-    String BASE = VERSION + "/portfolio";
-    String CREATE = BASE + "/create";
-    String LIST = BASE + "/list";
+  interface Portfolios {
+    String BASE = VERSION + "/portfolios";
+    // POST
+    String CREATE = BASE;
+    // GET
+    String LIST = BASE;
     String DELETE = BASE + "/delete";
 
     // PortfolioAsset row
-    interface PortfolioAsset {
-      String BASE = Portfolio.BASE + "/portfolio-asset";
-      String LIST = BASE + "/list/{portfolioName}";
-      String CREATE = BASE + "/create";
-      String UPDATE = BASE + "/update";
-      String DELETE = BASE + "/delete";
+    interface PortfolioAssets {
+      String BASE = VERSION + "/{portfolioName}";
+      // GET request
+      String LIST = BASE;
+      // POST request
+      String CREATE = BASE;
+      // PATCH request
+      String UPDATE = BASE + "/{assetName}";
+      // DELETE request
+      String DELETE = BASE + "/{assetName}";
     }
   }
 }

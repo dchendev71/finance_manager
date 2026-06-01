@@ -24,7 +24,7 @@ public class PortfolioController {
     this.portfolioService = portfolioService;
   }
 
-  @PostMapping(path = ApiRoutes.Portfolio.CREATE)
+  @PostMapping(path = ApiRoutes.Portfolios.CREATE)
   public ResponseEntity<PortfolioResponse> createPortfolio(
       @AuthenticationPrincipal CustomUserPrincipal principal,
       @Valid @RequestBody PortfolioCreateRequest request) {
@@ -33,7 +33,7 @@ public class PortfolioController {
   }
 
   // TODO: Test function
-  @GetMapping(path = ApiRoutes.Portfolio.LIST)
+  @GetMapping(path = ApiRoutes.Portfolios.LIST)
   public ResponseEntity<List<PortfolioResponse>> getPortfolios(
       @AuthenticationPrincipal CustomUserPrincipal principal) {
     return ResponseEntity.ok(portfolioService.getPortfolios(principal.getUsername()));

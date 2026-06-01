@@ -48,7 +48,7 @@ class PortfolioIntegrationTest {
     void createPortfolio() throws Exception {
       requestHandler
           .performAuthorizedRequest(
-              ApiRoutes.Portfolio.CREATE,
+              ApiRoutes.Portfolios.CREATE,
               RequestTestFactory.Portfolio.create(),
               HttpMethod.POST,
               testSetup.testSetupDetails.getJwtToken())
@@ -60,14 +60,14 @@ class PortfolioIntegrationTest {
     void createSamePortfolio() throws Exception {
 
       requestHandler.performAuthorizedRequest(
-          ApiRoutes.Portfolio.CREATE,
+          ApiRoutes.Portfolios.CREATE,
           RequestTestFactory.Portfolio.create(),
           HttpMethod.POST,
           testSetup.testSetupDetails.getJwtToken());
 
       requestHandler
           .performAuthorizedRequest(
-              ApiRoutes.Portfolio.CREATE,
+              ApiRoutes.Portfolios.CREATE,
               RequestTestFactory.Portfolio.create(),
               HttpMethod.POST,
               testSetup.testSetupDetails.getJwtToken())

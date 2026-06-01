@@ -65,7 +65,7 @@ public class PortfolioAssetControllerTest {
         .thenReturn(ResponseTestFactory.PortfolioAsset.create());
     requestHandler
         .performAuthorizedRequest(
-            ApiRoutes.Portfolio.PortfolioAsset.CREATE, request, HttpMethod.POST)
+            ApiRoutes.Portfolios.PortfolioAssets.CREATE, request, HttpMethod.POST)
         .andExpect(status().isCreated());
   }
 
@@ -77,7 +77,7 @@ public class PortfolioAssetControllerTest {
         .thenThrow(new NotFoundException(Portfolio.class, TestConfig.Portfolio.name));
     requestHandler
         .performAuthorizedRequest(
-            ApiRoutes.Portfolio.PortfolioAsset.CREATE, request, HttpMethod.POST)
+            ApiRoutes.Portfolios.PortfolioAssets.CREATE, request, HttpMethod.POST)
         .andExpect(status().is4xxClientError());
   }
 }

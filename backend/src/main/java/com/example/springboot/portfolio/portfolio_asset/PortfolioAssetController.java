@@ -30,14 +30,14 @@ public class PortfolioAssetController {
   }
 
   // TODO: write test
-  @GetMapping(path = ApiRoutes.Portfolio.PortfolioAsset.LIST)
+  @GetMapping(path = ApiRoutes.Portfolios.PortfolioAssets.LIST)
   public ResponseEntity<List<PortfolioAssetResponse>> getPortfolioAssets(
       @AuthenticationPrincipal CustomUserPrincipal principal, @PathVariable String portfolioName) {
     return ResponseEntity.ok(
         portfolioAssetService.getPortfolioAssets(principal.getUsername(), portfolioName));
   }
 
-  @PostMapping(path = ApiRoutes.Portfolio.PortfolioAsset.CREATE)
+  @PostMapping(path = ApiRoutes.Portfolios.PortfolioAssets.CREATE)
   public ResponseEntity<PortfolioAssetResponse> createPortfolioAsset(
       @AuthenticationPrincipal CustomUserPrincipal principal,
       @Valid @RequestBody PortfolioAssetRequest request) {
@@ -48,7 +48,7 @@ public class PortfolioAssetController {
   }
 
   // TODO: write test
-  @DeleteMapping(path = ApiRoutes.Portfolio.PortfolioAsset.DELETE)
+  @DeleteMapping(path = ApiRoutes.Portfolios.PortfolioAssets.DELETE)
   public ResponseEntity<Void> deletePortfolioAsset(
       @AuthenticationPrincipal CustomUserPrincipal principal,
       @PathVariable String portfolioName,
@@ -58,7 +58,7 @@ public class PortfolioAssetController {
     return ResponseEntity.noContent().build();
   }
 
-  @PatchMapping(path = ApiRoutes.Portfolio.PortfolioAsset.UPDATE)
+  @PatchMapping(path = ApiRoutes.Portfolios.PortfolioAssets.UPDATE)
   public ResponseEntity<PortfolioAssetResponse> updatePortfolioAsset(
       @AuthenticationPrincipal CustomUserPrincipal principal,
       @Valid @RequestBody PortfolioAssetRequest request) {
