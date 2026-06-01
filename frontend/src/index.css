@@ -1,18 +1,13 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+/* src/index.css */
+@import "tailwindcss";
 
+html,
 body {
-    background-color: #1a1a1a;
-    min-height: 100vh;
-}
+  min-height: 100vh;
+  width: 100%;
+  margin: 0;
 
-html {
-    height: 100%;
-}
-
-a {
-    color: #ccc;
+  /* Bypassing the token engine to isolate the problem */
+  background-color: #f8fafc;
+  color: #0f172a;
 }
