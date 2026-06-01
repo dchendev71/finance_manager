@@ -87,15 +87,12 @@ public class RequestTestFactory {
 
   public static class PortfolioAsset {
 
-    public static PortfolioAssetRequest create(
-        String portfolioName, String assetName, BigDecimal quantity) {
-      return new PortfolioAssetRequest(
-          portfolioName, assetName, quantity, TestConfig.PortfolioAsset.price);
+    public static PortfolioAssetRequest create(String assetName, BigDecimal quantity) {
+      return new PortfolioAssetRequest(assetName, quantity, TestConfig.PortfolioAsset.price);
     }
 
     public static PortfolioAssetRequest create() {
       return new PortfolioAssetRequest(
-          TestConfig.Portfolio.name,
           TestConfig.Asset.name,
           TestConfig.PortfolioAsset.quantity,
           TestConfig.PortfolioAsset.price);
@@ -103,10 +100,7 @@ public class RequestTestFactory {
 
     public static PortfolioAssetRequest create(BigDecimal quantity) {
       return new PortfolioAssetRequest(
-          TestConfig.Portfolio.name,
-          TestConfig.Asset.name,
-          quantity,
-          TestConfig.PortfolioAsset.price);
+          TestConfig.Asset.name, quantity, TestConfig.PortfolioAsset.price);
     }
   }
 }

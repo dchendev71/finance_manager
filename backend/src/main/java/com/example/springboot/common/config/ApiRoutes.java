@@ -26,15 +26,15 @@ public interface ApiRoutes {
 
     // PortfolioAsset row
     interface PortfolioAssets {
-      String BASE = VERSION + "/{portfolioName}";
+      String BASE = ApiRoutes.Portfolios.BASE;
       // GET request
-      String LIST = BASE;
+      String LIST = BASE + "/{portfolioName}";
       // POST request
-      String CREATE = BASE;
+      String CREATE = BASE + "/{portfolioName}";
       // PATCH request
-      String UPDATE = BASE + "/{assetName}";
+      String UPDATE = BASE + "/{portfolioName}/{assetName}";
       // DELETE request
-      String DELETE = BASE + "/{assetName}";
+      String DELETE = BASE + "/{portfolioName}/{assetName}";
     }
   }
 }

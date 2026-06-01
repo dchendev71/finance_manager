@@ -40,10 +40,11 @@ public class PortfolioAssetController {
   @PostMapping(path = ApiRoutes.Portfolios.PortfolioAssets.CREATE)
   public ResponseEntity<PortfolioAssetResponse> createPortfolioAsset(
       @AuthenticationPrincipal CustomUserPrincipal principal,
+      @PathVariable String portfolioName,
       @Valid @RequestBody PortfolioAssetRequest request) {
 
     PortfolioAssetResponse response =
-        portfolioAssetService.createPortfolioAsset(principal.getUsername(), request);
+        portfolioAssetService.createPortfolioAsset(principal.getUsername(), portfolioName, request);
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
   }
 
@@ -61,9 +62,10 @@ public class PortfolioAssetController {
   @PatchMapping(path = ApiRoutes.Portfolios.PortfolioAssets.UPDATE)
   public ResponseEntity<PortfolioAssetResponse> updatePortfolioAsset(
       @AuthenticationPrincipal CustomUserPrincipal principal,
+      @PathVariable String portfolioName,
       @Valid @RequestBody PortfolioAssetRequest request) {
     Optional<PortfolioAssetResponse> response =
-        portfolioAssetService.updatePortfolioAsset(principal.getUsername(), request);
+        portfolioAssetService.updatePortfolioAsset(principal.getUsername(), portfolioName, request);
     if (response.isEmpty()) {
       return ResponseEntity.noContent().build();
     }

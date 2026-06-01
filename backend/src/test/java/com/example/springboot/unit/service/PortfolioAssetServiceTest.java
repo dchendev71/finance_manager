@@ -68,7 +68,7 @@ class PortfolioAssetServiceTest {
 
     PortfolioAsset portfolioAsset = EntityTestFactory.PortfolioAssetFactory.create();
     when(userRepository.getByEmailOrThrow(user.getEmail())).thenReturn(user);
-    when(portfolioRepository.getByUserIdAndNameOrThrow(anyLong(), eq(request.portfolioName())))
+    when(portfolioRepository.getByUserIdAndNameOrThrow(anyLong(), eq(TestConfig.Portfolio.name)))
         .thenReturn(portfolio);
     when(assetRepository.getByNameOrThrow(request.assetName())).thenReturn(asset);
     when(portfolioAssetRepository.findByAssetNameAndPortfolioId(
@@ -82,7 +82,8 @@ class PortfolioAssetServiceTest {
         .thenReturn(ResponseTestFactory.PortfolioAsset.create());
 
     PortfolioAssetResponse response =
-        portfolioAssetService.createPortfolioAsset(user.getEmail(), request);
+        portfolioAssetService.createPortfolioAsset(
+            user.getEmail(), TestConfig.Portfolio.name, request);
 
     verify(portfolioAssetRepository).save(any());
 
@@ -98,7 +99,7 @@ class PortfolioAssetServiceTest {
 
     PortfolioAsset portfolioAsset = EntityTestFactory.PortfolioAssetFactory.create();
     when(userRepository.getByEmailOrThrow(user.getEmail())).thenReturn(user);
-    when(portfolioRepository.getByUserIdAndNameOrThrow(anyLong(), eq(request.portfolioName())))
+    when(portfolioRepository.getByUserIdAndNameOrThrow(anyLong(), eq(TestConfig.Portfolio.name)))
         .thenReturn(portfolio);
     when(assetRepository.getByNameOrThrow(request.assetName())).thenReturn(asset);
     when(portfolioAssetRepository.findByAssetNameAndPortfolioId(
@@ -107,6 +108,8 @@ class PortfolioAssetServiceTest {
 
     assertThrows(
         ExistsException.class,
-        () -> portfolioAssetService.createPortfolioAsset(user.getEmail(), request));
+        () ->
+            portfolioAssetService.createPortfolioAsset(
+                user.getEmail(), TestConfig.Portfolio.name, request));
   }
 }

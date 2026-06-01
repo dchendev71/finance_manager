@@ -61,11 +61,13 @@ public class PortfolioAssetControllerTest {
   @DisplayName("POST /portfolio-asset/create should return 200")
   void create_shouldReturn200() throws Exception {
     PortfolioAssetRequest request = RequestTestFactory.PortfolioAsset.create();
-    when(portfolioAssetService.createPortfolioAsset(user.getEmail(), request))
+    when(portfolioAssetService.createPortfolioAsset(
+            user.getEmail(), TestConfig.Portfolio.name, request))
         .thenReturn(ResponseTestFactory.PortfolioAsset.create());
+    // PortfolioName is the targetted portfolio
+    String route = ApiRoutes.Portfolios.PortfolioAssets.BASE + "/" + TestConfig.Portfolio.name;
     requestHandler
-        .performAuthorizedRequest(
-            ApiRoutes.Portfolios.PortfolioAssets.CREATE, request, HttpMethod.POST)
+        .performAuthorizedRequest(route, request, HttpMethod.POST)
         .andExpect(status().isCreated());
   }
 
@@ -73,11 +75,13 @@ public class PortfolioAssetControllerTest {
   @DisplayName("POST /portfolio-asset/create should return 4xx")
   void create_shouldReturn4xx() throws Exception {
     PortfolioAssetRequest request = RequestTestFactory.PortfolioAsset.create();
-    when(portfolioAssetService.createPortfolioAsset(user.getEmail(), request))
+    when(portfolioAssetService.createPortfolioAsset(
+            user.getEmail(), TestConfig.Portfolio.name, request))
         .thenThrow(new NotFoundException(Portfolio.class, TestConfig.Portfolio.name));
+
+    String route = ApiRoutes.Portfolios.PortfolioAssets.BASE + "/" + TestConfig.Portfolio.name;
     requestHandler
-        .performAuthorizedRequest(
-            ApiRoutes.Portfolios.PortfolioAssets.CREATE, request, HttpMethod.POST)
+        .performAuthorizedRequest(route, request, HttpMethod.POST)
         .andExpect(status().is4xxClientError());
   }
 }

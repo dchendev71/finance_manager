@@ -48,9 +48,10 @@ class PortfolioAssetIntegrationTest {
   @DisplayName("Should create a portfolioAsset happy ending")
   void create_shouldReturn200() throws Exception {
     PortfolioAssetRequest request = RequestTestFactory.PortfolioAsset.create();
+    String route = ApiRoutes.Portfolios.PortfolioAssets.BASE + "/" + TestConfig.Portfolio.name;
     requestHandler
         .performAuthorizedRequest(
-            ApiRoutes.Portfolios.PortfolioAssets.CREATE,
+            ApiRoutes.Portfolios.PortfolioAssets.BASE + "/" + TestConfig.Portfolio.name,
             request,
             HttpMethod.POST,
             testSetup.testSetupDetails.getJwtToken())

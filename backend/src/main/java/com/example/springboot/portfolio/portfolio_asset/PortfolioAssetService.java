@@ -35,10 +35,11 @@ public class PortfolioAssetService {
   private record DataHolder(
       User user, Asset asset, Portfolio portfolio, Optional<PortfolioAsset> portfolioAsset) {}
 
-  private DataHolder createDataHolder(String email, PortfolioAssetRequest request) {
+  private DataHolder createDataHolder(
+      String email, String portfolioName, PortfolioAssetRequest request) {
     User user = userRepository.getByEmailOrThrow(email);
     Portfolio portfolio =
-        portfolioRepository.getByUserIdAndNameOrThrow(user.getId(), request.portfolioName());
+        portfolioRepository.getByUserIdAndNameOrThrow(user.getId(), portfolioName);
     Asset asset = assetRepository.getByNameOrThrow(request.assetName());
     Optional<PortfolioAsset> portfolioAsset =
         portfolioAssetRepository.findByAssetNameAndPortfolioId(
@@ -72,8 +73,9 @@ public class PortfolioAssetService {
         .toList();
   }
 
-  public PortfolioAssetResponse createPortfolioAsset(String email, PortfolioAssetRequest request) {
-    DataHolder dataHolder = createDataHolder(email, request);
+  public PortfolioAssetResponse createPortfolioAsset(
+      String email, String portfolioName, PortfolioAssetRequest request) {
+    DataHolder dataHolder = createDataHolder(email, portfolioName, request);
     // Check if portfolioAsset already exists - ie if we want to add quantity then use update
     if (dataHolder.portfolioAsset().isPresent()) {
       throw new ExistsException(PortfolioAsset.class, request.assetName());
@@ -100,8 +102,8 @@ public class PortfolioAssetService {
   }
 
   public Optional<PortfolioAssetResponse> updatePortfolioAsset(
-      String email, PortfolioAssetRequest request) {
-    DataHolder dataHolder = createDataHolder(email, request);
+      String email, String portfolioName, PortfolioAssetRequest request) {
+    DataHolder dataHolder = createDataHolder(email, portfolioName, request);
     // If not found, should use the create endpoint
     if (dataHolder.portfolioAsset().isEmpty()) {
       throw new NotFoundException(PortfolioAsset.class, "");
@@ -129,7 +131,8 @@ public class PortfolioAssetService {
     DataHolder dataHolder =
         createDataHolder(
             email,
-            new PortfolioAssetRequest(portfolioName, assetName, BigDecimal.ZERO, BigDecimal.ZERO));
+            portfolioName,
+            new PortfolioAssetRequest(assetName, BigDecimal.ZERO, BigDecimal.ZERO));
 
     if (dataHolder.portfolioAsset().isEmpty()) {
       return;

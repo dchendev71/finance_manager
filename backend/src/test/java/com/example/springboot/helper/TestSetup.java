@@ -67,12 +67,12 @@ public class TestSetup {
   public ResultActions createPortfolioAsset(
       Portfolio portfolio, String assetName, BigDecimal quantity, String jwtToken)
       throws Exception {
-    PortfolioAssetRequest request =
-        RequestTestFactory.PortfolioAsset.create(portfolio.getName(), assetName, quantity);
+    PortfolioAssetRequest request = RequestTestFactory.PortfolioAsset.create(assetName, quantity);
+
+    String route = ApiRoutes.Portfolios.PortfolioAssets.BASE + "/" + portfolio.getName();
 
     ResultActions resultActions =
-        requestHandler.performAuthorizedRequest(
-            ApiRoutes.Portfolios.PortfolioAssets.CREATE, request, HttpMethod.POST, jwtToken);
+        requestHandler.performAuthorizedRequest(route, request, HttpMethod.POST, jwtToken);
 
     Asset asset = assetRepository.getByNameOrThrow(assetName);
 
