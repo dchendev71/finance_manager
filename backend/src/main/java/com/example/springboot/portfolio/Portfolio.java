@@ -25,7 +25,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
-@Table(name = "portfolio")
+@Table(name = "portfolios")
 @Builder
 @Getter
 @Setter
@@ -53,6 +53,6 @@ public class Portfolio {
   @JoinColumn(
       name = "user_id",
       nullable = false,
-      foreignKey = @ForeignKey(name = "fk_portfolio_users"))
+      foreignKey = @ForeignKey(name = "fk_portfolios_users"))
   private User user;
 }

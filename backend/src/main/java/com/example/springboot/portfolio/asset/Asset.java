@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "asset")
+@Table(name = "assets")
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -40,8 +40,8 @@ public class Asset {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(
-      name = "asset_type",
+      name = "asset_types",
       nullable = false,
-      foreignKey = @ForeignKey(name = "fk_asset_asset_type"))
+      foreignKey = @ForeignKey(name = "fk_assets_asset_types"))
   AssetType assetType;
 }

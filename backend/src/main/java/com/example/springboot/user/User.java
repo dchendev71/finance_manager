@@ -59,7 +59,7 @@ public class User {
   @JoinColumn(
       name = "currency_id",
       nullable = false,
-      foreignKey = @ForeignKey(name = "fk_users_currency"))
+      foreignKey = @ForeignKey(name = "fk_users_currencies"))
   @OnDelete(action = OnDeleteAction.SET_NULL)
   private Currency currency;
 }

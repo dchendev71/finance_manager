@@ -23,7 +23,6 @@ export default function AssetRowForm({
     try {
       const values = AssetRowFormSchema.safeParse(Object.fromEntries(formData));
       if (!values.success) {
-        console.log(values.error.message);
         updateError(values.error.message);
         return;
       }

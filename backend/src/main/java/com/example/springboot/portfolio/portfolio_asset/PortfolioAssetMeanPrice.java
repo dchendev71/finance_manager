@@ -27,7 +27,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @EqualsAndHashCode(of = "id")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "portfolio_asset_mean_price")
+@Table(name = "portfolio_asset_mean_prices")
 public class PortfolioAssetMeanPrice {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +38,7 @@ public class PortfolioAssetMeanPrice {
   @JoinColumn(
       name = "portfolio_asset_id",
       nullable = false,
-      foreignKey = @ForeignKey(name = "fk_portfolio_asset_mean_price_portfolio_asset"))
+      foreignKey = @ForeignKey(name = "fk_portfolio_assets_mean_price_portfolio_assets"))
   private PortfolioAsset portfolioAsset;
 
   @Column(name = "mean_price", nullable = false)

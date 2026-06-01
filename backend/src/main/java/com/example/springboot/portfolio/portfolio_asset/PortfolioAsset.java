@@ -23,7 +23,7 @@ import lombok.Setter;
 
 @Entity
 @Table(
-    name = "portfolio_asset",
+    name = "portfolio_assets",
     uniqueConstraints =
         @UniqueConstraint(
             name = "uk_portfolio_asset_combination",
@@ -43,14 +43,14 @@ public class PortfolioAsset {
   @JoinColumn(
       name = "portfolio_id",
       nullable = false,
-      foreignKey = @ForeignKey(name = "fk_portfolio_asset_portfolio"))
+      foreignKey = @ForeignKey(name = "fk_portfolio_assets_portfolios"))
   private Portfolio portfolio;
 
   @ManyToOne
   @JoinColumn(
       name = "asset_id",
       nullable = false,
-      foreignKey = @ForeignKey(name = "fk_portfolio_asset_asset"))
+      foreignKey = @ForeignKey(name = "fk_portfolio_assets_assets"))
   private Asset asset;
 
   @Column(name = "quantity", nullable = false)

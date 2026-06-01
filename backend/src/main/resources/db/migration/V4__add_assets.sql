@@ -1,4 +1,4 @@
-INSERT INTO asset (name, ticker_symbol, asset_type) VALUES
+INSERT INTO assets (name, ticker_symbol, asset_types) VALUES
 ('NVIDIA', 'NVDA', 'stock'),
 ('APPLE', 'APPL', 'stock'),
 ('AMAZON', 'AMZN', 'stock'),
