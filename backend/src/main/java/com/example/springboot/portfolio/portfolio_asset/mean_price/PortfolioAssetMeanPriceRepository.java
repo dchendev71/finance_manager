@@ -1,4 +1,4 @@
-package com.example.springboot.portfolio.portfolio_asset;
+package com.example.springboot.portfolio.portfolio_asset.mean_price;
 
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,5 +1,6 @@
-package com.example.springboot.portfolio.portfolio_asset;
+package com.example.springboot.portfolio.portfolio_asset.mean_price;
 
+import com.example.springboot.portfolio.portfolio_asset.PortfolioAsset;
 import java.math.BigDecimal;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;

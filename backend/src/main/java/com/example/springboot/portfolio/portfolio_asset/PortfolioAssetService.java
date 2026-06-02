@@ -9,6 +9,7 @@ import com.example.springboot.portfolio.asset.AssetRepository;
 import com.example.springboot.portfolio.portfolio_asset.dto.PortfolioAssetRequest;
 import com.example.springboot.portfolio.portfolio_asset.dto.PortfolioAssetResponse;
 import com.example.springboot.portfolio.portfolio_asset.mapper.PortfolioAssetMapper;
+import com.example.springboot.portfolio.portfolio_asset.mean_price.PortfolioAssetMeanPriceService;
 import com.example.springboot.portfolio.transactions.TransactionsService;
 import com.example.springboot.user.User;
 import com.example.springboot.user.UserRepository;
