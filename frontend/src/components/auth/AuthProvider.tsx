@@ -43,7 +43,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
       // Automatically parse json unless it's a 204 No Content
       return res.status !== 204 ? await res.json() : null;
     } catch (error) {
-      console.error("Auth Request Failure:", error);
       throw error;
     }
   }

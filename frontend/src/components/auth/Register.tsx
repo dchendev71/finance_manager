@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 import InputField from "../ui/InputField";
 import FormErrorBanner from "@/components/ui/FormErrorBanner";
+import BlueButton from "../ui/BlueButton";
 
 function RegisterForm() {
   const [error, setError] = useState<string | null>(null);
@@ -62,7 +63,6 @@ function RegisterForm() {
                   <option value="AUD">AUD ($)</option>
                 </select>
 
-                {/* 3. Custom SVG Arrow Icon Layer (pointer-events-none prevents it from blocking clicks) */}
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-500">
                   <svg
                     className="h-5 w-5"
@@ -79,12 +79,7 @@ function RegisterForm() {
                 </div>
               </div>
             </section>
-            <button
-              type="submit"
-              className="w-full h-12 sm:h-10 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-medium rounded-lg transition-colors mt-2 text-base sm:text-sm shadow-sm"
-            >
-              Register
-            </button>
+            <BlueButton value="Register" />
             <Link to="/login">Already have an account?</Link>
           </form>
         </article>
