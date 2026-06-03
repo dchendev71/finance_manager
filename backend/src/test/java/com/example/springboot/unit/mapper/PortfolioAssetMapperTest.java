@@ -64,7 +64,8 @@ class PortfolioAssetMapperTest {
     Mockito.when(assetMapper.toResponse(asset)).thenReturn(expectedAssetResponse);
 
     // Act
-    PortfolioAssetResponse response = portfolioAssetMapper.toResponse(portfolioAsset);
+    PortfolioAssetResponse response =
+        portfolioAssetMapper.toResponse(portfolioAsset, TestConfig.PortfolioAsset.meanPrice);
 
     // Assert
     assertThat(response).isNotNull();

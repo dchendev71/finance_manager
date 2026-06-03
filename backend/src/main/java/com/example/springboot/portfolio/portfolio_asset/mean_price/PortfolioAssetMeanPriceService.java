@@ -1,5 +1,6 @@
 package com.example.springboot.portfolio.portfolio_asset.mean_price;
 
+import com.example.springboot.common.exception.NotFoundException;
 import com.example.springboot.portfolio.portfolio_asset.PortfolioAsset;
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -15,6 +16,19 @@ public class PortfolioAssetMeanPriceService {
     PortfolioAssetMeanPrice meanPrice =
         PortfolioAssetMeanPrice.builder().meanPrice(price).portfolioAsset(portfolioAsset).build();
     portfolioAssetMeanPriceRepository.save(meanPrice);
+  }
+
+  public Optional<PortfolioAssetMeanPrice> getMeanPrice(PortfolioAsset portfolioAsset) {
+    return portfolioAssetMeanPriceRepository.findByPortfolioAssetId(portfolioAsset.getId());
+  }
+
+  public PortfolioAssetMeanPrice getMeanPriceOrThrow(PortfolioAsset portfolioAsset) {
+    Optional<PortfolioAssetMeanPrice> meanPrice = this.getMeanPrice(portfolioAsset);
+    if (meanPrice.isEmpty()) {
+      throw new NotFoundException(
+          PortfolioAssetMeanPrice.class, portfolioAsset.getAsset().getName());
+    }
+    return meanPrice.get();
   }
 
   // Note: When selling, the mean price acquired of an asset is the same

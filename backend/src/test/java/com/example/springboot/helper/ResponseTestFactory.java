@@ -53,7 +53,8 @@ public class ResponseTestFactory {
       return new PortfolioAssetResponse(
           ResponseTestFactory.Portfolio.create(),
           ResponseTestFactory.Asset.create(),
-          TestConfig.PortfolioAsset.quantity);
+          TestConfig.PortfolioAsset.quantity,
+          TestConfig.PortfolioAsset.meanPrice);
     }
   }
 }

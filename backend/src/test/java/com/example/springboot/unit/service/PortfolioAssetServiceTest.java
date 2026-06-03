@@ -78,8 +78,10 @@ class PortfolioAssetServiceTest {
     when(portfolioAssetMapper.toEntity(portfolio, asset, TestConfig.PortfolioAsset.quantity))
         .thenReturn(portfolioAsset);
     when(portfolioAssetRepository.save(any())).thenReturn(portfolioAsset);
-    when(portfolioAssetMapper.toResponse(portfolioAsset))
+    when(portfolioAssetMapper.toResponse(portfolioAsset, TestConfig.PortfolioAsset.meanPrice))
         .thenReturn(ResponseTestFactory.PortfolioAsset.create());
+    when(portfolioAssetMeanPriceService.getMeanPriceOrThrow(portfolioAsset))
+        .thenReturn(EntityTestFactory.PortfolioAssetMeanPriceFactory.create());
 
     PortfolioAssetResponse response =
         portfolioAssetService.createPortfolioAsset(

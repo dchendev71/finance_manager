@@ -7,6 +7,7 @@ import com.example.springboot.portfolio.Portfolio;
 import com.example.springboot.portfolio.asset.Asset;
 import com.example.springboot.portfolio.asset_type.AssetType;
 import com.example.springboot.portfolio.portfolio_asset.PortfolioAsset;
+import com.example.springboot.portfolio.portfolio_asset.mean_price.PortfolioAssetMeanPrice;
 import com.example.springboot.user.User;
 import java.math.BigDecimal;
 
@@ -102,6 +103,15 @@ public class EntityTestFactory {
           .portfolio(portfolio)
           .asset(asset)
           .quantity(TestConfig.PortfolioAsset.quantity)
+          .build();
+    }
+  }
+
+  public static class PortfolioAssetMeanPriceFactory {
+    public static PortfolioAssetMeanPrice create() {
+      return PortfolioAssetMeanPrice.builder()
+          .portfolioAsset(EntityTestFactory.PortfolioAssetFactory.create())
+          .meanPrice(TestConfig.PortfolioAsset.meanPrice)
           .build();
     }
   }

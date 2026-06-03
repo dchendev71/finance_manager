@@ -21,5 +21,5 @@ public interface PortfolioAssetMapper {
 
   @Mapping(target = "portfolioResponse", source = "portfolioAsset.portfolio")
   @Mapping(target = "assetResponse", source = "portfolioAsset.asset")
-  PortfolioAssetResponse toResponse(PortfolioAsset portfolioAsset);
+  PortfolioAssetResponse toResponse(PortfolioAsset portfolioAsset, BigDecimal meanPrice);
 }

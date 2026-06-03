@@ -9,6 +9,7 @@ import com.example.springboot.portfolio.asset.AssetRepository;
 import com.example.springboot.portfolio.portfolio_asset.dto.PortfolioAssetRequest;
 import com.example.springboot.portfolio.portfolio_asset.dto.PortfolioAssetResponse;
 import com.example.springboot.portfolio.portfolio_asset.mapper.PortfolioAssetMapper;
+import com.example.springboot.portfolio.portfolio_asset.mean_price.PortfolioAssetMeanPrice;
 import com.example.springboot.portfolio.portfolio_asset.mean_price.PortfolioAssetMeanPriceService;
 import com.example.springboot.portfolio.transactions.TransactionsService;
 import com.example.springboot.user.User;
@@ -29,38 +30,54 @@ public class PortfolioAssetService {
   private final UserRepository userRepository;
   private final PortfolioRepository portfolioRepository;
   private final AssetRepository assetRepository;
-
   // Mapper
   private final PortfolioAssetMapper portfolioAssetMapper;
 
-  private record DataHolder(
-      User user, Asset asset, Portfolio portfolio, Optional<PortfolioAsset> portfolioAsset) {}
+  // Helper class that manipulates most of the data inside the PortfolioAssetService class
+  private class DataRecords {
+    public record Data(
+        User user,
+        Asset asset,
+        Portfolio portfolio,
+        Optional<PortfolioAsset> portfolioAsset,
+        Optional<PortfolioAssetMeanPrice> meanPrice) {}
 
-  private DataHolder createDataHolder(
-      String email, String portfolioName, PortfolioAssetRequest request) {
-    User user = userRepository.getByEmailOrThrow(email);
-    Portfolio portfolio =
-        portfolioRepository.getByUserIdAndNameOrThrow(user.getId(), portfolioName);
-    Asset asset = assetRepository.getByNameOrThrow(request.assetName());
-    Optional<PortfolioAsset> portfolioAsset =
-        portfolioAssetRepository.findByAssetNameAndPortfolioId(
-            request.assetName(), portfolio.getId());
-    return new DataHolder(user, asset, portfolio, portfolioAsset);
-  }
-
-  private void updateRecords(DataHolder dataHolder, BigDecimal quantity, BigDecimal unitPrice) {
-    portfolioAssetMeanPriceService.updateMeanPrice(
-        dataHolder.portfolioAsset().get(), quantity, unitPrice);
-    transactionService.recordTransaction(
-        dataHolder.user(), dataHolder.asset(), quantity, unitPrice);
-  }
-
-  private BigDecimal getAccurateRequestQuantity(
-      PortfolioAsset portfolioAsset, BigDecimal quantity) {
-    if (quantity.compareTo(BigDecimal.ZERO) < 0) {
-      return portfolioAsset.getQuantity();
+    private Data getDataRecord(String email, String portfolioName, String assetName) {
+      User user = userRepository.getByEmailOrThrow(email);
+      Portfolio portfolio =
+          portfolioRepository.getByUserIdAndNameOrThrow(user.getId(), portfolioName);
+      Asset asset = assetRepository.getByNameOrThrow(assetName);
+      Optional<PortfolioAsset> portfolioAsset =
+          portfolioAssetRepository.findByAssetNameAndPortfolioId(assetName, portfolio.getId());
+      if (portfolioAsset.isEmpty()) {
+        return new Data(user, asset, portfolio, Optional.empty(), Optional.empty());
+      }
+      Optional<PortfolioAssetMeanPrice> meanPrice =
+          portfolioAssetMeanPriceService.getMeanPrice(portfolioAsset.get());
+      return new Data(user, asset, portfolio, portfolioAsset, meanPrice);
     }
-    return quantity;
+
+    private Data updateDataRecord(
+        Data data,
+        Optional<PortfolioAsset> portfolioAsset,
+        Optional<PortfolioAssetMeanPrice> meanPrice) {
+      return new Data(data.user(), data.asset(), data.portfolio(), portfolioAsset, meanPrice);
+    }
+
+    private void updateRecords(Data dataRecord, BigDecimal quantity, BigDecimal unitPrice) {
+      portfolioAssetMeanPriceService.updateMeanPrice(
+          dataRecord.portfolioAsset().get(), quantity, unitPrice);
+      transactionService.recordTransaction(
+          dataRecord.user(), dataRecord.asset(), quantity, unitPrice);
+    }
+
+    private BigDecimal getAccurateRequestQuantity(
+        PortfolioAsset portfolioAsset, BigDecimal quantity) {
+      if (quantity.compareTo(BigDecimal.ZERO) < 0) {
+        return portfolioAsset.getQuantity();
+      }
+      return quantity;
+    }
   }
 
   // TODO: Write test
@@ -68,77 +85,90 @@ public class PortfolioAssetService {
     User user = userRepository.getByEmailOrThrow(email);
     Portfolio portfolio =
         portfolioRepository.getByUserIdAndNameOrThrow(user.getId(), portfolioName);
-
+    // We find all assets from this current portfolio, fetch the meanPrice for each, and return
+    // As an response
     return portfolioAssetRepository.findAllByPortfolioId(portfolio.getId()).stream()
-        .map(portfolioAssetMapper::toResponse)
+        .map(
+            portfolioAsset -> {
+              Optional<PortfolioAssetMeanPrice> meanPrice =
+                  portfolioAssetMeanPriceService.getMeanPrice(portfolioAsset);
+              if (meanPrice.isEmpty()) {
+                throw new NotFoundException(
+                    PortfolioAssetMeanPrice.class, portfolioAsset.getAsset().getName());
+              }
+              return portfolioAssetMapper.toResponse(
+                  portfolioAsset, meanPrice.get().getMeanPrice());
+            })
         .toList();
   }
 
   public PortfolioAssetResponse createPortfolioAsset(
       String email, String portfolioName, PortfolioAssetRequest request) {
-    DataHolder dataHolder = createDataHolder(email, portfolioName, request);
+    // dataHolder = createDataHolder(email, portfolioName, request);
+    DataRecords dataRecords = new DataRecords();
+    var data = dataRecords.getDataRecord(email, portfolioName, request.assetName());
     // Check if portfolioAsset already exists - ie if we want to add quantity then use update
-    if (dataHolder.portfolioAsset().isPresent()) {
+    if (data.portfolioAsset().isPresent()) {
       throw new ExistsException(PortfolioAsset.class, request.assetName());
     }
 
     // Create and save entity
     PortfolioAsset portfolioAsset =
         portfolioAssetRepository.save(
-            portfolioAssetMapper.toEntity(
-                dataHolder.portfolio(), dataHolder.asset(), request.quantity()));
+            portfolioAssetMapper.toEntity(data.portfolio(), data.asset(), request.quantity()));
+    // TODO: Refacto the code below, we are breaking SRP
 
-    // Update Mean price and transactions, yes, we create a new data holder because of new
-    // portfolioAsset
-    updateRecords(
-        new DataHolder(
-            dataHolder.user(),
-            dataHolder.asset(),
-            dataHolder.portfolio(),
-            Optional.of(portfolioAsset)),
-        request.quantity(),
-        request.unitPrice());
+    // Create new record with updated value
+    var newData = dataRecords.updateDataRecord(data, Optional.of(portfolioAsset), Optional.empty());
+    // This function will create the MeanPrice value inside the DB
+    dataRecords.updateRecords(newData, request.quantity(), request.unitPrice());
     // To Response
-    return portfolioAssetMapper.toResponse(portfolioAsset);
+    PortfolioAssetMeanPrice meanPrice =
+        portfolioAssetMeanPriceService.getMeanPriceOrThrow(portfolioAsset);
+    return portfolioAssetMapper.toResponse(portfolioAsset, meanPrice.getMeanPrice());
   }
 
   public Optional<PortfolioAssetResponse> updatePortfolioAsset(
       String email, String portfolioName, PortfolioAssetRequest request) {
-    DataHolder dataHolder = createDataHolder(email, portfolioName, request);
+    DataRecords dataRecords = new DataRecords();
+    var data = dataRecords.getDataRecord(email, portfolioName, request.assetName());
     // If not found, should use the create endpoint
-    if (dataHolder.portfolioAsset().isEmpty()) {
-      throw new NotFoundException(PortfolioAsset.class, "");
+    if (data.portfolioAsset().isEmpty()) {
+      throw new NotFoundException(PortfolioAsset.class, "asset not exists");
     }
-    PortfolioAsset portfolioAsset = dataHolder.portfolioAsset().get();
+    PortfolioAsset portfolioAsset = data.portfolioAsset().get();
     // We need to check if the request has a negative quantity that exceeds our quantity or not
-    BigDecimal accurateRequestQty = getAccurateRequestQuantity(portfolioAsset, request.quantity());
+    BigDecimal accurateRequestQty =
+        dataRecords.getAccurateRequestQuantity(portfolioAsset, request.quantity());
     // We update the PortfolioAsset
     BigDecimal newQuantity = portfolioAsset.getQuantity().add(accurateRequestQty);
     if (newQuantity.compareTo(BigDecimal.ZERO) <= 0) {
       // Delete the row as every position has been sold
       portfolioAssetRepository.delete(portfolioAsset);
-      updateRecords(dataHolder, accurateRequestQty, request.unitPrice());
+      dataRecords.updateRecords(data, accurateRequestQty, request.unitPrice());
       return Optional.empty();
     }
 
     portfolioAsset.setQuantity(newQuantity);
-    updateRecords(dataHolder, accurateRequestQty, request.unitPrice());
+    dataRecords.updateRecords(data, accurateRequestQty, request.unitPrice());
+
+    PortfolioAssetMeanPrice meanPrice =
+        portfolioAssetMeanPriceService.getMeanPriceOrThrow(portfolioAsset);
+
     return Optional.of(
-        portfolioAssetMapper.toResponse(portfolioAssetRepository.save(portfolioAsset)));
+        portfolioAssetMapper.toResponse(
+            portfolioAssetRepository.save(portfolioAsset), meanPrice.getMeanPrice()));
   }
 
   public void deletePortfolioAsset(String email, String portfolioName, String assetName) {
     // Create a fake request to use utility function
-    DataHolder dataHolder =
-        createDataHolder(
-            email,
-            portfolioName,
-            new PortfolioAssetRequest(assetName, BigDecimal.ZERO, BigDecimal.ZERO));
+    DataRecords dataRecords = new DataRecords();
+    var data = dataRecords.getDataRecord(email, portfolioName, assetName);
 
-    if (dataHolder.portfolioAsset().isEmpty()) {
+    if (data.portfolioAsset().isEmpty()) {
       return;
     }
 
-    portfolioAssetRepository.delete(dataHolder.portfolioAsset().get());
+    portfolioAssetRepository.delete(data.portfolioAsset().get());
   }
 }
