@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/AuthContext";
-import { getAssets, type AssetRow } from "./asset/api";
+import { getAssets, type AssetRowData } from "./asset/api";
+import AssetForm from "./asset/AssetForm";
+import AssetContainer from "./asset/AssetContainer";
 export interface PortfolioProps {
   portfolioName: string;
 }
 
 export default function Portfolio({ portfolioName }: PortfolioProps) {
   const [error, setError] = useState<string | null>(null);
-  const [assets, setAssets] = useState<AssetRow[]>([]);
+  const [assets, setAssets] = useState<AssetRowData[]>([]);
   const { request } = useAuth();
 
   // Find which assets are associated to this portfolio
@@ -29,7 +31,10 @@ export default function Portfolio({ portfolioName }: PortfolioProps) {
       <header>
         <h2 className="font-bold">{portfolioName}</h2>
       </header>
-      <article></article>
+      <article>
+        <AssetContainer assets={assets} />
+        <AssetForm portfolioName={portfolioName} />
+      </article>
     </section>
   );
 }

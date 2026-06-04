@@ -46,8 +46,8 @@ function RegisterForm() {
 
           <FormErrorBanner message={error} />
           <form className="flex flex-col gap-5 sm:gap-4" action={handleAction}>
-            <InputField id="email" type="email" label="Email: " />
-            <InputField id="password" type="password" label="Password: " />
+            <InputField id="email" type="email" label="Email" />
+            <InputField id="password" type="password" label="Password" />
             <section>
               <div className="relative w-full">
                 <select

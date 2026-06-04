@@ -23,8 +23,8 @@ function LoginForm() {
       const res = await request("/auth/login", {
         method: "POST",
         body: JSON.stringify({
-          email: formData.get("email"),
-          password: formData.get("password"),
+          email: email,
+          password: password,
         }),
       });
 
@@ -46,8 +46,8 @@ function LoginForm() {
           </header>
           <FormErrorBanner message={error} />
           <form className="flex flex-col gap-5 sm:gap-4" action={handleAction}>
-            <InputField id="email" type="email" label="Email: " />
-            <InputField id="password" type="password" label="Password: " />
+            <InputField id="email" type="email" label="Email" />
+            <InputField id="password" type="password" label="Password" />
             <BlueButton value="Login" />
             <Link to="/register">Sign up here</Link>
           </form>
