@@ -2,9 +2,17 @@ interface InputFieldProps {
   label: string;
   id: string;
   type: "email" | "password" | "text" | "number";
+  step?: number;
+  min?: number;
 }
 
-export default function InputField({ label, id, type }: InputFieldProps) {
+export default function InputField({
+  label,
+  id,
+  type,
+  step,
+  min,
+}: InputFieldProps) {
   return (
     <section className="w-full flex flex-col">
       <label
@@ -18,6 +26,8 @@ export default function InputField({ label, id, type }: InputFieldProps) {
         type={type}
         id={id}
         name={id}
+        step={type === "number" ? step : undefined}
+        min={type === "number" ? min : undefined}
         required
       />
     </section>

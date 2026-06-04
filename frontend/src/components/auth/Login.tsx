@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import InputField from "@/components/ui/InputField";
 import FormErrorBanner from "@/components/ui/FormErrorBanner";
 import { useState } from "react";
-import BlueButton from "../ui/BlueButton";
+import Button from "@/components/ui/Button";
 
 function LoginForm() {
   const [error, setError] = useState<string | null>(null);
@@ -48,7 +48,7 @@ function LoginForm() {
           <form className="flex flex-col gap-5 sm:gap-4" action={handleAction}>
             <InputField id="email" type="email" label="Email" />
             <InputField id="password" type="password" label="Password" />
-            <BlueButton value="Login" />
+            <Button value="Login" variant="blue" />
             <Link to="/register">Sign up here</Link>
           </form>
         </article>

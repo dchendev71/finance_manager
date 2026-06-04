@@ -1,7 +1,9 @@
 import type { CallerFunction } from "@/types/global";
+import type { Dispatch, SetStateAction } from "react";
 import { z } from "zod";
+import type { AssetMethod } from "./AssetForm";
 
-type AssetData = {
+export type AssetData = {
   assetName: string;
   tickerSymbol: string;
   assetType: string;
@@ -13,7 +15,7 @@ export type AssetRowData = {
   meanPrice: number;
 };
 
-function assetRowMapperToAssetData(assetRow: any): AssetRowData {
+function responseToAssetRowData(assetRow: any): AssetRowData {
   return {
     quantity: assetRow.quantity,
     meanPrice: assetRow.meanPrice,
@@ -33,7 +35,7 @@ export async function getAssets(
     const response = await callerFn.requestFn(`/portfolios/${portfolioName}`);
 
     const assetRows: AssetRowData[] = response.map((assetRow: any) =>
-      assetRowMapperToAssetData(assetRow),
+      responseToAssetRowData(assetRow),
     );
 
     return assetRows;
@@ -49,10 +51,34 @@ const AssetFormSchema = z.object({
   unitPrice: z.coerce.number().gt(0),
 });
 
+function handleAssetChange(
+  method: AssetMethod,
+  stateFn: Dispatch<SetStateAction<AssetRowData[]>>,
+  assetName: string,
+  assetRow?: AssetRowData,
+): void {
+  switch (method) {
+    case "CREATE":
+      stateFn((prev) => [...prev, assetRow]);
+      break;
+    case "BUY":
+      stateFn((prev) =>
+        prev.map((p) => (p.asset.assetName == assetName ? assetRow : p)),
+      );
+      break;
+    case "SELL":
+      stateFn((prev) =>
+        prev.filter((assetRow) => assetRow.asset.assetName !== assetName),
+      );
+      break;
+  }
+}
+
 export async function handleAssetForm(
   formData: FormData,
-  method: "CREATE" | "BUY" | "SELL",
+  method: AssetMethod,
   portfolioName: string,
+  stateFn: Dispatch<SetStateAction<AssetRowData[]>>,
   callerFn: CallerFunction,
 ): Promise<any> {
   try {
@@ -68,8 +94,19 @@ export async function handleAssetForm(
       }),
     });
 
+    if (response) {
+      handleAssetChange(
+        method,
+        stateFn,
+        values.data.assetName,
+        responseToAssetRowData(response),
+      );
+    } else {
+      // This mean that we sold everything in the Asset when we updated
+      handleAssetChange(method, stateFn, values.data.assetName);
+    }
+
     // TODO: check for null for no content
-    console.log(response);
   } catch (e: any) {
     callerFn.errorFn(e.message || "Network error - please try again");
     return;

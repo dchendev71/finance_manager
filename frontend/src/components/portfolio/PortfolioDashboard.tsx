@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/AuthContext";
 import { createPortfolio, getPortfolios } from "./api.ts";
 import InputField from "@/components/ui/InputField";
-import BlueButton from "@/components/ui/BlueButton";
+import Button from "@/components/ui/Button";
 import PortfolioContainer from "./PortfolioContainer";
 
 export default function PortfolioDashboard() {
@@ -56,7 +56,7 @@ export default function PortfolioDashboard() {
               id="portfolioName"
               type="text"
             />
-            <BlueButton value="Create new Portfolio" />
+            <Button value="Create new portfolio" variant="blue" />
           </form>
         </article>
       </main>

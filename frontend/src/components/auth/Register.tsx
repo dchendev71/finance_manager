@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 import InputField from "../ui/InputField";
 import FormErrorBanner from "@/components/ui/FormErrorBanner";
-import BlueButton from "../ui/BlueButton";
+import Button from "../ui/Button";
 
 function RegisterForm() {
   const [error, setError] = useState<string | null>(null);
@@ -79,7 +79,7 @@ function RegisterForm() {
                 </div>
               </div>
             </section>
-            <BlueButton value="Register" />
+            <Button value="Register" variant="blue" />
             <Link to="/login">Already have an account?</Link>
           </form>
         </article>

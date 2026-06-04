@@ -73,8 +73,10 @@ public class PortfolioAssetService {
 
     private BigDecimal getAccurateRequestQuantity(
         PortfolioAsset portfolioAsset, BigDecimal quantity) {
-      if (quantity.compareTo(BigDecimal.ZERO) < 0) {
-        return portfolioAsset.getQuantity();
+      BigDecimal newQty = portfolioAsset.getQuantity().add(quantity);
+      if (newQty.compareTo(BigDecimal.ZERO) < 0) {
+        // This prevent an user from 'overselling' i.e can only sell at most the quantity
+        return portfolioAsset.getQuantity().negate();
       }
       return quantity;
     }
