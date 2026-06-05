@@ -73,6 +73,33 @@ class PortfolioAssetIntegrationTest {
   }
 
   @Test
+  @DisplayName("Should have the right meanPrice when updating the same asset")
+  void update_shouldReturn200() throws Exception {
+    PortfolioAssetRequest request =
+        new PortfolioAssetRequest("BITCOIN", new BigDecimal(10), new BigDecimal(10));
+    String route = ApiRoutes.Portfolios.PortfolioAssets.BASE + "/" + TestConfig.Portfolio.name;
+    requestHandler
+        .performAuthorizedRequest(
+            route, request, HttpMethod.POST, testSetup.testSetupDetails.getJwtToken())
+        .andExpect(status().isCreated());
+
+    PortfolioAssetRequest updateRequest =
+        new PortfolioAssetRequest("BITCOIN", new BigDecimal(10), new BigDecimal(20));
+    ResultActions resultActions =
+        requestHandler
+            .performAuthorizedRequest(
+                route, updateRequest, HttpMethod.PATCH, testSetup.testSetupDetails.getJwtToken())
+            .andExpect(status().isOk());
+    String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+    String rawAvgPrice = JsonPath.read(responseBody, "$.meanPrice");
+
+    BigDecimal actualMean = new BigDecimal(rawAvgPrice);
+    BigDecimal expectedMean = new BigDecimal(15);
+
+    assertThat(actualMean).isCloseTo(expectedMean, within(new BigDecimal("0.01")));
+  }
+
+  @Test
   @DisplayName("Should not be able to create the same portfolio asset")
   void create_shouldReturn4xx() throws Exception {
     // Create portfolioAsset

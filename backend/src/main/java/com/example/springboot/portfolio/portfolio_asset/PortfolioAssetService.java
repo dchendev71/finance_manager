@@ -151,9 +151,11 @@ public class PortfolioAssetService {
       return Optional.empty();
     }
 
-    portfolioAsset.setQuantity(newQuantity);
     dataRecords.updateRecords(data, accurateRequestQty, request.unitPrice());
 
+    // We set the quantity after updateRecords because it is going to use the PortfolioAssetQuantity
+    // as argument
+    portfolioAsset.setQuantity(newQuantity);
     PortfolioAssetMeanPrice meanPrice =
         portfolioAssetMeanPriceService.getMeanPriceOrThrow(portfolioAsset);
 
