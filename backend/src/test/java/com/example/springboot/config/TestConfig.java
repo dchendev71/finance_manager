@@ -37,7 +37,7 @@ public interface TestConfig {
 
   interface PortfolioAsset {
     BigDecimal quantity = new BigDecimal(10.5);
-    BigDecimal price = new BigDecimal(10);
+    BigDecimal price = new BigDecimal(10.0);
     BigDecimal meanPrice = price;
   }
 }

@@ -31,8 +31,8 @@ public interface ApiRoutes {
       String LIST = BASE + "/{portfolioName}";
       // POST request
       String CREATE = BASE + "/{portfolioName}";
-      // PATCH request
-      String UPDATE = BASE + "/{portfolioName}/{assetName}";
+      // PATCH request - no need for assetName as it is in the request
+      String UPDATE = BASE + "/{portfolioName}";
       // DELETE request
       String DELETE = BASE + "/{portfolioName}/{assetName}";
     }

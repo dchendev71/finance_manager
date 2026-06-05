@@ -3,6 +3,7 @@ package com.example.springboot.portfolio.portfolio_asset.mean_price;
 import com.example.springboot.common.exception.NotFoundException;
 import com.example.springboot.portfolio.portfolio_asset.PortfolioAsset;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -55,7 +56,7 @@ public class PortfolioAssetMeanPriceService {
 
     BigDecimal totalQty = portfolioAsset.getQuantity().add(quantity);
 
-    BigDecimal newMeanPrice = totalPrice.divide(totalQty);
+    BigDecimal newMeanPrice = totalPrice.divide(totalQty, 8, RoundingMode.HALF_DOWN);
 
     meanPrice.get().setMeanPrice(newMeanPrice);
 
