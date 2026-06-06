@@ -57,20 +57,24 @@ function handleAssetChange(
   assetName: string,
   assetRow?: AssetRowData,
 ): void {
-  switch (method) {
-    case "CREATE":
-      stateFn((prev) => [...prev, assetRow]);
-      break;
-    case "BUY":
-      stateFn((prev) =>
-        prev.map((p) => (p.asset.assetName == assetName ? assetRow : p)),
-      );
-      break;
-    case "SELL":
-      stateFn((prev) =>
-        prev.filter((assetRow) => assetRow.asset.assetName !== assetName),
-      );
-      break;
+  if (method == "CREATE") {
+    stateFn((prev) => [...prev, assetRow]);
+    return;
+  }
+  // If we have an assetRow, it means we need to update the state
+  // And the method is either SELL or BUY
+  if (assetRow) {
+    stateFn((prev) =>
+      prev.map((p) => (p.asset.assetName == assetName ? assetRow : p)),
+    );
+    return;
+  }
+  // This case is when we sold everything on the current asset
+  // Note: It should only happen when method is SELL
+  if (method == "SELL") {
+    stateFn((prev) =>
+      prev.filter((assetRow) => assetRow.asset.assetName !== assetName),
+    );
   }
 }
 
@@ -87,10 +91,18 @@ export async function handleAssetForm(
       callerFn.errorFn(values.error.message);
       return;
     }
+
+    // Enforce that Quantity is negative if 'Sell'
+    const quantity =
+      method == "BUY"
+        ? Math.abs(values.data.quantity)
+        : -Math.abs(values.data.quantity);
+
     const response = await callerFn.requestFn(`/portfolios/${portfolioName}`, {
       method: method == "CREATE" ? "POST" : "PATCH",
       body: JSON.stringify({
         ...values.data,
+        quantity: quantity,
       }),
     });
 

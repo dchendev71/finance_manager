@@ -65,6 +65,8 @@ export default function AssetRow({
             formTitle: formTitle,
             cancelForm: () => setDisplayAssetForm(false),
             submitValue: submitValue,
+            defaultValue: assetRow.asset.assetName,
+            disabled: true,
           }}
           assetMethod={assetMethod}
           portfolioName={portfolioName}

@@ -3,15 +3,19 @@ import InputField from "@/components/ui/InputField";
 import { handleAssetForm, type AssetRowData } from "./api";
 import { useState, type Dispatch, type SetStateAction } from "react";
 import Button from "@/components/ui/Button";
+import FormErrorBanner from "@/components/ui/FormErrorBanner";
 
 export type AssetMethod = "CREATE" | "BUY" | "SELL";
 export type FormProps = {
   formTitle: string;
   cancelForm: (event: React.MouseEvent<HTMLButtonElement>) => void;
   submitValue: string;
+  defaultValue?: string;
+  disabled?: boolean;
 };
 export interface AssetFormProps {
   portfolioName: string;
+  assetName?: string;
   assetMethod: AssetMethod;
   stateFn: Dispatch<SetStateAction<AssetRowData[]>>;
   formProps: FormProps;
@@ -41,8 +45,15 @@ export default function AssetForm({
           <h2 className="text-xl font-bold text-slate-900 mb-4">
             {formProps.formTitle}
           </h2>
+
+          <FormErrorBanner message={error} />
           <form action={handleForm}>
-            <InputField label="Asset Name" id="assetName" type="text" />
+            <InputField
+              label="Asset Name"
+              id="assetName"
+              type="text"
+              value={formProps.defaultValue}
+            />
             <InputField
               label="Quantity"
               id="quantity"
