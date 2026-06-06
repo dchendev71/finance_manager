@@ -2,6 +2,7 @@ package com.example.springboot.portfolio.portfolio_asset.mean_price;
 
 import com.example.springboot.common.exception.NotFoundException;
 import com.example.springboot.portfolio.portfolio_asset.PortfolioAsset;
+import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Optional;
@@ -33,6 +34,7 @@ public class PortfolioAssetMeanPriceService {
   }
 
   // Note: When selling, the mean price acquired of an asset is the same
+  @Transactional
   public void updateMeanPrice(
       PortfolioAsset portfolioAsset, BigDecimal quantity, BigDecimal unitPrice) {
     if (quantity.compareTo(BigDecimal.ZERO) < 0) {

@@ -6,6 +6,9 @@ import com.example.springboot.portfolio.asset.Asset;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface PortfolioAssetRepository extends JpaRepository<PortfolioAsset, Long> {
   Optional<PortfolioAsset> findByAssetNameAndPortfolioId(String assetName, Long portfolioId);
@@ -22,4 +25,8 @@ public interface PortfolioAssetRepository extends JpaRepository<PortfolioAsset, 
                         PortfolioAsset.class, portfolio.getName() + ":" + asset.getName()));
     return portfolioAsset;
   }
+
+  @Modifying
+  @Query("DELETE FROM PortfolioAsset pa WHERE pa.id = :id")
+  void deleteDirectlyById(@Param("id") Long id);
 }

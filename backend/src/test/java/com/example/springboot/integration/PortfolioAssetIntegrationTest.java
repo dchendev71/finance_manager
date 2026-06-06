@@ -118,4 +118,24 @@ class PortfolioAssetIntegrationTest {
             testSetup.testSetupDetails.getJwtToken())
         .andExpect(status().is4xxClientError());
   }
+
+  @Test
+  @DisplayName("Should be able to create a portfolio asset, and update it leading to its deletion")
+  void updateTillDeletion_shouldReturn204() throws Exception {
+    PortfolioAssetRequest request =
+        new PortfolioAssetRequest("BITCOIN", new BigDecimal(10), new BigDecimal(10));
+    String route = ApiRoutes.Portfolios.PortfolioAssets.BASE + "/" + TestConfig.Portfolio.name;
+    requestHandler
+        .performAuthorizedRequest(
+            route, request, HttpMethod.POST, testSetup.testSetupDetails.getJwtToken())
+        .andExpect(status().isCreated());
+
+    PortfolioAssetRequest updateRequest =
+        new PortfolioAssetRequest("BITCOIN", new BigDecimal(-10), new BigDecimal(20));
+    ResultActions resultActions =
+        requestHandler
+            .performAuthorizedRequest(
+                route, updateRequest, HttpMethod.PATCH, testSetup.testSetupDetails.getJwtToken())
+            .andExpect(status().isNoContent());
+  }
 }

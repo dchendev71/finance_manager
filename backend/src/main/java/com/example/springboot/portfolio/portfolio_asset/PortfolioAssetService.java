@@ -14,6 +14,7 @@ import com.example.springboot.portfolio.portfolio_asset.mean_price.PortfolioAsse
 import com.example.springboot.portfolio.transactions.TransactionsService;
 import com.example.springboot.user.User;
 import com.example.springboot.user.UserRepository;
+import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -33,53 +34,52 @@ public class PortfolioAssetService {
   // Mapper
   private final PortfolioAssetMapper portfolioAssetMapper;
 
-  // Helper class that manipulates most of the data inside the PortfolioAssetService class
-  private class DataRecords {
-    public record Data(
-        User user,
-        Asset asset,
-        Portfolio portfolio,
-        Optional<PortfolioAsset> portfolioAsset,
-        Optional<PortfolioAssetMeanPrice> meanPrice) {}
+  private record Data(
+      User user,
+      Asset asset,
+      Portfolio portfolio,
+      Optional<PortfolioAsset> portfolioAsset,
+      Optional<PortfolioAssetMeanPrice> meanPrice) {}
 
-    private Data getDataRecord(String email, String portfolioName, String assetName) {
-      User user = userRepository.getByEmailOrThrow(email);
-      Portfolio portfolio =
-          portfolioRepository.getByUserIdAndNameOrThrow(user.getId(), portfolioName);
-      Asset asset = assetRepository.getByNameOrThrow(assetName);
-      Optional<PortfolioAsset> portfolioAsset =
-          portfolioAssetRepository.findByAssetNameAndPortfolioId(assetName, portfolio.getId());
-      if (portfolioAsset.isEmpty()) {
-        return new Data(user, asset, portfolio, Optional.empty(), Optional.empty());
-      }
-      Optional<PortfolioAssetMeanPrice> meanPrice =
-          portfolioAssetMeanPriceService.getMeanPrice(portfolioAsset.get());
-      return new Data(user, asset, portfolio, portfolioAsset, meanPrice);
+  private Data fetchData(String email, String portfolioName, String assetName) {
+    User user = userRepository.getByEmailOrThrow(email);
+    Portfolio portfolio =
+        portfolioRepository.getByUserIdAndNameOrThrow(user.getId(), portfolioName);
+    Asset asset = assetRepository.getByNameOrThrow(assetName);
+    Optional<PortfolioAsset> portfolioAsset =
+        portfolioAssetRepository.findByAssetNameAndPortfolioId(assetName, portfolio.getId());
+    if (portfolioAsset.isEmpty()) {
+      return new Data(user, asset, portfolio, Optional.empty(), Optional.empty());
     }
+    Optional<PortfolioAssetMeanPrice> meanPrice =
+        portfolioAssetMeanPriceService.getMeanPrice(portfolioAsset.get());
 
-    private Data updateDataRecord(
-        Data data,
-        Optional<PortfolioAsset> portfolioAsset,
-        Optional<PortfolioAssetMeanPrice> meanPrice) {
-      return new Data(data.user(), data.asset(), data.portfolio(), portfolioAsset, meanPrice);
-    }
+    return new Data(user, asset, portfolio, portfolioAsset, meanPrice);
+  }
 
-    private void updateRecords(Data dataRecord, BigDecimal quantity, BigDecimal unitPrice) {
-      portfolioAssetMeanPriceService.updateMeanPrice(
-          dataRecord.portfolioAsset().get(), quantity, unitPrice);
-      transactionService.recordTransaction(
-          dataRecord.user(), dataRecord.asset(), quantity, unitPrice);
-    }
+  private Data updateData(
+      Data data,
+      Optional<PortfolioAsset> portfolioAsset,
+      Optional<PortfolioAssetMeanPrice> meanPrice) {
 
-    private BigDecimal getAccurateRequestQuantity(
-        PortfolioAsset portfolioAsset, BigDecimal quantity) {
-      BigDecimal newQty = portfolioAsset.getQuantity().add(quantity);
-      if (newQty.compareTo(BigDecimal.ZERO) < 0) {
-        // This prevent an user from 'overselling' i.e can only sell at most the quantity
-        return portfolioAsset.getQuantity().negate();
-      }
-      return quantity;
+    return new Data(data.user(), data.asset(), data.portfolio(), portfolioAsset, meanPrice);
+  }
+
+  private void updateRecords(Data dataRecord, BigDecimal quantity, BigDecimal unitPrice) {
+    portfolioAssetMeanPriceService.updateMeanPrice(
+        dataRecord.portfolioAsset().get(), quantity, unitPrice);
+    transactionService.recordTransaction(
+        dataRecord.user(), dataRecord.asset(), quantity, unitPrice);
+  }
+
+  private BigDecimal getAccurateRequestQuantity(
+      PortfolioAsset portfolioAsset, BigDecimal quantity) {
+    BigDecimal newQty = portfolioAsset.getQuantity().add(quantity);
+    if (newQty.compareTo(BigDecimal.ZERO) < 0) {
+      // This prevent an user from 'overselling' i.e can only sell at most the quantity
+      return portfolioAsset.getQuantity().negate();
     }
+    return quantity;
   }
 
   // TODO: Write test
@@ -104,11 +104,10 @@ public class PortfolioAssetService {
         .toList();
   }
 
+  @Transactional
   public PortfolioAssetResponse createPortfolioAsset(
       String email, String portfolioName, PortfolioAssetRequest request) {
-    // dataHolder = createDataHolder(email, portfolioName, request);
-    DataRecords dataRecords = new DataRecords();
-    var data = dataRecords.getDataRecord(email, portfolioName, request.assetName());
+    Data data = fetchData(email, portfolioName, request.assetName());
     // Check if portfolioAsset already exists - ie if we want to add quantity then use update
     if (data.portfolioAsset().isPresent()) {
       throw new ExistsException(PortfolioAsset.class, request.assetName());
@@ -121,37 +120,38 @@ public class PortfolioAssetService {
     // TODO: Refacto the code below, we are breaking SRP
 
     // Create new record with updated value
-    var newData = dataRecords.updateDataRecord(data, Optional.of(portfolioAsset), Optional.empty());
+    Data newData = updateData(data, Optional.of(portfolioAsset), Optional.empty());
     // This function will create the MeanPrice value inside the DB
-    dataRecords.updateRecords(newData, request.quantity(), request.unitPrice());
+    updateRecords(newData, request.quantity(), request.unitPrice());
     // To Response
     PortfolioAssetMeanPrice meanPrice =
         portfolioAssetMeanPriceService.getMeanPriceOrThrow(portfolioAsset);
     return portfolioAssetMapper.toResponse(portfolioAsset, meanPrice.getMeanPrice());
   }
 
+  @Transactional
   public Optional<PortfolioAssetResponse> updatePortfolioAsset(
       String email, String portfolioName, PortfolioAssetRequest request) {
-    DataRecords dataRecords = new DataRecords();
-    var data = dataRecords.getDataRecord(email, portfolioName, request.assetName());
+    Data data = fetchData(email, portfolioName, request.assetName());
     // If not found, should use the create endpoint
     if (data.portfolioAsset().isEmpty()) {
       throw new NotFoundException(PortfolioAsset.class, "asset not exists");
     }
     PortfolioAsset portfolioAsset = data.portfolioAsset().get();
+
     // We need to check if the request has a negative quantity that exceeds our quantity or not
-    BigDecimal accurateRequestQty =
-        dataRecords.getAccurateRequestQuantity(portfolioAsset, request.quantity());
+    BigDecimal accurateRequestQty = getAccurateRequestQuantity(portfolioAsset, request.quantity());
     // We update the PortfolioAsset
     BigDecimal newQuantity = portfolioAsset.getQuantity().add(accurateRequestQty);
     if (newQuantity.compareTo(BigDecimal.ZERO) <= 0) {
+      updateRecords(data, newQuantity, request.unitPrice());
+
       // Delete the row as every position has been sold
-      portfolioAssetRepository.delete(portfolioAsset);
-      dataRecords.updateRecords(data, accurateRequestQty, request.unitPrice());
+      portfolioAssetRepository.deleteDirectlyById(portfolioAsset.getId());
       return Optional.empty();
     }
 
-    dataRecords.updateRecords(data, accurateRequestQty, request.unitPrice());
+    updateRecords(data, accurateRequestQty, request.unitPrice());
 
     // We set the quantity after updateRecords because it is going to use the PortfolioAssetQuantity
     // as argument
@@ -164,15 +164,16 @@ public class PortfolioAssetService {
             portfolioAssetRepository.save(portfolioAsset), meanPrice.getMeanPrice()));
   }
 
+  @Transactional
   public void deletePortfolioAsset(String email, String portfolioName, String assetName) {
     // Create a fake request to use utility function
-    DataRecords dataRecords = new DataRecords();
-    var data = dataRecords.getDataRecord(email, portfolioName, assetName);
+
+    Data data = fetchData(email, portfolioName, assetName);
 
     if (data.portfolioAsset().isEmpty()) {
       return;
     }
 
-    portfolioAssetRepository.delete(data.portfolioAsset().get());
+    portfolioAssetRepository.deleteDirectlyById(data.portfolioAsset().get().getId());
   }
 }

@@ -6,6 +6,7 @@ import com.example.springboot.portfolio.dto.PortfolioResponse;
 import com.example.springboot.portfolio.mapper.PortfolioMapper;
 import com.example.springboot.user.User;
 import com.example.springboot.user.UserRepository;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ public class PortfolioService {
   private final PortfolioRepository portfolioRepository;
   private final PortfolioMapper portfolioMapper;
 
+  @Transactional
   public PortfolioResponse createPortfolio(String userEmail, PortfolioCreateRequest request) {
     // Check if users still exists
     User user = userRepository.getByEmailOrThrow(userEmail);
