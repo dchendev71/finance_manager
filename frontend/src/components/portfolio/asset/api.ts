@@ -57,7 +57,7 @@ function handleAssetChange(
   assetName: string,
   assetRow?: AssetRowData,
 ): void {
-  if (method == "CREATE") {
+  if (method === "CREATE") {
     stateFn((prev) => [...prev, assetRow]);
     return;
   }
@@ -71,7 +71,7 @@ function handleAssetChange(
   }
   // This case is when we sold everything on the current asset
   // Note: It should only happen when method is SELL
-  if (method == "SELL") {
+  if (method === "SELL") {
     stateFn((prev) =>
       prev.filter((assetRow) => assetRow.asset.assetName !== assetName),
     );
@@ -94,9 +94,9 @@ export async function handleAssetForm(
 
     // Enforce that Quantity is negative if 'Sell'
     const quantity =
-      method == "BUY"
-        ? Math.abs(values.data.quantity)
-        : -Math.abs(values.data.quantity);
+      method === "SELL"
+        ? -Math.abs(values.data.quantity)
+        : Math.abs(values.data.quantity);
 
     const response = await callerFn.requestFn(`/portfolios/${portfolioName}`, {
       method: method == "CREATE" ? "POST" : "PATCH",
