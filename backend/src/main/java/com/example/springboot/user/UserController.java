@@ -57,6 +57,6 @@ public class UserController {
   @GetMapping("/profile")
   public ResponseEntity<UserResponse> getProfile(
       @AuthenticationPrincipal CustomUserPrincipal principal) {
-    return ResponseEntity.ok(userService.getProfile(principal.getId()));
+    return ResponseEntity.ok(userService.getProfile(principal.getUser().getId()));
   }
 }

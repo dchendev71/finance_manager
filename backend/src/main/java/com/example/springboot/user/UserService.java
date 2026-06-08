@@ -77,7 +77,6 @@ public class UserService {
 
   public UserResponse getProfile(Long id) {
     User user = userRepository.findById(id).get();
-    System.out.println("GetProfile");
     return userMapper.toResponse(user);
   }
 

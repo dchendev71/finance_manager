@@ -20,7 +20,7 @@ public class ResponseTestFactory {
 
   public static class Auth {
     public static AuthResponse create() {
-      return new AuthResponse(TestConfig.Auth.jwt);
+      return new AuthResponse(TestConfig.Auth.jwt, ResponseTestFactory.User.create());
     }
   }
 

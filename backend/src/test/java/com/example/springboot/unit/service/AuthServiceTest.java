@@ -14,11 +14,14 @@ import com.example.springboot.auth.dto.AuthResponse;
 import com.example.springboot.auth.dto.UserCreateRequest;
 import com.example.springboot.common.exception.InvalidCredentialsException;
 import com.example.springboot.config.TestConfig;
+import com.example.springboot.helper.EntityTestFactory;
 import com.example.springboot.helper.RequestTestFactory;
 import com.example.springboot.helper.ResponseTestFactory;
+import com.example.springboot.security.CustomUserPrincipal;
 import com.example.springboot.security.JwtService;
 import com.example.springboot.user.UserService;
 import com.example.springboot.user.dto.UserResponse;
+import com.example.springboot.user.mapper.UserMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -34,7 +37,9 @@ class AuthServiceTest {
 
   @Mock private UserService userService;
   @Mock private JwtService jwtService;
+  @Mock private UserMapper userMapper;
   @Mock private AuthenticationManager authenticationManager;
+  @Mock private CustomUserPrincipal customUserPrincipal;
 
   @InjectMocks private AuthService authService;
 
@@ -69,15 +74,28 @@ class AuthServiceTest {
     void login_shouldReturnToken_whenCredentialsAreValid() {
       // Given
       AuthRequest request = RequestTestFactory.Auth.login();
+      CustomUserPrincipal userPrincipal =
+          new CustomUserPrincipal(EntityTestFactory.UserFactory.create());
+      UsernamePasswordAuthenticationToken expectedAuth =
+          new UsernamePasswordAuthenticationToken(
+              userPrincipal, request.password(), userPrincipal.getAuthorities());
+
       String mockJwt = "mocked-jwt-token-string";
 
       // We stub jwtService because we need its output payload for the response assertion
       when(jwtService.generateToken(request.email())).thenReturn(mockJwt);
+      when(authenticationManager.authenticate(
+              new UsernamePasswordAuthenticationToken(request.email(), request.password())))
+          .thenReturn(expectedAuth);
+      when(userMapper.toResponse(EntityTestFactory.UserFactory.create()))
+          .thenReturn(ResponseTestFactory.User.create());
       // When
       AuthResponse response = authService.login(request);
       // Then
       assertThat(response).isNotNull();
       assertThat(response.jwtToken()).isEqualTo(mockJwt);
+      assertThat(response.userResponse()).isNotNull();
+      assertThat(response.userResponse().email()).isEqualTo(request.email());
 
       // CRITICAL: Verify Spring Security was actually engaged with correct values
       verify(authenticationManager)
