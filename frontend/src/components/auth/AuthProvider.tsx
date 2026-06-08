@@ -4,6 +4,7 @@ import { customFetch } from "@/services/api";
 import { useNavigate } from "react-router-dom";
 
 import type { AuthContextType } from "./AuthContext";
+import { useUser, type UserProfile } from "@/components/user/UserContext";
 
 // Define props to accept standard nested React children nodes
 interface AuthProviderProps {
@@ -14,11 +15,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Initialize state using a type union (string or null)
   const [token, setToken] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { setUser, clearUser } = useUser();
 
-  const login = (newToken: string): void => setToken(newToken);
-  const logout = (): void => setToken(null);
+  function logout() {
+    clearUser();
+    setToken(null);
+    navigate("/login");
+  }
 
-  // Use standard native RequestInit type for native fetch configurations
+  function login(token: string, user: UserProfile) {
+    setUser(user);
+    setToken(token);
+  }
+
   async function request(
     endpoint: string,
     options: RequestInit = {},
@@ -29,7 +38,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
       // Intercept 401 errors globally
       if (res.status === 401) {
         logout();
-        navigate("/login");
         return null;
       }
 

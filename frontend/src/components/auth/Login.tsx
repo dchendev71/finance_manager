@@ -5,6 +5,7 @@ import InputField from "@/components/ui/InputField";
 import FormErrorBanner from "@/components/ui/FormErrorBanner";
 import { useState } from "react";
 import Button from "@/components/ui/Button";
+import type { Currency, UserProfile } from "../user/UserContext";
 
 function LoginForm() {
   const [error, setError] = useState<string | null>(null);
@@ -29,7 +30,18 @@ function LoginForm() {
       });
 
       if (res != null) {
-        login(res.jwtToken);
+        login(res.jwtToken, {
+          email: res.userResponse.email,
+          // TODO: Fix role and get it from the Backend
+          role: "USER",
+          createdAt: res.userResponse.createdAt,
+          currency: {
+            code: res.userResponse.currency.code,
+            name: res.userResponse.currency.name,
+            symbol: res.userResponse.currency.symbol,
+          } as Currency,
+        } as UserProfile);
+
         navigate("/home");
       }
     } catch (e: any) {

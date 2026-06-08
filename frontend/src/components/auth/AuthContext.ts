@@ -1,10 +1,11 @@
 import { createContext, useContext } from "react";
+import type { UserProfile } from "@/components/user/UserContext";
 
 // 1. Define the TypeScript shape of our Context data cloud
 export type AuthContextType = {
   token: string | null;
   isAuthenticated: boolean;
-  login: (newToken: string) => void;
+  login: (token: string, user: UserProfile) => void;
   logout: () => void;
   request: (endpoint: string, options?: RequestInit) => Promise<any>;
 };

@@ -4,6 +4,7 @@ import { createPortfolio, getPortfolios } from "./api.ts";
 import InputField from "@/components/ui/InputField";
 import Button from "@/components/ui/Button";
 import PortfolioContainer from "./PortfolioContainer";
+import FormErrorBanner from "@/components/ui/FormErrorBanner.tsx";
 
 export default function PortfolioDashboard() {
   const { request } = useAuth();
@@ -47,6 +48,8 @@ export default function PortfolioDashboard() {
         <header>
           <h1 className="font-bold text-3xl p-4">Portfolio Dashboard</h1>
         </header>
+
+        <FormErrorBanner message={error} />
 
         <article className="min-h-screen w-full flex flex-col border border-slate-100 rounded-3xl bg-white p-8">
           <PortfolioContainer portfolios={portfolios} />

@@ -4,6 +4,7 @@ import { getAssets, type AssetRowData } from "./asset/api";
 import AssetForm, { type FormProps } from "./asset/AssetForm";
 import AssetContainer from "./asset/AssetContainer";
 import Button from "@/components/ui/Button";
+import FormErrorBanner from "@/components/ui/FormErrorBanner";
 export interface PortfolioProps {
   portfolioName: string;
 }
@@ -39,6 +40,8 @@ export default function Portfolio({ portfolioName }: PortfolioProps) {
       <header>
         <h2 className="font-bold mb-1.5">{portfolioName}</h2>
       </header>
+
+      <FormErrorBanner message={error} />
       <article>
         <AssetContainer
           portfolioName={portfolioName}
