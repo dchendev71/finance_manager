@@ -5,6 +5,7 @@ import com.example.springboot.common.exception.ExistsException;
 import com.example.springboot.common.exception.InvalidCredentialsException;
 import com.example.springboot.currency.Currency;
 import com.example.springboot.currency.CurrencyService;
+import com.example.springboot.user.dto.ChangeCurrencyRequest;
 import com.example.springboot.user.dto.ChangeEmailRequest;
 import com.example.springboot.user.dto.ChangePasswordRequest;
 import com.example.springboot.user.dto.UserResponse;
@@ -78,6 +79,16 @@ public class UserService {
   public UserResponse getProfile(Long id) {
     User user = userRepository.findById(id).get();
     return userMapper.toResponse(user);
+  }
+
+  @Transactional
+  public UserResponse changeCurrency(String email, ChangeCurrencyRequest request) {
+    User user = userRepository.getByEmailOrThrow(email);
+    Currency currency = currencyService.findByCode(request.currencyCode());
+
+    user.setCurrency(currency);
+
+    return userMapper.toResponse(userRepository.save(user));
   }
 
   @Transactional

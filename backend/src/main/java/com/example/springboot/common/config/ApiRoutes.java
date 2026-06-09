@@ -13,6 +13,7 @@ public interface ApiRoutes {
     String BASE = VERSION + "/users";
     String CHANGE_PASSWORD = BASE + "/change-password";
     String CHANGE_EMAIL = BASE + "/change-email";
+    String CHANGE_CURRENCY = BASE + "/change-currency";
     String DELETE = BASE + "/delete";
   }
 

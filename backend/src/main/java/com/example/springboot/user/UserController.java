@@ -3,6 +3,7 @@ package com.example.springboot.user;
 import com.example.springboot.auth.dto.UserCreateRequest;
 import com.example.springboot.common.config.ApiRoutes;
 import com.example.springboot.security.CustomUserPrincipal;
+import com.example.springboot.user.dto.ChangeCurrencyRequest;
 import com.example.springboot.user.dto.ChangeEmailRequest;
 import com.example.springboot.user.dto.ChangePasswordRequest;
 import com.example.springboot.user.dto.UserResponse;
@@ -46,6 +47,14 @@ public class UserController {
       @Valid @RequestBody ChangeEmailRequest changeEmailRequest) {
 
     return ResponseEntity.ok(userService.changeEmail(principal.getUsername(), changeEmailRequest));
+  }
+
+  @PatchMapping(ApiRoutes.Users.CHANGE_CURRENCY)
+  public ResponseEntity<UserResponse> changeCurrency(
+      @AuthenticationPrincipal CustomUserPrincipal principal,
+      @Valid @RequestBody ChangeCurrencyRequest changeCurrencyRequest) {
+    return ResponseEntity.ok(
+        userService.changeCurrency(principal.getUsername(), changeCurrencyRequest));
   }
 
   @DeleteMapping(ApiRoutes.Users.DELETE)
