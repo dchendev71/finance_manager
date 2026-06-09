@@ -1,6 +1,13 @@
+import { parseISO } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
+
 const BASE_URL = "http://localhost:8080/api/v1";
 
-export async function customFetch(endpoint, token, options = {}) {
+export async function customFetch(
+  endpoint: string,
+  token: string,
+  options = {},
+) {
   const headers = {
     "Content-Type": "application/json",
     ...options.headers,
@@ -19,4 +26,14 @@ export async function customFetch(endpoint, token, options = {}) {
   const response = await fetch(`${BASE_URL}${endpoint}`, config);
 
   return response;
+}
+
+export function formatToUTCLibrary(ts: string | null): string {
+  if (ts === null) {
+    return "";
+  }
+  const isoString: string = ts as string;
+  const date = parseISO(isoString);
+
+  return formatInTimeZone(date, "UTC", "yyyy-MM-dd HH:mm");
 }
