@@ -5,6 +5,7 @@ import { useState } from "react";
 import ChangePasswordForm from "./forms/ChangePasswordForm";
 import ChangeEmailForm from "./forms/ChangeEmailForm";
 import ChangeCurrencyForm from "./forms/ChangeCurrencyForm";
+import { useNavigate } from "react-router-dom";
 
 function UserDetails() {
   const { user } = useUser();
@@ -47,6 +48,7 @@ function UserDetails() {
 type DashboardType = "USER_DETAILS" | "PASSWORD" | "EMAIL" | "CURRENCY";
 
 export default function UserPage() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<DashboardType>("USER_DETAILS");
   const renderDashboard = () => {
     switch (activeTab) {
@@ -92,8 +94,11 @@ export default function UserPage() {
               variant="blue"
               onClick={() => setActiveTab("CURRENCY")}
             />
-            <Button value="Go to Dashboard" variant="blue" />
-            <Button value="Portfolios" variant="blue" />
+            <Button
+              value="Go to Dashboard"
+              variant="blue"
+              onClick={() => navigate("/home")}
+            />
             <Button value="Performance" variant="blue" />
           </div>
           <div className="col-span-2 bg-slate-100 border border-slate-800 rounded-xl p-6 min-h-[300px]">

@@ -40,9 +40,6 @@ export default function Navbar() {
           <NavLink to="/home" className={linkClasses}>
             Dashboard
           </NavLink>
-          <NavLink to="/portfolios" className={linkClasses}>
-            Portfolios
-          </NavLink>
           <NavLink to="/performance" className={linkClasses}>
             Performance
           </NavLink>
