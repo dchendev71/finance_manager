@@ -1,27 +1,35 @@
 import Button from "@/components/ui/Button";
 import InputField from "@/components/ui/InputField";
-import { changePassword } from "../api";
+import { updateUser, type UpdateUserPayload } from "@/components/user/api";
 import { useAuth } from "@/components/auth/AuthContext";
 import { useUser } from "@/components/user/UserContext";
 import { useState } from "react";
+import FormErrorBanner from "@/components/ui/FormErrorBanner";
 
 export default function ChangePasswordForm() {
   const { request } = useAuth();
   const { setUser } = useUser();
   const [error, setError] = useState<string | null>(null);
   async function handleAction(formData: FormData) {
-    // TODO: Check if OK
-    await changePassword(
-      formData,
-      {
+    const payload: UpdateUserPayload = {
+      formData: formData,
+      callerFn: {
         requestFn: request,
         errorFn: setError,
       },
-      setUser,
-    );
+      setUser: setUser,
+      config: {
+        endpoint: "/users/change-password",
+        method: "POST",
+        requiredFields: ["currentPassword", "newPassword", "confirmPassword"],
+      },
+    };
+
+    await updateUser(payload);
   }
   return (
     <>
+      <FormErrorBanner message={error} />
       <form className="flex flex-col gap-5" action={handleAction}>
         <InputField
           id="currentPassword"

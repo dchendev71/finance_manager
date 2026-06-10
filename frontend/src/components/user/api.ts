@@ -16,84 +16,45 @@ export function fromUserResponseToUserProfile(response: any) {
   } as UserProfile;
 }
 
-export async function changePassword(
-  formData: FormData,
-  callerFn: CallerFunction,
-  setUser: Dispatch<SetStateAction<UserProfile | null>>,
-): Promise<any> {
-  const currentPassword = formData.get("currentPassword") as string | null;
-  const newPassword = formData.get("newPassword") as string | null;
-  const confirmPassword = formData.get("confirmPassword") as string | null;
-
-  if (!currentPassword || !newPassword || !confirmPassword) {
-    callerFn.errorFn("All fields are required");
-    return;
-  }
-  try {
-    const response = await callerFn.requestFn(`/users/change-password`, {
-      method: "POST",
-      body: JSON.stringify({
-        currentPassword: currentPassword,
-        newPassword: newPassword,
-        confirmPassword: confirmPassword,
-      }),
-    });
-    if (response) {
-      const userProfile = fromUserResponseToUserProfile(response);
-      setUser(userProfile);
-    }
-  } catch (e: any) {
-    callerFn.errorFn(e.message || "Network error - please try again");
-    return;
-  }
+interface UpdateUserConfig {
+  endpoint: string;
+  method: "POST" | "PATCH";
+  requiredFields?: string[];
 }
 
-export async function changeEmail(
-  formData: FormData,
-  callerFn: CallerFunction,
-  setUser: Dispatch<SetStateAction<UserProfile | null>>,
-): Promise<any> {
-  const currentPassword = formData.get("currentPassword") as string | null;
-  const newEmail = formData.get("newEmail") as string | null;
+export type UpdateUserPayload = {
+  formData: FormData;
+  callerFn: CallerFunction;
+  setUser: Dispatch<SetStateAction<UserProfile | null>>;
+  config: UpdateUserConfig;
+};
 
-  if (!currentPassword || !newEmail) {
-    callerFn.errorFn("All fields are required");
-    return;
-  }
-  try {
-    const response = await callerFn.requestFn(`/users/change-email`, {
-      method: "PATCH",
-      body: JSON.stringify({
-        currentPassword: currentPassword,
-        newEmail: newEmail,
-      }),
-    });
-    if (response) {
-      const userProfile = fromUserResponseToUserProfile(response);
-      setUser(userProfile);
+export async function updateUser({
+  formData,
+  callerFn,
+  setUser,
+  config,
+}: UpdateUserPayload): Promise<any> {
+  // We dynamically fill the payload based on the requiredFields
+  const payload: Record<string, string> = {};
+  const fields = config.requiredFields || Array.from(formData.keys());
+  for (const field of fields) {
+    const value = formData.get(field) as string | null;
+    if (!value && config.requiredFields?.includes(field)) {
+      callerFn.errorFn("All fields are required");
+      return;
     }
-  } catch (e: any) {
-    callerFn.errorFn(e.message || "Network error - please try again");
-    return;
+    if (value) payload[field] = value;
   }
-}
-
-export async function changeCurrency(
-  formData: FormData,
-  callerFn: CallerFunction,
-  setUser: Dispatch<SetStateAction<UserProfile | null>>,
-): Promise<any> {
-  const currencyCode = formData.get("currencyCode") as string | "EUR";
 
   try {
-    const response = await callerFn.requestFn(`/users/change-currency`, {
-      method: "PATCH",
-      body: JSON.stringify({
-        currencyCode: currencyCode,
-      }),
+    const response = await callerFn.requestFn(config.endpoint, {
+      method: config.method,
+      body: JSON.stringify(payload),
     });
+
     if (response) {
-      const userProfile = fromUserResponseToUserProfile(response);
+      const userProfile: UserProfile = fromUserResponseToUserProfile(response);
       setUser(userProfile);
     }
   } catch (e: any) {

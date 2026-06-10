@@ -35,12 +35,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       const res = await customFetch(endpoint, token, options);
 
-      // Intercept 401 errors globally
-      if (res.status === 401) {
-        logout();
-        return null;
-      }
-
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
         throw new Error(
