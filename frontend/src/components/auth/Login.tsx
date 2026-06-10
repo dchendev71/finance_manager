@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 import { useNavigate } from "react-router-dom";
 import InputField from "@/components/ui/InputField";
@@ -6,12 +6,18 @@ import FormErrorBanner from "@/components/ui/FormErrorBanner";
 import { useState } from "react";
 import Button from "@/components/ui/Button";
 import { fromUserResponseToUserProfile } from "@/components/user/api";
+import FormSuccessBanner from "../ui/FormSuccessBanner";
 
 function LoginForm() {
   const [error, setError] = useState<string | null>(null);
 
   const { login, request } = useAuth();
   const navigate = useNavigate();
+
+  // This allow us to get back the message from the Register page
+  const location = useLocation();
+  const state = location.state;
+  const message = state?.successMessage ?? null;
 
   async function handleAction(formData: FormData): Promise<void> {
     try {
@@ -45,6 +51,7 @@ function LoginForm() {
           <header className="text-center mb-8 sm:mb-6">
             <h1 className="font-bold">Login</h1>
           </header>
+          <FormSuccessBanner message={message} />
           <FormErrorBanner message={error} />
           <form className="flex flex-col gap-5 sm:gap-4" action={handleAction}>
             <InputField id="email" type="email" label="Email" />

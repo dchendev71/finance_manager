@@ -31,7 +31,11 @@ function RegisterForm() {
       // If we reach this step, login is succesful
       // TODO: Maybe create a pop up Registration Succesful?
       // redirect to login
-      navigate("/login");
+      navigate("/login", {
+        state: {
+          successMessage: "Registration complete!",
+        },
+      });
     } catch (err: any) {
       setError(err.message || "Network error — please try again");
     }
