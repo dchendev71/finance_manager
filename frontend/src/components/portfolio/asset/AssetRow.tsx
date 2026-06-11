@@ -3,6 +3,7 @@ import type { AssetRowData } from "./api";
 import Asset from "./Asset";
 import { useState, type Dispatch, type SetStateAction } from "react";
 import AssetForm, { type AssetMethod } from "./AssetForm";
+import FormErrorBanner from "@/components/ui/FormErrorBanner";
 
 export interface AssetRowProps {
   portfolioName: string;
@@ -15,6 +16,7 @@ export default function AssetRow({
   stateFn,
   assetRow,
 }: AssetRowProps) {
+  const [error, setError] = useState<string | null>(null);
   const [formTitle, setFormTitle] = useState<string>("");
   const [displayAssetForm, setDisplayAssetForm] = useState<boolean>(false);
   const [assetMethod, setAssetMethod] = useState<AssetMethod>("BUY");
@@ -38,6 +40,7 @@ export default function AssetRow({
     // Outer section wrapper
     <section className="w-full">
       <dl className="flex flex-row flex-wrap items-center gap-6 p-4 bg-slate-50 rounded-xl border border-slate-100 w-full">
+        <FormErrorBanner message={error} />
         <div className="flex items-center gap-2">
           <Asset asset={assetRow.asset} />
         </div>
@@ -71,6 +74,7 @@ export default function AssetRow({
           assetMethod={assetMethod}
           portfolioName={portfolioName}
           stateFn={stateFn}
+          setError={setError}
         />
       )}
     </section>

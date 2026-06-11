@@ -18,6 +18,7 @@ export interface AssetFormProps {
   assetName?: string;
   assetMethod: AssetMethod;
   stateFn: Dispatch<SetStateAction<AssetRowData[]>>;
+  setError: Dispatch<SetStateAction<string | null>>;
   formProps: FormProps;
 }
 
@@ -26,8 +27,8 @@ export default function AssetForm({
   portfolioName,
   assetMethod,
   stateFn,
+  setError,
 }: AssetFormProps) {
-  const [error, setError] = useState<string | null>(null);
   const { request } = useAuth();
 
   async function handleForm(formData: FormData) {
@@ -46,7 +47,6 @@ export default function AssetForm({
             {formProps.formTitle}
           </h2>
 
-          <FormErrorBanner message={error} />
           <form action={handleForm}>
             <InputField
               label="Asset Name"

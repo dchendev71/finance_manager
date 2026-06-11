@@ -60,6 +60,7 @@ export default function Portfolio({ portfolioName }: PortfolioProps) {
             assetMethod="CREATE"
             portfolioName={portfolioName}
             stateFn={setAssets}
+            setError={setError}
           />
         )}
       </article>
