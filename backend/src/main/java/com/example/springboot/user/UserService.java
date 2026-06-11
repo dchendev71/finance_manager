@@ -1,6 +1,7 @@
 package com.example.springboot.user;
 
 import com.example.springboot.auth.dto.UserCreateRequest;
+import com.example.springboot.balance.UserBalanceService;
 import com.example.springboot.common.exception.ExistsException;
 import com.example.springboot.common.exception.InvalidCredentialsException;
 import com.example.springboot.currency.Currency;
@@ -22,6 +23,7 @@ public class UserService {
   private final UserRepository userRepository;
   private final UserMapper userMapper;
   private final CurrencyService currencyService;
+  private final UserBalanceService userBalanceService;
 
   @Transactional
   public UserResponse registerNewUser(UserCreateRequest request) {
@@ -37,7 +39,10 @@ public class UserService {
     String encodedPwd = passwordEncoder.encode(request.password());
     user.setPassword(encodedPwd);
 
-    return userMapper.toResponse(userRepository.save(user));
+    UserResponse response = userMapper.toResponse(userRepository.save(user));
+    userBalanceService.createInitialBalance(user);
+
+    return response;
   }
 
   @Transactional

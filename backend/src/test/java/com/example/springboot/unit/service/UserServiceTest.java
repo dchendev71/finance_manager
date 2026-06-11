@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.example.springboot.auth.dto.UserCreateRequest;
+import com.example.springboot.balance.UserBalanceService;
 import com.example.springboot.common.exception.ExistsException;
 import com.example.springboot.config.TestConfig;
 import com.example.springboot.currency.Currency;
@@ -40,6 +41,7 @@ class UserServiceTest {
   @Mock private UserRepository userRepository;
   @Mock private PasswordEncoder passwordEncoder;
   @Mock private CurrencyService currencyService;
+  @Mock private UserBalanceService userBalanceService;
 
   private UserService userService;
   private UserCreateRequest userCreateRequest;
@@ -51,7 +53,8 @@ class UserServiceTest {
     UserMapperImpl userMapperImpl = new UserMapperImpl(currencyMapper);
 
     this.userService =
-        new UserService(passwordEncoder, userRepository, userMapperImpl, currencyService);
+        new UserService(
+            passwordEncoder, userRepository, userMapperImpl, currencyService, userBalanceService);
 
     this.userCreateRequest = RequestTestFactory.User.register();
     this.currency = EntityTestFactory.CurrencyFactory.create();

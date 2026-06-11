@@ -10,6 +10,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+  // 400
+  @ExceptionHandler(InsufficientBalanceException.class)
+  public ResponseEntity<ErrorResponse> handleInsuffucientBalance(InsufficientBalanceException e) {
+    return ErrorResponseEntityFactory.createResponseEntity(HttpStatus.BAD_REQUEST, e);
+  }
 
   // 409
   @ExceptionHandler(ExistsException.class)

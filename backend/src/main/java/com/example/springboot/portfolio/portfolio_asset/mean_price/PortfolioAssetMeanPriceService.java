@@ -37,7 +37,7 @@ public class PortfolioAssetMeanPriceService {
   @Transactional
   public void updateMeanPrice(
       PortfolioAsset portfolioAsset, BigDecimal quantity, BigDecimal unitPrice) {
-    if (quantity.compareTo(BigDecimal.ZERO) < 0) {
+    if (quantity.compareTo(BigDecimal.ZERO) <= 0) {
       return;
     }
     // Get our current mean price

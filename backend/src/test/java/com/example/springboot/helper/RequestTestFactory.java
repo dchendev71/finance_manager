@@ -2,6 +2,7 @@ package com.example.springboot.helper;
 
 import com.example.springboot.auth.dto.AuthRequest;
 import com.example.springboot.auth.dto.UserCreateRequest;
+import com.example.springboot.balance.dto.UserBalanceRequest;
 import com.example.springboot.config.TestConfig;
 import com.example.springboot.portfolio.dto.PortfolioCreateRequest;
 import com.example.springboot.portfolio.portfolio_asset.dto.PortfolioAssetRequest;
@@ -10,6 +11,12 @@ import com.example.springboot.user.dto.ChangePasswordRequest;
 import java.math.BigDecimal;
 
 public class RequestTestFactory {
+  public static class UserBalance {
+    public static UserBalanceRequest create() {
+      return UserBalanceRequest.builder().increaseAmount(new BigDecimal(10000000)).build();
+    }
+  }
+
   public static class User {
     public static UserCreateRequest register() {
       return UserCreateRequest.builder()

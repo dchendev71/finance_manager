@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.example.springboot.balance.UserBalanceService;
 import com.example.springboot.common.exception.ExistsException;
 import com.example.springboot.config.TestConfig;
 import com.example.springboot.helper.EntityTestFactory;
@@ -25,6 +26,7 @@ import com.example.springboot.portfolio.portfolio_asset.dto.PortfolioAssetRespon
 import com.example.springboot.portfolio.portfolio_asset.mapper.PortfolioAssetMapper;
 import com.example.springboot.portfolio.portfolio_asset.mean_price.PortfolioAssetMeanPriceService;
 import com.example.springboot.portfolio.transactions.TransactionsService;
+import com.example.springboot.recorder.RecordService;
 import com.example.springboot.user.User;
 import com.example.springboot.user.UserRepository;
 import java.math.BigDecimal;
@@ -39,6 +41,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class PortfolioAssetServiceTest {
+
+  @Mock private RecordService recordService;
+  @Mock private UserBalanceService userBalanceService;
 
   @Mock private UserRepository userRepository;
   @Mock private PortfolioRepository portfolioRepository;
@@ -82,6 +87,9 @@ class PortfolioAssetServiceTest {
         .thenReturn(ResponseTestFactory.PortfolioAsset.create());
     when(portfolioAssetMeanPriceService.getMeanPriceOrThrow(portfolioAsset))
         .thenReturn(EntityTestFactory.PortfolioAssetMeanPriceFactory.create());
+
+    when(userBalanceService.getUserCurrentBalance(TestConfig.User.email))
+        .thenReturn(new BigDecimal(10000000));
 
     PortfolioAssetResponse response =
         portfolioAssetService.createPortfolioAsset(

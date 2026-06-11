@@ -47,6 +47,7 @@ class PortfolioAssetIntegrationTest {
     testSetup = new TestSetup(mockMvc, objectMapper, assetRepository);
 
     testSetup.registerUserAndLogin(TestConfig.User.email);
+    testSetup.increaseUserBalance(testSetup.testSetupDetails.getJwtToken());
     testSetup.createPortfolio(TestConfig.Portfolio.name, testSetup.testSetupDetails.getJwtToken());
   }
 

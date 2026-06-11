@@ -9,6 +9,11 @@ public interface ApiRoutes {
     String LOGIN = BASE + "/login";
   }
 
+  interface UserBalance {
+    String BASE = VERSION + "/balance";
+    String INCREASE = BASE + "/increase";
+  }
+
   interface Users {
     String BASE = VERSION + "/users";
     String CHANGE_PASSWORD = BASE + "/change-password";

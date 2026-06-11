@@ -16,7 +16,7 @@ CREATE TABLE users (
 	is_active BOOLEAN NOT NULL DEFAULT TRUE,
 	currency_id BIGINT,
 
-	CONSTRAINT fk_users_currency
+	CONSTRAINT fk_users_currencies
 		FOREIGN KEY (currency_id)
 		REFERENCES currencies (id)
 		ON DELETE SET NULL

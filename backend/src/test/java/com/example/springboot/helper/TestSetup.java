@@ -2,6 +2,7 @@ package com.example.springboot.helper;
 
 import com.example.springboot.auth.dto.AuthRequest;
 import com.example.springboot.auth.dto.UserCreateRequest;
+import com.example.springboot.balance.dto.UserBalanceRequest;
 import com.example.springboot.common.config.ApiRoutes;
 import com.example.springboot.config.TestConfig;
 import com.example.springboot.portfolio.Portfolio;
@@ -39,6 +40,12 @@ public class TestSetup {
     UserCreateRequest request =
         RequestTestFactory.User.register(email, TestConfig.User.password, TestConfig.Currency.code);
     return requestHandler.performPost(ApiRoutes.Auth.REGISTER, request);
+  }
+
+  public ResultActions increaseUserBalance(String jwtToken) throws Exception {
+    UserBalanceRequest request = RequestTestFactory.UserBalance.create();
+    return requestHandler.performAuthorizedRequest(
+        ApiRoutes.UserBalance.INCREASE, request, HttpMethod.POST, jwtToken);
   }
 
   public ResultActions registerUserAndLogin(String email) throws Exception {
