@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.example.springboot.balance.UserBalance;
 import com.example.springboot.balance.UserBalanceService;
 import com.example.springboot.common.exception.ExistsException;
 import com.example.springboot.config.TestConfig;
@@ -88,8 +89,12 @@ class PortfolioAssetServiceTest {
     when(portfolioAssetMeanPriceService.getMeanPriceOrThrow(portfolioAsset))
         .thenReturn(EntityTestFactory.PortfolioAssetMeanPriceFactory.create());
 
-    when(userBalanceService.getUserCurrentBalance(TestConfig.User.email))
-        .thenReturn(new BigDecimal(10000000));
+    when(userBalanceService.getBalance(TestConfig.User.email))
+        .thenReturn(
+            UserBalance.builder()
+                .balance(new BigDecimal(100000000))
+                .user(EntityTestFactory.UserFactory.create())
+                .build());
 
     PortfolioAssetResponse response =
         portfolioAssetService.createPortfolioAsset(

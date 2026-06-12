@@ -19,6 +19,7 @@ import com.example.springboot.helper.RequestTestFactory;
 import com.example.springboot.helper.ResponseTestFactory;
 import com.example.springboot.security.CustomUserPrincipal;
 import com.example.springboot.security.JwtService;
+import com.example.springboot.user.User;
 import com.example.springboot.user.UserService;
 import com.example.springboot.user.dto.UserResponse;
 import com.example.springboot.user.mapper.UserMapper;
@@ -53,8 +54,10 @@ class AuthServiceTest {
       // Given
       UserCreateRequest request = RequestTestFactory.User.register();
       UserResponse expectedResponse = ResponseTestFactory.User.create();
+      User user = EntityTestFactory.UserFactory.create();
 
-      when(userService.registerNewUser(request)).thenReturn(expectedResponse);
+      when(userService.registerNewUser(request)).thenReturn(user);
+      when(userMapper.toResponse(user)).thenReturn(expectedResponse);
 
       // When
       UserResponse actualResponse = authService.register(request);

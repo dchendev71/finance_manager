@@ -9,7 +9,6 @@ import com.example.springboot.currency.CurrencyService;
 import com.example.springboot.user.dto.ChangeCurrencyRequest;
 import com.example.springboot.user.dto.ChangeEmailRequest;
 import com.example.springboot.user.dto.ChangePasswordRequest;
-import com.example.springboot.user.dto.UserResponse;
 import com.example.springboot.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,7 +25,7 @@ public class UserService {
   private final UserBalanceService userBalanceService;
 
   @Transactional
-  public UserResponse registerNewUser(UserCreateRequest request) {
+  public User registerNewUser(UserCreateRequest request) {
     // Check if user already exists
     if (userRepository.findByEmail(request.email()).isPresent()) {
       throw new ExistsException(User.class, request.email());
@@ -39,14 +38,14 @@ public class UserService {
     String encodedPwd = passwordEncoder.encode(request.password());
     user.setPassword(encodedPwd);
 
-    UserResponse response = userMapper.toResponse(userRepository.save(user));
+    userRepository.save(user);
     userBalanceService.createInitialBalance(user);
 
-    return response;
+    return user;
   }
 
   @Transactional
-  public UserResponse changeEmail(String currentEmail, ChangeEmailRequest changeEmailRequest) {
+  public User changeEmail(String currentEmail, ChangeEmailRequest changeEmailRequest) {
     // Check if email is the same
     if (currentEmail.equalsIgnoreCase(changeEmailRequest.newEmail())) {
       throw new ExistsException(User.class, currentEmail);
@@ -64,11 +63,11 @@ public class UserService {
     // Set the email
     user.setEmail(changeEmailRequest.newEmail());
 
-    return userMapper.toResponse(userRepository.save(user));
+    return userRepository.save(user);
   }
 
   @Transactional
-  public UserResponse changePassword(String email, ChangePasswordRequest request) {
+  public User changePassword(String email, ChangePasswordRequest request) {
     // Check if user still exists
     User user = userRepository.getByEmailOrThrow(email);
     // If current password doesn't match
@@ -78,22 +77,17 @@ public class UserService {
     // Encode password
     user.setPassword(passwordEncoder.encode(request.newPassword()));
 
-    return userMapper.toResponse(userRepository.save(user));
-  }
-
-  public UserResponse getProfile(Long id) {
-    User user = userRepository.findById(id).get();
-    return userMapper.toResponse(user);
+    return userRepository.save(user);
   }
 
   @Transactional
-  public UserResponse changeCurrency(String email, ChangeCurrencyRequest request) {
+  public User changeCurrency(String email, ChangeCurrencyRequest request) {
     User user = userRepository.getByEmailOrThrow(email);
     Currency currency = currencyService.findByCode(request.currencyCode());
 
     user.setCurrency(currency);
 
-    return userMapper.toResponse(userRepository.save(user));
+    return userRepository.save(user);
   }
 
   @Transactional

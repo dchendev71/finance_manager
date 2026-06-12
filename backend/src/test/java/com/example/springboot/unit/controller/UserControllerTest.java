@@ -25,6 +25,7 @@ import com.example.springboot.user.UserService;
 import com.example.springboot.user.dto.ChangeEmailRequest;
 import com.example.springboot.user.dto.ChangePasswordRequest;
 import com.example.springboot.user.dto.UserResponse;
+import com.example.springboot.user.mapper.UserMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -48,6 +49,7 @@ public class UserControllerTest {
   @MockitoBean private JwtAccessDeniedHandler jwtAccessDeniedHandler;
   @MockitoBean private CustomUserDetailsService customUserDetailsService;
   @MockitoBean private UserService userService;
+  @MockitoBean private UserMapper userMapper;
 
   private RequestHandler requestHandler;
   // Usual Test Request, Test User and Test response
@@ -67,7 +69,8 @@ public class UserControllerTest {
   void changePassword_shouldReturn200() throws Exception {
     ChangePasswordRequest request = RequestTestFactory.User.changePassword("newPassword");
 
-    when(userService.changePassword(TestConfig.User.email, request)).thenReturn(userResponse);
+    when(userService.changePassword(TestConfig.User.email, request)).thenReturn(user);
+    when(userMapper.toResponse(user)).thenReturn(userResponse);
 
     requestHandler
         .performAuthorizedRequest(ApiRoutes.Users.CHANGE_PASSWORD, request, HttpMethod.POST)
@@ -94,8 +97,11 @@ public class UserControllerTest {
   @DisplayName("PATCH /change-email should return 200")
   void changeEmail_shouldReturn200() throws Exception {
     ChangeEmailRequest request = RequestTestFactory.User.changeEmail("newtest@gmail.com");
+    User newUser = EntityTestFactory.UserFactory.create("newtest@gmail.com");
 
-    when(userService.changeEmail(TestConfig.User.email, request)).thenReturn(userResponse);
+    when(userService.changeEmail(TestConfig.User.email, request)).thenReturn(newUser);
+    when(userMapper.toResponse(newUser))
+        .thenReturn(ResponseTestFactory.User.create("newtest@gmail.com"));
 
     requestHandler
         .performAuthorizedRequest(ApiRoutes.Users.CHANGE_EMAIL, request, HttpMethod.PATCH)

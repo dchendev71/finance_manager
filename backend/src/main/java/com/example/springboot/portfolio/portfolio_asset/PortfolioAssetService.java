@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+// TODO: Separate check logic and create a Domain Class to return to Controller
 public class PortfolioAssetService {
   private final RecordService recordService;
   private final UserBalanceService userBalanceService;
@@ -123,7 +124,7 @@ public class PortfolioAssetService {
      * If quantity is < 0, the totalCost would be negative, meaning that OK is still true
      * If quantity is < 0, the 'remainingBalance' from Checkedvalues would increase as we subtract (negative)
      */
-    BigDecimal userBalance = userBalanceService.getUserCurrentBalance(user.getEmail());
+    BigDecimal userBalance = userBalanceService.getBalance(user.getEmail()).getBalance();
     BigDecimal totalCost = request.quantity().multiply(request.unitPrice());
     Boolean ok = userBalance.compareTo(totalCost) >= 0;
 

@@ -23,7 +23,7 @@ public class AuthService {
   private final AuthenticationManager authenticationManager;
 
   public UserResponse register(UserCreateRequest request) {
-    return userService.registerNewUser(request);
+    return userMapper.toResponse(userService.registerNewUser(request));
   }
 
   public AuthResponse login(AuthRequest request) {

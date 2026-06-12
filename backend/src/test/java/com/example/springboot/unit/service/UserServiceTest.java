@@ -24,7 +24,6 @@ import com.example.springboot.user.UserRepository;
 import com.example.springboot.user.UserService;
 import com.example.springboot.user.dto.ChangeEmailRequest;
 import com.example.springboot.user.dto.ChangePasswordRequest;
-import com.example.springboot.user.dto.UserResponse;
 import com.example.springboot.user.mapper.UserMapperImpl;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,10 +69,10 @@ class UserServiceTest {
     // from the test, so we get back the instantiated User
     when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
     // When
-    UserResponse response = userService.registerNewUser(userCreateRequest);
+    User user = userService.registerNewUser(userCreateRequest);
     // Then
-    assertThat(response).isNotNull();
-    assertThat(response.email()).isEqualTo(TestConfig.User.email);
+    assertThat(user).isNotNull();
+    assertThat(user.getEmail()).isEqualTo(TestConfig.User.email);
   }
 
   @Test
@@ -91,19 +90,6 @@ class UserServiceTest {
         .hasMessageContaining("XYZ");
 
     verify(userRepository, never()).save(any());
-  }
-
-  @Test
-  @DisplayName("registerNewUser: should never expose password in response")
-  void registerNewUser_shouldNeverExposePassword() {
-    // Given
-    when(currencyService.findByCode(TestConfig.Currency.code)).thenReturn(currency);
-    when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
-    // When
-    UserResponse response = userService.registerNewUser(userCreateRequest);
-    // Then
-    // Note: The id field is null because it is generated through Mockito
-    assertThat(response).hasNoNullFieldsOrPropertiesExcept("createdAt", "updatedAt", "id");
   }
 
   @Test

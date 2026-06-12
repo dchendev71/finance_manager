@@ -16,6 +16,13 @@ public class ResponseTestFactory {
           .currency(EntityTestFactory.CurrencyFactory.createDto())
           .build();
     }
+
+    public static UserResponse create(String email) {
+      return UserResponse.builder()
+          .email(email)
+          .currency(EntityTestFactory.CurrencyFactory.createDto())
+          .build();
+    }
   }
 
   public static class Auth {

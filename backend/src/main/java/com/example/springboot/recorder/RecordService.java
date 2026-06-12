@@ -18,7 +18,7 @@ public class RecordService {
   private final UserBalanceService userBalanceService;
 
   private void updateNewBalance(User user, BigDecimal newBalance) {
-    userBalanceService.writeNewUserBalance(user, newBalance);
+    userBalanceService.updateBalance(user, newBalance);
   }
 
   @Transactional

@@ -12,6 +12,7 @@ public interface ApiRoutes {
   interface UserBalance {
     String BASE = VERSION + "/balance";
     String INCREASE = BASE + "/increase";
+    String GET = BASE;
   }
 
   interface Users {
