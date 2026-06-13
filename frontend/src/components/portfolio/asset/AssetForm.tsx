@@ -1,9 +1,9 @@
 import { useAuth } from "@/components/auth/AuthContext";
 import InputField from "@/components/ui/InputField";
 import { handleAssetForm, type AssetRowData } from "./api";
-import { useState, type Dispatch, type SetStateAction } from "react";
+import { type Dispatch, type SetStateAction } from "react";
 import Button from "@/components/ui/Button";
-import FormErrorBanner from "@/components/ui/FormErrorBanner";
+import { useBalance } from "@/components/balance/BalanceContext";
 
 export type AssetMethod = "CREATE" | "BUY" | "SELL";
 export type FormProps = {
@@ -30,12 +30,15 @@ export default function AssetForm({
   setError,
 }: AssetFormProps) {
   const { request } = useAuth();
+  const { refreshBalance } = useBalance();
 
   async function handleForm(formData: FormData) {
     await handleAssetForm(formData, assetMethod, portfolioName, stateFn, {
       requestFn: request,
       errorFn: setError,
     });
+    // We refresh the balance, this is the single point entry where money flow
+    refreshBalance();
     // Form finished, we can hide the form
     formProps.cancelForm({} as React.MouseEvent<HTMLButtonElement>);
   }

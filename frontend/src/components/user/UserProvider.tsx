@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   UserContext,
   type UserContextType,
@@ -12,15 +12,18 @@ interface UserProviderProps {
 export function UserProvider({ children }: UserProviderProps) {
   const [user, setUser] = useState<UserProfile | null>(null);
 
-  function clearUser() {
+  const clearUser = useCallback(() => {
     setUser(null);
-  }
+  }, []);
 
-  const contextValue: UserContextType = {
-    user: user,
-    setUser: setUser,
-    clearUser: clearUser,
-  };
+  const contextValue: UserContextType = useMemo(
+    () => ({
+      user,
+      setUser,
+      clearUser,
+    }),
+    [user, setUser, clearUser],
+  );
 
   return (
     <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>

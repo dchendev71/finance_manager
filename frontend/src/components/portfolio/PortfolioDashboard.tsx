@@ -5,6 +5,7 @@ import InputField from "@/components/ui/InputField";
 import Button from "@/components/ui/Button";
 import PortfolioContainer from "./PortfolioContainer";
 import FormErrorBanner from "@/components/ui/FormErrorBanner.tsx";
+import UserBalance from "../ui/UserBalance.tsx";
 
 export default function PortfolioDashboard() {
   const { request } = useAuth();
@@ -46,7 +47,10 @@ export default function PortfolioDashboard() {
     <>
       <main className="min-h-screen w-full flex flex-col bg-slate-50 p-4">
         <header>
-          <h1 className="font-bold text-3xl p-4">Portfolio Dashboard</h1>
+          <section className="flex flex-row">
+            <h1 className="font-bold text-3xl p-4">Portfolio Dashboard</h1>
+            <UserBalance />
+          </section>
         </header>
 
         <FormErrorBanner message={error} />
@@ -65,43 +69,4 @@ export default function PortfolioDashboard() {
       </main>
     </>
   );
-
-  // return (
-  //   <>
-  //     <main className="dashboard-container">
-  //       <header className="main-header">
-  //         <h1 className="title-primary">Portfolio Dashboard</h1>
-  //       </header>
-  //
-  //       {portfolioList.length > 0 && (
-  //         <section className="list-level-1">
-  //           <article className="card-level-1">
-  //             {portfolioList.map((portfolio: any) => (
-  //               <Portfolio
-  //                 key={portfolio.portfolioName}
-  //                 portfolioName={portfolio.portfolioName}
-  //               />
-  //             ))}
-  //           </article>
-  //         </section>
-  //       )}
-  //       <div className="form-container">
-  //         <form className="elegant-form" action={handleCreatePortfolio}>
-  //           <div className="form-group">
-  //             <label htmlFor="portfolioName">Portfolio's Name</label>
-  //             <input
-  //               type="text"
-  //               id="portfolioName"
-  //               name="portfolioName"
-  //               required
-  //             />
-  //           </div>
-  //           <button type="submit" className="btn-primary">
-  //             Create Portfolio
-  //           </button>
-  //         </form>
-  //       </div>
-  //     </main>
-  //   </>
-  // );
 }

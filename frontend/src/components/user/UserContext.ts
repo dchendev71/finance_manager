@@ -8,6 +8,7 @@ export type Currency = {
 
 export interface UserProfile {
   email: string;
+  balance: number;
   currency: Currency;
   role: "ADMIN" | "USER";
   createdAt: "string";

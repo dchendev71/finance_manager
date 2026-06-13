@@ -5,7 +5,7 @@ const BASE_URL = "http://localhost:8080/api/v1";
 
 export async function customFetch(
   endpoint: string,
-  token: string,
+  token: string | null,
   options = {},
 ) {
   const headers = {

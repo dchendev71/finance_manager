@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { AuthContext } from "./AuthContext";
 import { customFetch } from "@/services/api";
 import { useNavigate } from "react-router-dom";
@@ -17,46 +17,50 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const navigate = useNavigate();
   const { setUser, clearUser } = useUser();
 
-  function logout() {
+  const logout = useCallback(() => {
     clearUser();
     setToken(null);
     navigate("/login");
-  }
+  }, [clearUser, navigate]);
 
-  function login(token: string, user: UserProfile) {
-    setUser(user);
-    setToken(token);
-  }
+  const login = useCallback(
+    (token: string, user: UserProfile) => {
+      setUser(user);
+      setToken(token);
+    },
+    [setUser],
+  );
 
-  async function request(
-    endpoint: string,
-    options: RequestInit = {},
-  ): Promise<any> {
-    try {
-      const res = await customFetch(endpoint, token, options);
+  const request = useCallback(
+    async (endpoint: string, options: RequestInit = {}): Promise<any> => {
+      try {
+        const res = await customFetch(endpoint, token as string, options);
 
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(
-          errorData.message || `HTTP error! Status: ${res.status}`,
-        );
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(
+            errorData.message || `HTTP error! Status: ${res.status}`,
+          );
+        }
+
+        // Automatically parse json unless it's a 204 No Content
+        return res.status !== 204 ? await res.json() : null;
+      } catch (error) {
+        throw error;
       }
-
-      // Automatically parse json unless it's a 204 No Content
-      return res.status !== 204 ? await res.json() : null;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  // Create the value object ensuring it adheres precisely to our structural contract
-  const contextValue: AuthContextType = {
-    token,
-    login,
-    logout,
-    request,
-    isAuthenticated: !!token,
-  };
+    },
+    [token],
+  );
+  const contextValue: AuthContextType = useMemo(
+    () => ({
+      token,
+      login,
+      logout,
+      request,
+      isAuthenticated: !!token,
+    }),
+    [token, login, logout, request],
+  );
 
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
