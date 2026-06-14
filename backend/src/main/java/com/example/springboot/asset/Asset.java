@@ -1,6 +1,6 @@
-package com.example.springboot.portfolio.asset;
+package com.example.springboot.asset;
 
-import com.example.springboot.portfolio.asset_type.AssetType;
+import com.example.springboot.asset_type.AssetType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

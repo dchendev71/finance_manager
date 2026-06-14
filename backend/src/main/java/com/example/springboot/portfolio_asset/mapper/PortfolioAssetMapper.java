@@ -1,11 +1,11 @@
-package com.example.springboot.portfolio.portfolio_asset.mapper;
+package com.example.springboot.portfolio_asset.mapper;
 
+import com.example.springboot.asset.Asset;
+import com.example.springboot.asset.mapper.AssetMapper;
 import com.example.springboot.portfolio.Portfolio;
-import com.example.springboot.portfolio.asset.Asset;
-import com.example.springboot.portfolio.asset.mapper.AssetMapper;
 import com.example.springboot.portfolio.mapper.PortfolioMapper;
-import com.example.springboot.portfolio.portfolio_asset.PortfolioAsset;
-import com.example.springboot.portfolio.portfolio_asset.dto.PortfolioAssetResponse;
+import com.example.springboot.portfolio_asset.PortfolioAsset;
+import com.example.springboot.portfolio_asset.dto.PortfolioAssetResponse;
 import java.math.BigDecimal;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;

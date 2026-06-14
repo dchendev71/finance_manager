@@ -1,7 +1,7 @@
-package com.example.springboot.portfolio.portfolio_asset.mean_price;
+package com.example.springboot.portfolio_asset.mean_price;
 
 import com.example.springboot.common.exception.NotFoundException;
-import com.example.springboot.portfolio.portfolio_asset.PortfolioAsset;
+import com.example.springboot.portfolio_asset.PortfolioAsset;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;

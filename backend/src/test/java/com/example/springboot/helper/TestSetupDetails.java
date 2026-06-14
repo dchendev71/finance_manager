@@ -1,7 +1,7 @@
 package com.example.springboot.helper;
 
 import com.example.springboot.portfolio.Portfolio;
-import com.example.springboot.portfolio.portfolio_asset.PortfolioAsset;
+import com.example.springboot.portfolio_asset.PortfolioAsset;
 import com.example.springboot.user.User;
 import java.util.ArrayList;
 import java.util.List;

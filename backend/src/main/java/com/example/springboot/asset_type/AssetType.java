@@ -1,4 +1,4 @@
-package com.example.springboot.portfolio.asset_type;
+package com.example.springboot.asset_type;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

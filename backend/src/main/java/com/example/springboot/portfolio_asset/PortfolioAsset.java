@@ -1,7 +1,7 @@
-package com.example.springboot.portfolio.portfolio_asset;
+package com.example.springboot.portfolio_asset;
 
+import com.example.springboot.asset.Asset;
 import com.example.springboot.portfolio.Portfolio;
-import com.example.springboot.portfolio.asset.Asset;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;

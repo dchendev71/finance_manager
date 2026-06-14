@@ -1,6 +1,6 @@
-package com.example.springboot.portfolio.transactions;
+package com.example.springboot.transactions;
 
-import com.example.springboot.portfolio.asset.Asset;
+import com.example.springboot.asset.Asset;
 import com.example.springboot.user.User;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;

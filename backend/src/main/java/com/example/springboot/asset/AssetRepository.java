@@ -1,4 +1,4 @@
-package com.example.springboot.portfolio.asset;
+package com.example.springboot.asset;
 
 import com.example.springboot.common.exception.NotFoundException;
 import java.util.Optional;

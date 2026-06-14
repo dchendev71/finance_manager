@@ -1,11 +1,11 @@
 package com.example.springboot.helper;
 
+import com.example.springboot.asset.dto.AssetResponse;
+import com.example.springboot.asset_type.dto.AssetTypeResponse;
 import com.example.springboot.auth.dto.AuthResponse;
 import com.example.springboot.config.TestConfig;
-import com.example.springboot.portfolio.asset.dto.AssetResponse;
-import com.example.springboot.portfolio.asset_type.dto.AssetTypeResponse;
 import com.example.springboot.portfolio.dto.PortfolioResponse;
-import com.example.springboot.portfolio.portfolio_asset.dto.PortfolioAssetResponse;
+import com.example.springboot.portfolio_asset.dto.PortfolioAssetResponse;
 import com.example.springboot.user.dto.UserResponse;
 
 public class ResponseTestFactory {

@@ -1,8 +1,8 @@
-package com.example.springboot.portfolio.portfolio_asset;
+package com.example.springboot.portfolio_asset;
 
+import com.example.springboot.asset.Asset;
 import com.example.springboot.common.exception.NotFoundException;
 import com.example.springboot.portfolio.Portfolio;
-import com.example.springboot.portfolio.asset.Asset;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;

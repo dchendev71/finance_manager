@@ -2,12 +2,12 @@ package com.example.springboot.unit.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.example.springboot.asset_type.AssetType;
+import com.example.springboot.asset_type.dto.AssetTypeResponse;
+import com.example.springboot.asset_type.mapper.AssetTypeMapper;
+import com.example.springboot.asset_type.mapper.AssetTypeMapperImpl;
 import com.example.springboot.config.TestConfig;
 import com.example.springboot.helper.EntityTestFactory;
-import com.example.springboot.portfolio.asset_type.AssetType;
-import com.example.springboot.portfolio.asset_type.dto.AssetTypeResponse;
-import com.example.springboot.portfolio.asset_type.mapper.AssetTypeMapper;
-import com.example.springboot.portfolio.asset_type.mapper.AssetTypeMapperImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

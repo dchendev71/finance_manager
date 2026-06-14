@@ -1,8 +1,8 @@
-package com.example.springboot.portfolio.portfolio_asset;
+package com.example.springboot.portfolio_asset;
 
 import com.example.springboot.common.config.ApiRoutes;
-import com.example.springboot.portfolio.portfolio_asset.dto.PortfolioAssetRequest;
-import com.example.springboot.portfolio.portfolio_asset.dto.PortfolioAssetResponse;
+import com.example.springboot.portfolio_asset.dto.PortfolioAssetRequest;
+import com.example.springboot.portfolio_asset.dto.PortfolioAssetResponse;
 import com.example.springboot.security.CustomUserPrincipal;
 import jakarta.validation.Valid;
 import java.util.List;

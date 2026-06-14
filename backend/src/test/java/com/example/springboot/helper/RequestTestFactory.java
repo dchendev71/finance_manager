@@ -5,7 +5,7 @@ import com.example.springboot.auth.dto.UserCreateRequest;
 import com.example.springboot.balance.dto.UserBalanceRequest;
 import com.example.springboot.config.TestConfig;
 import com.example.springboot.portfolio.dto.PortfolioCreateRequest;
-import com.example.springboot.portfolio.portfolio_asset.dto.PortfolioAssetRequest;
+import com.example.springboot.portfolio_asset.dto.PortfolioAssetRequest;
 import com.example.springboot.user.dto.ChangeEmailRequest;
 import com.example.springboot.user.dto.ChangePasswordRequest;
 import java.math.BigDecimal;

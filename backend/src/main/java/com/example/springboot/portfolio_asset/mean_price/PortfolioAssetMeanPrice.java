@@ -1,6 +1,6 @@
-package com.example.springboot.portfolio.portfolio_asset.mean_price;
+package com.example.springboot.portfolio_asset.mean_price;
 
-import com.example.springboot.portfolio.portfolio_asset.PortfolioAsset;
+import com.example.springboot.portfolio_asset.PortfolioAsset;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;

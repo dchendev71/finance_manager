@@ -1,9 +1,9 @@
-package com.example.springboot.portfolio.asset.mapper;
+package com.example.springboot.asset.mapper;
 
-import com.example.springboot.portfolio.asset.Asset;
-import com.example.springboot.portfolio.asset.dto.AssetResponse;
-import com.example.springboot.portfolio.asset_type.AssetType;
-import com.example.springboot.portfolio.asset_type.mapper.AssetTypeMapper;
+import com.example.springboot.asset.Asset;
+import com.example.springboot.asset.dto.AssetResponse;
+import com.example.springboot.asset_type.AssetType;
+import com.example.springboot.asset_type.mapper.AssetTypeMapper;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

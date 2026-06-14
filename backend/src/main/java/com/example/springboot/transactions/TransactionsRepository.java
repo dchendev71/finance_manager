@@ -1,4 +1,4 @@
-package com.example.springboot.portfolio.transactions;
+package com.example.springboot.transactions;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

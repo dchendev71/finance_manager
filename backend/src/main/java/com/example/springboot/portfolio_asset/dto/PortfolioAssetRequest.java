@@ -1,4 +1,4 @@
-package com.example.springboot.portfolio.portfolio_asset.dto;
+package com.example.springboot.portfolio_asset.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

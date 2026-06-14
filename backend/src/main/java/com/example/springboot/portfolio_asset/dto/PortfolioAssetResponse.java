@@ -1,6 +1,6 @@
-package com.example.springboot.portfolio.portfolio_asset.dto;
+package com.example.springboot.portfolio_asset.dto;
 
-import com.example.springboot.portfolio.asset.dto.AssetResponse;
+import com.example.springboot.asset.dto.AssetResponse;
 import com.example.springboot.portfolio.dto.PortfolioResponse;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.math.BigDecimal;

@@ -1,3 +1,3 @@
-package com.example.springboot.portfolio.asset_type.dto;
+package com.example.springboot.asset_type.dto;
 
 public record AssetTypeResponse(String type) {}
