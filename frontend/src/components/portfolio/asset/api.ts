@@ -15,15 +15,19 @@ export type AssetRowData = {
   meanPrice: number;
 };
 
+export function responseToAssetData(asset: any): AssetData {
+  return {
+    assetType: asset.assetTypeResponse.type,
+    tickerSymbol: asset.tickerSymbol,
+    assetName: asset.name,
+  };
+}
+
 function responseToAssetRowData(assetRow: any): AssetRowData {
   return {
     quantity: assetRow.quantity,
     meanPrice: assetRow.meanPrice,
-    asset: {
-      assetName: assetRow.assetResponse.name,
-      tickerSymbol: assetRow.assetResponse.tickerSymbol,
-      assetType: assetRow.assetResponse.assetTypeResponse.type,
-    } as AssetData,
+    asset: responseToAssetData(assetRow.assetResponse),
   } as AssetRowData;
 }
 

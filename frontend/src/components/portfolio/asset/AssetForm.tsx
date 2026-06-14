@@ -4,6 +4,7 @@ import { handleAssetForm, type AssetRowData } from "./api";
 import { type Dispatch, type SetStateAction } from "react";
 import Button from "@/components/ui/Button";
 import { useBalance } from "@/components/balance/BalanceContext";
+import AssetDropDown from "@/components/ui/AssetDropDown";
 
 export type AssetMethod = "CREATE" | "BUY" | "SELL";
 export type FormProps = {
@@ -33,6 +34,8 @@ export default function AssetForm({
   const { refreshBalance } = useBalance();
 
   async function handleForm(formData: FormData) {
+    // Reset error
+    setError(null);
     await handleAssetForm(formData, assetMethod, portfolioName, stateFn, {
       requestFn: request,
       errorFn: setError,
@@ -42,6 +45,17 @@ export default function AssetForm({
     // Form finished, we can hide the form
     formProps.cancelForm({} as React.MouseEvent<HTMLButtonElement>);
   }
+
+  const assetInputField = (
+    <InputField
+      label="Asset Name"
+      id="assetName"
+      type="text"
+      value={formProps.defaultValue}
+    />
+  );
+
+  const assetDropDown = <AssetDropDown />;
   return (
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
@@ -51,12 +65,7 @@ export default function AssetForm({
           </h2>
 
           <form action={handleForm}>
-            <InputField
-              label="Asset Name"
-              id="assetName"
-              type="text"
-              value={formProps.defaultValue}
-            />
+            {assetMethod === "CREATE" ? assetDropDown : assetInputField}
             <InputField
               label="Quantity"
               id="quantity"
