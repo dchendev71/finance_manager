@@ -5,22 +5,36 @@ public interface ApiRoutes {
 
   interface Auth {
     String BASE = VERSION + "/auth";
+    // POST
     String REGISTER = BASE + "/register";
+    // POST
     String LOGIN = BASE + "/login";
   }
 
   interface UserBalance {
     String BASE = VERSION + "/balance";
+    // POST
     String INCREASE = BASE + "/increase";
+    // GET
     String GET = BASE;
   }
 
   interface Users {
     String BASE = VERSION + "/users";
+    // POST
     String CHANGE_PASSWORD = BASE + "/change-password";
+    // PATCH
     String CHANGE_EMAIL = BASE + "/change-email";
+    // PATCH
     String CHANGE_CURRENCY = BASE + "/change-currency";
+    // DELETE
     String DELETE = BASE + "/delete";
+  }
+
+  interface Assets {
+    String BASE = VERSION + "/assets";
+    // GET
+    String GET = BASE;
   }
 
   interface Portfolios {
@@ -29,6 +43,7 @@ public interface ApiRoutes {
     String CREATE = BASE;
     // GET
     String LIST = BASE;
+    // DELETE
     String DELETE = BASE + "/delete";
 
     // PortfolioAsset row
