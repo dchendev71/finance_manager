@@ -3,6 +3,10 @@ package com.example.springboot.common.config;
 public interface ApiRoutes {
   String VERSION = "/api/v1";
 
+  interface Currency {
+    String BASE = VERSION + "/currencies";
+  }
+
   interface Auth {
     String BASE = VERSION + "/auth";
     // POST
