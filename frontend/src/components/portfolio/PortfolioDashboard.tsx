@@ -57,12 +57,8 @@ export default function PortfolioDashboard() {
 
         <article className="min-h-screen w-full flex flex-col border border-slate-100 rounded-3xl bg-white p-8">
           <PortfolioContainer portfolios={portfolios} />
-          <form className="flex flex-col" action={handleCreatePortfolio}>
-            <InputField
-              label="Portfolio's Name"
-              id="portfolioName"
-              type="text"
-            />
+          <form className="flex flex-col mt-8" action={handleCreatePortfolio}>
+            <InputField label="New Portfolio" id="portfolioName" type="text" />
             <Button value="Create new portfolio" variant="blue" />
           </form>
         </article>

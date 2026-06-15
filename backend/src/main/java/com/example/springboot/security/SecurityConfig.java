@@ -57,7 +57,8 @@ public class SecurityConfig {
         .authorizeHttpRequests(
             request ->
                 request
-                    .requestMatchers(ApiRoutes.Auth.REGISTER, ApiRoutes.Auth.LOGIN)
+                    .requestMatchers(
+                        ApiRoutes.Currency.BASE, ApiRoutes.Auth.REGISTER, ApiRoutes.Auth.LOGIN)
                     .permitAll()
                     .anyRequest()
                     .authenticated())

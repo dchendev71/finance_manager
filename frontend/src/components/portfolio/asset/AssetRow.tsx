@@ -36,6 +36,12 @@ export default function AssetRow({
     setSubmitValue("Sell");
   }
 
+  const formatNumber = (value: number, decimals = 2): string =>
+    new Intl.NumberFormat("fr-FR", {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+    }).format(value);
+
   return (
     // Outer section wrapper
     <section className="w-full">
@@ -47,12 +53,16 @@ export default function AssetRow({
 
         <div>
           <dt className="text-xs text-slate-500">Quantity</dt>
-          <dd className="text-sm font-semibold">{assetRow.quantity}</dd>
+          <dd className="text-sm font-semibold">
+            {formatNumber(Number(assetRow.quantity))}
+          </dd>
         </div>
 
         <div>
           <dt className="text-xs text-slate-500 font-medium">Mean Price</dt>
-          <dd className="text-sm font-semibold">{assetRow.meanPrice}</dd>
+          <dd className="text-sm font-semibold">
+            {formatNumber(Number(assetRow.meanPrice))}
+          </dd>
         </div>
 
         {/* 'ml-auto' pushes this entire block to the far right */}
