@@ -15,7 +15,7 @@ public class CurrencyService {
     this.currencyRepository = currencyRepository;
   }
 
-  @Cacheable(value = "currencies", key = "list")
+  @Cacheable(value = "currencies")
   public List<Currency> getCurrencies() {
     return currencyRepository.findAll();
   }

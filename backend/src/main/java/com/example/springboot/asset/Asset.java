@@ -38,7 +38,9 @@ public class Asset {
   @Column(name = "ticker_symbol", length = 255, nullable = false)
   private String tickerSymbol;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  // FIXME: FetchType.Lazy break RedisConfig, so we will need later to return a DTO rather than the
+  // Asset
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(
       name = "asset_types",
       nullable = false,

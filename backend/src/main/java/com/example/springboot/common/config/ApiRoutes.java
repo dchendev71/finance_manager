@@ -63,4 +63,8 @@ public interface ApiRoutes {
       String DELETE = BASE + "/{portfolioName}/{assetName}";
     }
   }
+
+  interface Price {
+    String BASE = VERSION + "/price/{symbol}";
+  }
 }

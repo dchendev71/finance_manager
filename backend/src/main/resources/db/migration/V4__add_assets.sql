@@ -1,6 +1,6 @@
 INSERT INTO assets (name, ticker_symbol, asset_types) VALUES
 ('NVIDIA', 'NVDA', 'stock'),
-('APPLE', 'APPL', 'stock'),
+('APPLE', 'AAPL', 'stock'),
 ('AMAZON', 'AMZN', 'stock'),
 ('MICROSOFT', 'MSFT', 'stock'),
 ('META', 'META', 'stock'),

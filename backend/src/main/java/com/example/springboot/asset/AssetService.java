@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class AssetService {
   private final AssetRepository assetRepository;
 
-  @Cacheable(value = "assets", key = "list")
+  @Cacheable(value = "assets")
   public List<Asset> getAssets() {
     return assetRepository.findAll();
   }
