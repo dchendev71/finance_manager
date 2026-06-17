@@ -1,7 +1,7 @@
 package com.example.springboot.recorder;
 
 import com.example.springboot.balance.UserBalanceService;
-import com.example.springboot.portfolio_asset.PortfolioAssetService;
+import com.example.springboot.portfolio_asset.DataService.Data;
 import com.example.springboot.portfolio_asset.mean_price.PortfolioAssetMeanPriceService;
 import com.example.springboot.transactions.TransactionsService;
 import com.example.springboot.user.User;
@@ -23,10 +23,7 @@ public class RecordService {
 
   @Transactional
   public void writeRecords(
-      PortfolioAssetService.Data dataRecord,
-      BigDecimal quantity,
-      BigDecimal unitPrice,
-      BigDecimal newBalance) {
+      Data dataRecord, BigDecimal quantity, BigDecimal unitPrice, BigDecimal newBalance) {
     portfolioAssetMeanPriceService.updateMeanPrice(
         dataRecord.portfolioAsset().get(), quantity, unitPrice);
     transactionService.recordTransaction(

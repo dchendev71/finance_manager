@@ -4,9 +4,11 @@ import com.example.springboot.asset.Asset;
 import com.example.springboot.asset.AssetService;
 import jakarta.annotation.PostConstruct;
 import java.util.List;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
+@Profile("!test")
 public class WebSocketInitializer {
 
   private final FinnhubPriceListener listener;

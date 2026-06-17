@@ -10,10 +10,12 @@ import java.util.TimerTask;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
+@Profile("!test")
 public class FinnhubPriceListener {
 
   private final RedisTemplate<String, Double> redisTemplate;

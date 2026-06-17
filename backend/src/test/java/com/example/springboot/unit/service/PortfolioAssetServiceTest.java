@@ -3,14 +3,11 @@ package com.example.springboot.unit.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.example.springboot.asset.Asset;
 import com.example.springboot.asset.AssetRepository;
-import com.example.springboot.balance.UserBalance;
 import com.example.springboot.balance.UserBalanceService;
 import com.example.springboot.common.exception.ExistsException;
 import com.example.springboot.config.TestConfig;
@@ -19,12 +16,15 @@ import com.example.springboot.helper.RequestTestFactory;
 import com.example.springboot.helper.ResponseTestFactory;
 import com.example.springboot.portfolio.Portfolio;
 import com.example.springboot.portfolio.PortfolioRepository;
+import com.example.springboot.portfolio_asset.BalanceCheckerService;
+import com.example.springboot.portfolio_asset.DataService;
 import com.example.springboot.portfolio_asset.PortfolioAsset;
 import com.example.springboot.portfolio_asset.PortfolioAssetRepository;
 import com.example.springboot.portfolio_asset.PortfolioAssetService;
 import com.example.springboot.portfolio_asset.dto.PortfolioAssetRequest;
 import com.example.springboot.portfolio_asset.dto.PortfolioAssetResponse;
 import com.example.springboot.portfolio_asset.mapper.PortfolioAssetMapper;
+import com.example.springboot.portfolio_asset.mean_price.PortfolioAssetMeanPrice;
 import com.example.springboot.portfolio_asset.mean_price.PortfolioAssetMeanPriceService;
 import com.example.springboot.recorder.RecordService;
 import com.example.springboot.transactions.TransactionsService;
@@ -53,6 +53,8 @@ class PortfolioAssetServiceTest {
   @Mock private PortfolioAssetMapper portfolioAssetMapper;
   @Mock private PortfolioAssetMeanPriceService portfolioAssetMeanPriceService;
   @Mock private TransactionsService transactionsService;
+  @Mock private DataService dataService;
+  @Mock private BalanceCheckerService balanceCheckerService;
 
   private User user;
   private Portfolio portfolio;
@@ -73,28 +75,21 @@ class PortfolioAssetServiceTest {
     PortfolioAssetRequest request = RequestTestFactory.PortfolioAsset.create();
 
     PortfolioAsset portfolioAsset = EntityTestFactory.PortfolioAssetFactory.create();
-    when(userRepository.getByEmailOrThrow(user.getEmail())).thenReturn(user);
-    when(portfolioRepository.getByUserIdAndNameOrThrow(anyLong(), eq(TestConfig.Portfolio.name)))
-        .thenReturn(portfolio);
-    when(assetRepository.getByNameOrThrow(request.assetName())).thenReturn(asset);
-    when(portfolioAssetRepository.findByAssetNameAndPortfolioId(
-            request.assetName(), portfolio.getId()))
-        .thenReturn(Optional.empty());
+    PortfolioAssetMeanPrice meanPrice = EntityTestFactory.PortfolioAssetMeanPriceFactory.create();
+    when(dataService.fetchData(user.getEmail(), portfolio.getName(), asset.getName()))
+        .thenReturn(
+            new DataService.Data(user, asset, portfolio, Optional.empty(), Optional.empty()));
+    when(balanceCheckerService.performCheck(user, request))
+        .thenReturn(
+            new BalanceCheckerService.CheckedValues(
+                true, new BigDecimal(1000), request.quantity(), TestConfig.PortfolioAsset.price));
 
     when(portfolioAssetMapper.toEntity(portfolio, asset, TestConfig.PortfolioAsset.quantity))
         .thenReturn(portfolioAsset);
     when(portfolioAssetRepository.save(any())).thenReturn(portfolioAsset);
     when(portfolioAssetMapper.toResponse(portfolioAsset, TestConfig.PortfolioAsset.meanPrice))
         .thenReturn(ResponseTestFactory.PortfolioAsset.create());
-    when(portfolioAssetMeanPriceService.getMeanPriceOrThrow(portfolioAsset))
-        .thenReturn(EntityTestFactory.PortfolioAssetMeanPriceFactory.create());
-
-    when(userBalanceService.getBalance(TestConfig.User.email))
-        .thenReturn(
-            UserBalance.builder()
-                .balance(new BigDecimal(100000000))
-                .user(EntityTestFactory.UserFactory.create())
-                .build());
+    when(portfolioAssetMeanPriceService.getMeanPriceOrThrow(portfolioAsset)).thenReturn(meanPrice);
 
     PortfolioAssetResponse response =
         portfolioAssetService.createPortfolioAsset(
@@ -113,13 +108,11 @@ class PortfolioAssetServiceTest {
     PortfolioAssetRequest request = RequestTestFactory.PortfolioAsset.create(new BigDecimal(999));
 
     PortfolioAsset portfolioAsset = EntityTestFactory.PortfolioAssetFactory.create();
-    when(userRepository.getByEmailOrThrow(user.getEmail())).thenReturn(user);
-    when(portfolioRepository.getByUserIdAndNameOrThrow(anyLong(), eq(TestConfig.Portfolio.name)))
-        .thenReturn(portfolio);
-    when(assetRepository.getByNameOrThrow(request.assetName())).thenReturn(asset);
-    when(portfolioAssetRepository.findByAssetNameAndPortfolioId(
-            request.assetName(), portfolio.getId()))
-        .thenReturn(Optional.of(portfolioAsset));
+
+    when(dataService.fetchData(user.getEmail(), portfolio.getName(), asset.getName()))
+        .thenReturn(
+            new DataService.Data(
+                user, asset, portfolio, Optional.of(portfolioAsset), Optional.empty()));
 
     assertThrows(
         ExistsException.class,
