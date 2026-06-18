@@ -98,8 +98,6 @@ public class FinnhubPriceListener {
           String symbol = trade.get("s").asText();
           double price = trade.get("p").asDouble();
 
-          System.out.println("Writing in Redis: " + symbol + ": " + price);
-
           redisTemplate.opsForValue().set(PRICE_KEY_PREFIX + symbol, price, Duration.ofMinutes(5));
         }
       }

@@ -1,5 +1,6 @@
 package com.example.springboot.currency;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -41,9 +42,11 @@ public class Currency {
 
   @CreationTimestamp
   @Column(name = "created_at", updatable = false, nullable = false)
+  @JsonIgnore
   private LocalDateTime createdAt;
 
   @UpdateTimestamp
   @Column(name = "updated_at", nullable = false)
+  @JsonIgnore
   private LocalDateTime updatedAt;
 }

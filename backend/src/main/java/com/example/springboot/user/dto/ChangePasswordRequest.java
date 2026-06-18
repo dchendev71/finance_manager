@@ -1,5 +1,6 @@
 package com.example.springboot.user.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -16,6 +17,7 @@ public record ChangePasswordRequest(
         String confirmPassword) {
 
   // Spring Boot automatically evaluates this during the @Valid check
+  @JsonIgnore
   @AssertTrue(message = "New password and confirmation password do not match")
   public boolean isPasswordConfirmed() {
     if (newPassword == null) return false;
