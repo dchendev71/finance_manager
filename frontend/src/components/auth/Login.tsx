@@ -21,8 +21,8 @@ function LoginForm() {
 
   async function handleAction(formData: FormData): Promise<void> {
     try {
-      const email = formData.get("email") as String | null;
-      const password = formData.get("password") as String | null;
+      const email = formData.get("email") as string | null;
+      const password = formData.get("password") as string | null;
       if (!email || !password) {
         setError("Email and password are required fields.");
         return;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { responseToAssetData, type AssetData } from "../portfolio/asset/api";
-import { useAuth } from "../auth/AuthContext";
+import { responseToAssetData, type AssetData } from "@/components/asset/api";
+import { useAuth } from "@/components/auth/AuthContext";
 import FormErrorBanner from "./FormErrorBanner";
 
 export default function AssetDropDown() {

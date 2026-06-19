@@ -5,7 +5,7 @@ import InputField from "@/components/ui/InputField";
 import Button from "@/components/ui/Button";
 import PortfolioContainer from "./PortfolioContainer";
 import FormErrorBanner from "@/components/ui/FormErrorBanner.tsx";
-import UserBalance from "../ui/UserBalance.tsx";
+import UserBalance from "@/components/ui/UserBalance.tsx";
 
 export default function PortfolioDashboard() {
   const { request } = useAuth();

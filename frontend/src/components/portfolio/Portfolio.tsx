@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/AuthContext";
-import { getAssets, type AssetRowData } from "./asset/api";
-import AssetForm, { type FormProps } from "./asset/AssetForm";
-import AssetContainer from "./asset/AssetContainer";
+import { getAssets, type AssetRowData } from "@/components/asset/api";
+import AssetForm, { type FormProps } from "@/components/asset/AssetForm";
+import AssetContainer from "@/components/asset/AssetContainer";
 import Button from "@/components/ui/Button";
 import FormErrorBanner from "@/components/ui/FormErrorBanner";
 export interface PortfolioProps {
