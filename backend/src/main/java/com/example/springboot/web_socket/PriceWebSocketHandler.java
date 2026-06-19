@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -25,6 +26,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 @Component
 @Slf4j
 @RequiredArgsConstructor
+@Profile("!test")
 public class PriceWebSocketHandler extends TextWebSocketHandler {
   private final AssetService assetService;
   private final ObjectMapper objectMapper;
@@ -79,13 +81,17 @@ public class PriceWebSocketHandler extends TextWebSocketHandler {
   }
 
   @Scheduled(fixedRate = 1000) // 1sec
-  public void broadcastPrices() {
+  public void broadcastPrices() throws Exception {
     List<String> symbols = new ArrayList<>(subscribers.keySet());
 
     symbols.forEach(
         symbol -> {
           double price = priceService.getIndicativePrice(symbol);
-          broadcastPrice(symbol, price);
+          try {
+            broadcastPrice(symbol, price);
+          } catch (Exception e) {
+            log.error("Failed to broadcast symbol {}", symbol);
+          }
         });
   }
 

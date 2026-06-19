@@ -2,12 +2,14 @@ package com.example.springboot.common.config;
 
 import com.example.springboot.web_socket.PriceWebSocketHandler;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
 @Configuration
 @EnableWebSocket
+@Profile("!test")
 public class WebSocketConfig implements WebSocketConfigurer {
 
   private final PriceWebSocketHandler priceWebSocketHandler;
