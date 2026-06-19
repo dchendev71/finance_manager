@@ -58,7 +58,10 @@ public class SecurityConfig {
             request ->
                 request
                     .requestMatchers(
-                        ApiRoutes.Currency.BASE, ApiRoutes.Auth.REGISTER, ApiRoutes.Auth.LOGIN)
+                        ApiRoutes.Currency.BASE,
+                        ApiRoutes.Auth.REGISTER,
+                        ApiRoutes.Auth.LOGIN,
+                        "/ws/prices")
                     .permitAll()
                     .anyRequest()
                     .authenticated())

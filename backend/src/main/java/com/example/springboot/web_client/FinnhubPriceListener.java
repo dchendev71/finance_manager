@@ -1,5 +1,6 @@
 package com.example.springboot.web_client;
 
+import com.example.springboot.web_socket.PriceWebSocketHandler;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URI;
@@ -7,6 +8,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import lombok.RequiredArgsConstructor;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,10 +17,12 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 @Profile("!test")
 public class FinnhubPriceListener {
 
   private final RedisTemplate<String, Double> redisTemplate;
+  private final PriceWebSocketHandler priceWebSocketHandler;
 
   @Value("${finnhub.api.key}")
   private String apiKey;
@@ -27,10 +31,6 @@ public class FinnhubPriceListener {
   private static final int MAX_RETRIES = 10;
 
   private int retryCount = 0;
-
-  public FinnhubPriceListener(RedisTemplate<String, Double> redisTemplate) {
-    this.redisTemplate = redisTemplate;
-  }
 
   public void connect(List<String> symbols) {
     URI uri = URI.create("wss://ws.finnhub.io?token=" + apiKey);
@@ -99,6 +99,7 @@ public class FinnhubPriceListener {
           double price = trade.get("p").asDouble();
 
           redisTemplate.opsForValue().set(PRICE_KEY_PREFIX + symbol, price, Duration.ofMinutes(5));
+          // Push the information to subscribed ws
         }
       }
     } catch (Exception ex) {
