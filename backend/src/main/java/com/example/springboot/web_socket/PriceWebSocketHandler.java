@@ -3,6 +3,7 @@ package com.example.springboot.web_socket;
 import com.example.springboot.asset.Asset;
 import com.example.springboot.asset.AssetService;
 import com.example.springboot.price.PriceService;
+import com.example.springboot.security.JwtService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,6 +32,7 @@ public class PriceWebSocketHandler extends TextWebSocketHandler {
   private final AssetService assetService;
   private final ObjectMapper objectMapper;
   private final PriceService priceService;
+  private final JwtService jwtService;
 
   private final Map<String, Set<WebSocketSession>> subscribers = new ConcurrentHashMap<>();
 
@@ -46,7 +48,7 @@ public class PriceWebSocketHandler extends TextWebSocketHandler {
   @Override
   public void afterConnectionEstablished(WebSocketSession session) {
     // TODO: Fix with logger:?
-    System.out.println("Received connection from ws");
+    String token = session.getUri().getQuery();
   }
 
   @Override
