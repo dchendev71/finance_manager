@@ -73,13 +73,6 @@ export default function AssetForm({
               step={0.01}
               min={0}
             />
-            <InputField
-              label="Unit Price"
-              id="unitPrice"
-              type="number"
-              step={0.01}
-              min={0}
-            />
             <section className="flex flex-row gap-2">
               <Button
                 value="Cancel"

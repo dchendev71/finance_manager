@@ -6,6 +6,7 @@ interface InputFieldProps {
   min?: number;
   value?: string;
   disabled?: boolean;
+  readOnly?: boolean;
 }
 
 export default function InputField({
@@ -16,6 +17,7 @@ export default function InputField({
   min,
   value,
   disabled = false,
+  readOnly = false,
 }: InputFieldProps) {
   return (
     <section className="w-full flex flex-col">
@@ -34,6 +36,7 @@ export default function InputField({
         min={type === "number" ? min : undefined}
         required
         disabled={disabled}
+        readOnly={readOnly}
         defaultValue={value ?? ""}
       />
     </section>

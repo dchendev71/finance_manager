@@ -15,6 +15,7 @@ export type AssetSubscription = {
 };
 
 export function AssetPriceProvider({ children }: AssetPriceProviderProps) {
+  const { token } = useAuth();
   const ws = useRef<WebSocket | null>(null);
   const WS_URL = "ws://localhost:8080/ws/prices";
   const [subscriptions, setSubscriptions] = useState<
@@ -79,7 +80,6 @@ export function AssetPriceProvider({ children }: AssetPriceProviderProps) {
   }, []);
 
   useEffect(() => {
-    const { token } = useAuth();
     ws.current = new WebSocket(`${WS_URL}?token=${token}`);
 
     ws.current.onopen = () => {
