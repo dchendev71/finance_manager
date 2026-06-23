@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { responseToAssetData, type AssetData } from "@/components/asset/api";
 import { useAuth } from "@/components/auth/AuthContext";
 import FormErrorBanner from "./FormErrorBanner";
@@ -13,6 +13,11 @@ export default function AssetDropDown() {
 
   const [price, setPrice] = useState<number | null>(null);
 
+  // Helper because of need both symbol and name
+  // symbol for price and name for form
+
+  const [assetMap, setAssetMap] = useState<Map<String, String>>(new Map());
+
   // Fetch Asset
   useEffect(() => {
     async function fetchAssets() {
@@ -20,7 +25,12 @@ export default function AssetDropDown() {
         const response: any[] = await request("/assets");
         const mapped = response.map(responseToAssetData);
         if (mapped.length > 0) {
-          setSelectedSymbol(mapped[0].tickerSymbol);
+          setSelectedSymbol(mapped[0].assetName);
+          setAssetMap(
+            new Map(
+              mapped.map((asset) => [asset.assetName, asset.tickerSymbol]),
+            ),
+          );
         }
 
         setAssets(mapped);
@@ -34,16 +44,17 @@ export default function AssetDropDown() {
 
   // Fetch selected symbol price
   useEffect(() => {
-    if (!selectedSymbol) {
+    if (!selectedSymbol || assetMap.size === 0) {
       return;
     }
     async function fetchPrice() {
-      const response = await request(`/price/${selectedSymbol}`);
+      const symbol = assetMap.get(selectedSymbol as string);
+      const response = await request(`/price/${symbol}`);
       setPrice(response);
     }
 
     fetchPrice();
-  }, [selectedSymbol]);
+  }, [selectedSymbol, assetMap]);
 
   return (
     <>
@@ -58,7 +69,7 @@ export default function AssetDropDown() {
             className="w-full h-12 sm:h-10 pl-3 pr-10 py-2 bg-white border border-slate-300 rounded-lg text-base sm:text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm cursor-pointer text-slate-900 font-medium"
           >
             {assets.map((asset) => (
-              <option id={asset.tickerSymbol} value={asset.tickerSymbol}>
+              <option key={asset.assetName} value={asset.assetName}>
                 {asset.assetName} ({asset.tickerSymbol})
               </option>
             ))}
