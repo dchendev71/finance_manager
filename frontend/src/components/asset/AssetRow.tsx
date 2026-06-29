@@ -100,7 +100,7 @@ export default function AssetRow({
         </div>
       </dl>
 
-      {displayAssetForm && (
+      {displayAssetForm && assetPrice !== null && (
         <AssetForm
           formProps={{
             formTitle: formTitle,
@@ -108,6 +108,7 @@ export default function AssetRow({
             submitValue: submitValue,
             defaultValue: assetRow.asset.assetName,
             disabled: true,
+            assetPrice: assetPrice as number,
           }}
           assetMethod={assetMethod}
           portfolioName={portfolioName}

@@ -13,6 +13,7 @@ export type FormProps = {
   submitValue: string;
   defaultValue?: string;
   disabled?: boolean;
+  assetPrice?: number;
 };
 export interface AssetFormProps {
   portfolioName: string;
@@ -47,12 +48,21 @@ export default function AssetForm({
   }
 
   const assetInputField = (
-    <InputField
-      label="Asset Name"
-      id="assetName"
-      type="text"
-      value={formProps.defaultValue}
-    />
+    <>
+      <InputField
+        label="Asset Name"
+        id="assetName"
+        type="text"
+        value={formProps.defaultValue}
+      />
+      <InputField
+        id="unitPrice"
+        label="Unit Price"
+        type="number"
+        value={formProps.assetPrice?.toString()}
+        readOnly={true}
+      />
+    </>
   );
 
   const assetDropDown = <AssetDropDown />;
