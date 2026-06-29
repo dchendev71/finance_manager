@@ -1,6 +1,7 @@
-import type { Dispatch, SetStateAction } from "react";
+import { useEffect, type Dispatch, type SetStateAction } from "react";
 import type { AssetRowData } from "./api";
 import AssetRow from "./AssetRow";
+import { useAssetPrice } from "./AssetPriceContext";
 
 export interface AssetContainerProps {
   assets: AssetRowData[];
@@ -13,6 +14,11 @@ export default function AssetContainer({
   stateFn,
   assets,
 }: AssetContainerProps) {
+  const { subscribe } = useAssetPrice();
+  useEffect(() => {
+    const symbols = assets.map((asset) => asset.asset.tickerSymbol);
+    subscribe(symbols);
+  }, [assets]);
   return (
     <>
       {assets.length > 0 &&

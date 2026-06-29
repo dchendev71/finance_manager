@@ -29,7 +29,7 @@ export function AssetPriceProvider({ children }: AssetPriceProviderProps) {
 
       symbols.forEach((symbol) => {
         const current = next.get(symbol);
-        if (!current) {
+        if (current === undefined) {
           newSymbols.push(symbol);
           next.set(symbol, { watcherCount: 1, price: null });
         } else {
@@ -111,11 +111,18 @@ export function AssetPriceProvider({ children }: AssetPriceProviderProps) {
     };
   }, []);
 
+  const subscriptionsRef = useRef(subscriptions);
+
+  useEffect(() => {
+    subscriptionsRef.current = subscriptions;
+  }, [subscriptions]);
+
   const contextValue: AssetPriceContextType = useMemo(
     () => ({
       subscribe,
       unsubscribe,
       subscriptions,
+      subscriptionsRef,
     }),
     [subscriptions],
   );

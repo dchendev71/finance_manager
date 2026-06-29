@@ -1,9 +1,10 @@
 import Button from "@/components/ui/Button";
 import type { AssetRowData } from "./api";
 import Asset from "./Asset";
-import { useState, type Dispatch, type SetStateAction } from "react";
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import AssetForm, { type AssetMethod } from "./AssetForm";
 import FormErrorBanner from "@/components/ui/FormErrorBanner";
+import { useAssetPrice } from "./AssetPriceContext";
 
 export interface AssetRowProps {
   portfolioName: string;
@@ -21,6 +22,22 @@ export default function AssetRow({
   const [displayAssetForm, setDisplayAssetForm] = useState<boolean>(false);
   const [assetMethod, setAssetMethod] = useState<AssetMethod>("BUY");
   const [submitValue, setSubmitValue] = useState<string>("");
+
+  const [assetPrice, setAssetPrice] = useState<number | null>(null);
+  const { subscriptionsRef } = useAssetPrice();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const price = subscriptionsRef.current.get(
+        assetRow.asset.tickerSymbol,
+      )?.price;
+      if (price !== undefined) {
+        setAssetPrice(price);
+      }
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   async function buyButton() {
     setFormTitle(`Buy ${assetRow.asset.assetName}`);
@@ -64,6 +81,17 @@ export default function AssetRow({
             {formatNumber(Number(assetRow.meanPrice))}
           </dd>
         </div>
+
+        {assetPrice !== null && (
+          <div>
+            <dt className="text-xs text-slate-500 font-medium">
+              Current Price
+            </dt>
+            <dd className="text-sm font-semibold">
+              {formatNumber(assetPrice)}
+            </dd>
+          </div>
+        )}
 
         {/* 'ml-auto' pushes this entire block to the far right */}
         <div className="ml-auto flex flex-row items-center gap-2">

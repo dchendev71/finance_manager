@@ -1,10 +1,11 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, type RefObject } from "react";
 import type { AssetSubscription } from "./AssetPriceProvider";
 
 export type AssetPriceContextType = {
   subscribe: (symbols: string[]) => void;
   unsubscribe: (symbols: string[]) => void;
   subscriptions: Map<string, AssetSubscription>;
+  subscriptionsRef: RefObject<Map<string, AssetSubscription>>;
 };
 
 export const AssetPriceContext = createContext<AssetPriceContextType | null>(
