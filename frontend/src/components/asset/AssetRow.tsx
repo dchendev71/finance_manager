@@ -24,6 +24,7 @@ export default function AssetRow({
   const [submitValue, setSubmitValue] = useState<string>("");
 
   const [assetPrice, setAssetPrice] = useState<number | null>(null);
+  const [performance, setPerformance] = useState<number | null>(null);
   const { subscriptionsRef } = useAssetPrice();
 
   useEffect(() => {
@@ -33,6 +34,10 @@ export default function AssetRow({
       )?.price;
       if (price !== undefined) {
         setAssetPrice(price);
+        // TODO: FIXME
+        const perf =
+          (((price as number) - assetRow.meanPrice) / assetRow.meanPrice) * 100;
+        setPerformance(perf);
       }
     }, 2000);
 
@@ -53,7 +58,7 @@ export default function AssetRow({
     setSubmitValue("Sell");
   }
 
-  const formatNumber = (value: number, decimals = 2): string =>
+  const formatNumber = (value: number, decimals = 4): string =>
     new Intl.NumberFormat("fr-FR", {
       minimumFractionDigits: decimals,
       maximumFractionDigits: decimals,
@@ -89,6 +94,23 @@ export default function AssetRow({
             </dt>
             <dd className="text-sm font-semibold">
               {formatNumber(assetPrice)}
+            </dd>
+          </div>
+        )}
+
+        {assetPrice !== null && performance !== null && (
+          <div>
+            <dt className="text-xs text-slate-500 font-medium">Performance</dt>
+            <dd
+              className={`text-sm font-semibold ${
+                performance > 0
+                  ? "text-green-600"
+                  : performance < 0
+                    ? "text-red-600"
+                    : "text-slate-900"
+              }`}
+            >
+              {formatNumber(performance)} %
             </dd>
           </div>
         )}

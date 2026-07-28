@@ -40,8 +40,8 @@ public class PriceWebSocketHandler extends TextWebSocketHandler {
   public void init() {
     List<Asset> assets = assetService.getAssets();
     for (Asset asset : assets) {
-      String tickerSymbol = asset.getTickerSymbol();
-      subscribers.put(tickerSymbol, ConcurrentHashMap.newKeySet());
+      String translatedSymbol = assetService.translatedSymbol(asset);
+      subscribers.put(translatedSymbol, ConcurrentHashMap.newKeySet());
     }
   }
 
@@ -88,8 +88,12 @@ public class PriceWebSocketHandler extends TextWebSocketHandler {
 
     symbols.forEach(
         symbol -> {
-          double price = priceService.getIndicativePrice(symbol);
           try {
+            if (symbol.startsWith("BINANCE:")) {
+              // BINANCE:XXXUSDT
+              symbol = symbol.substring(8, symbol.length() - 4);
+            }
+            double price = priceService.getIndicativePrice(symbol);
             broadcastPrice(symbol, price);
           } catch (Exception e) {
             log.error("Failed to broadcast symbol {}", symbol);

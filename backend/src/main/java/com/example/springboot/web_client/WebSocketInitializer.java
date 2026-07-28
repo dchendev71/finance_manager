@@ -4,11 +4,13 @@ import com.example.springboot.asset.Asset;
 import com.example.springboot.asset.AssetService;
 import jakarta.annotation.PostConstruct;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
 @Profile("!test")
+@Slf4j
 public class WebSocketInitializer {
 
   private final FinnhubPriceListener listener;
@@ -27,10 +29,7 @@ public class WebSocketInitializer {
         assets.stream()
             .map(
                 (asset) -> {
-                  if (asset.getAssetType().getType().equals("cryptocurrency")) {
-                    return "BINANCE:" + asset.getTickerSymbol() + "USDT";
-                  }
-                  return asset.getTickerSymbol();
+                  return assetService.translatedSymbol(asset);
                 })
             .toList();
 

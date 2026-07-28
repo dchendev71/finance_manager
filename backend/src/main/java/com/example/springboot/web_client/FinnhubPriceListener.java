@@ -44,6 +44,10 @@ public class FinnhubPriceListener {
               .body(JsonNode.class);
 
       double price = response.get("c").asDouble();
+      if (symbol.startsWith("BINANCE:")) {
+        // BINANCE:XXXXUSDT
+        symbol = symbol.substring(8, symbol.length() - 4);
+      }
       redisTemplate.opsForValue().set(PRICE_KEY_PREFIX + symbol, price);
       log.info("Initial price for {}: {}", symbol, price);
     } catch (Exception e) {
