@@ -5,6 +5,8 @@ import {
   type AssetPriceContextType,
 } from "./AssetPriceContext";
 
+import { WS_URL } from "@/services/api";
+
 interface AssetPriceProviderProps {
   children: React.ReactNode;
 }
@@ -17,7 +19,6 @@ export type AssetSubscription = {
 export function AssetPriceProvider({ children }: AssetPriceProviderProps) {
   const { token } = useAuth();
   const ws = useRef<WebSocket | null>(null);
-  const WS_URL = "ws://localhost:8080/ws/prices";
   const [subscriptions, setSubscriptions] = useState<
     Map<string, AssetSubscription>
   >(new Map());

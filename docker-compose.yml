@@ -50,6 +50,9 @@ services:
   frontend:
     build:
       context: ./frontend
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+        VITE_WS_URL: ${VITE_WS_URL}
     container_name: finance_manager_frontend
     ports:
       - "5173:80"

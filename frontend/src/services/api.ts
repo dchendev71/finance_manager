@@ -1,7 +1,8 @@
 import { parseISO } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 
-const BASE_URL = "http://localhost:8080/api/v1";
+const BASE_URL = import.meta.env.VITE_API_URL;
+export const WS_URL = import.meta.env.VITE_WS_URL;
 
 export interface CustomFetchOptions extends RequestInit {}
 
