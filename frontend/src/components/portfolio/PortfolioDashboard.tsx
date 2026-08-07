@@ -6,11 +6,12 @@ import Button from "@/components/ui/Button";
 import PortfolioContainer from "./PortfolioContainer";
 import FormErrorBanner from "@/components/ui/FormErrorBanner.tsx";
 import UserBalance from "@/components/ui/UserBalance.tsx";
+import { type PortfolioProps } from "./Portfolio.tsx";
 
 export default function PortfolioDashboard() {
   const { request } = useAuth();
   const [error, setError] = useState<string | null>(null);
-  const [portfolios, setPortfolios] = useState([]);
+  const [portfolios, setPortfolios] = useState<PortfolioProps[]>([]);
 
   useEffect(() => {
     async function handleGetPortfolios() {

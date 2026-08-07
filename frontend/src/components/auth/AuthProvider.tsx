@@ -34,7 +34,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const request = useCallback(
     async (endpoint: string, options: RequestInit = {}): Promise<any> => {
       try {
-        const res = await customFetch(endpoint, token as string, options);
+        const res = await customFetch(endpoint, token, options);
 
         if (!res.ok) {
           const errorData = await res.json().catch(() => ({}));

@@ -3,21 +3,23 @@ import { formatInTimeZone } from "date-fns-tz";
 
 const BASE_URL = "http://localhost:8080/api/v1";
 
+export interface CustomFetchOptions extends RequestInit {}
+
 export async function customFetch(
   endpoint: string,
   token: string | null,
-  options = {},
+  options: CustomFetchOptions = {},
 ) {
-  const headers = {
+  const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    ...options.headers,
+    ...normalizeHeaders(options.headers),
   };
 
   if (token != null) {
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const config = {
+  const config: RequestInit = {
     ...options,
     headers,
   };
@@ -26,6 +28,17 @@ export async function customFetch(
   const response = await fetch(`${BASE_URL}${endpoint}`, config);
 
   return response;
+}
+
+function normalizeHeaders(headers?: HeadersInit): Record<string, string> {
+  if (!headers) return {};
+  if (headers instanceof Headers) {
+    return Object.fromEntries(headers.entries());
+  }
+  if (Array.isArray(headers)) {
+    return Object.fromEntries(headers);
+  }
+  return headers;
 }
 
 export function formatToUTCLibrary(ts: string | null): string {

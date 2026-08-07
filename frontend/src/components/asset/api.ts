@@ -62,7 +62,8 @@ function handleAssetChange(
   assetRow?: AssetRowData,
 ): void {
   if (method === "CREATE") {
-    stateFn((prev) => [...prev, assetRow]);
+    if (!assetRow) return;
+    stateFn((prev: AssetRowData[]) => [...prev, assetRow]);
     return;
   }
   // If we have an assetRow, it means we need to update the state

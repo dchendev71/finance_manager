@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { responseToAssetData, type AssetData } from "@/components/asset/api";
 import { useAuth } from "@/components/auth/AuthContext";
 import FormErrorBanner from "./FormErrorBanner";

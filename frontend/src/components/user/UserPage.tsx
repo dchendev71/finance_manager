@@ -38,7 +38,7 @@ function UserDetails() {
       <div>
         <dt className="text-xs text-slate-500">Created at</dt>
         <dd className="text-sm font-semibold">
-          {formatToUTCLibrary(user?.createdAt)}
+          {user && formatToUTCLibrary(user.createdAt)}
         </dd>
       </div>
     </dl>
