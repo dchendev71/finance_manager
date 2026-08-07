@@ -1,4 +1,4 @@
-package com.example.springboot.security;
+package com.example.springboot.common.config;
 
 import java.time.Duration;
 import org.springframework.cache.annotation.EnableCaching;
