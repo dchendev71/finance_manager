@@ -1,9 +1,10 @@
-name: Backend CI
+name: CI
 
 on:
   push:
+    branches: [main]
     paths:
-      - "backend/**"
+      - "**"
 
 jobs:
   test:
@@ -31,3 +32,12 @@ jobs:
       - name: Run tests
         run: mvn test
         working-directory: backend
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render deploy
+        run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
+      - name: Trigger Vercel deploy
+        run: curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}""
